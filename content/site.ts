@@ -401,9 +401,35 @@ export const studio = {
 };
 
 export const team: TeamMember[] = [
-  { slug: "member-1", name: null, role: null, credentials: [], bio: null, photo: null, links: [] },
-  { slug: "member-2", name: null, role: null, credentials: [], bio: null, photo: null, links: [] },
-  { slug: "member-3", name: null, role: null, credentials: [], bio: null, photo: null, links: [] },
+  // The three photos below are dummy stand-ins. Swap `photo` for a real portrait
+  // (and fill in name and role) before launch.
+  {
+    slug: "member-1",
+    name: null,
+    role: null,
+    credentials: [],
+    bio: null,
+    photo: { src: "/team/ceo.jpg", alt: "Portrait of a team member (placeholder photo)", width: 1024, height: 1024 },
+    links: [],
+  },
+  {
+    slug: "member-2",
+    name: null,
+    role: null,
+    credentials: [],
+    bio: null,
+    photo: { src: "/team/eng-lead.jpg", alt: "Portrait of a team member (placeholder photo)", width: 1024, height: 1024 },
+    links: [],
+  },
+  {
+    slug: "member-3",
+    name: null,
+    role: null,
+    credentials: [],
+    bio: null,
+    photo: { src: "/team/ai-lead.jpg", alt: "Portrait of a team member (placeholder photo)", width: 1024, height: 1024 },
+    links: [],
+  },
 ];
 
 export const skills: { discipline: string; tools: string[] }[] = [

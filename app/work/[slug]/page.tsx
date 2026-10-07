@@ -89,8 +89,14 @@ export default async function CaseStudyPage({ params }: Props) {
             <dt>Live site</dt>
             <dd>
               {project.liveUrl ? (
-                <a href={project.liveUrl} className="ulink" target="_blank" rel="noopener noreferrer">
-                  {displayHost(project.liveUrl)}
+                <a
+                  href={project.liveUrl}
+                  className="ulink"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={displayHost(project.liveUrl)}
+                >
+                  Visit site
                   <ArrowUpRight size={14} strokeWidth={1.75} aria-hidden="true" />
                   <span className="sr-only"> (opens in a new tab)</span>
                 </a>

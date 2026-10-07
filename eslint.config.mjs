@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Unused components kept for reference (see components/_legacy/README.md).
     "components/_legacy/**",
+    // CommonJS dependency shims (see vendor/fast-glob/index.js).
+    "vendor/**",
     // Test output
     "playwright-report/**",
     "test-results/**",

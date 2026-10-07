@@ -10,7 +10,7 @@ const poster = {
   src: "/hero/layers-poster.webp",
   width: 1800,
   height: 1500,
-  alt: "Five sheets standing in steel clips on a concrete slab. The back sheet is a finished web page; each glass sheet in front shows one layer of how it was made: a column grid, spacing measurements, keyboard focus rings and print marks.",
+  alt: "Five sheets standing in steel clips on a dark slab. The back sheet is a finished web page; each glass sheet in front shows one layer of how it was made: a column grid, spacing measurements, keyboard focus rings and print marks.",
 };
 
 export default function Hero() {
@@ -25,7 +25,7 @@ export default function Hero() {
             {home.lede}
           </p>
           <div className="hero__actions reveal" style={step(2)}>
-            <Link href="/contact" className="btn btn--kiln">
+            <Link href="/contact" className="btn btn--accent">
               Start a project
             </Link>
             <BookingLink className="btn btn--outline">Book a 30-minute call</BookingLink>

@@ -282,7 +282,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
       )}
 
       <div className="form__submit">
-        <button type="submit" className="btn btn--kiln" disabled={pending} aria-busy={pending}>
+        <button type="submit" className="btn btn--accent" disabled={pending} aria-busy={pending}>
           {pending ? (
             <>
               <span className="spinner" aria-hidden="true" />

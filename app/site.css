@@ -1,7 +1,7 @@
 /* Hallmark · route: custom (bespoke) · structure: split hero with a live 3D "exploded page" → editorial work grid → sticky side-heading sections, one dark Night section
  * idea: "the exploded page: a website shown as the layers it is built from"
- * paper: oklch(96.4% 0.008 85) · accent: oklch(60% 0.175 40) · display: Bricolage Grotesque · body: Geist · outlier: Geist Mono (tool names only)
- * axes: light / grotesk-sans / warm · nav: N10-style compact (transform + opacity only) · footer: Ft1 mast-headed with sitemap
+ * paper: oklch(97.4% 0.006 255) · accent: oklch(56% 0.2 262) cobalt · display: Geist 600, tracked tight · body: Geist · outlier: Geist Mono (tool names only)
+ * axes: light / grotesk-sans / cool · nav: N10-style compact (transform + opacity only) · footer: Ft1 mast-headed with sitemap
  * enrichment: Tier D three.js (lazy, render-on-demand) + still poster fallback · tone: austere-technical · studied: no
  * gates: all-pass · contrast: pass (40–41) · slop: pass (42–45) · honest: pass (46) · chrome: pass (47) · tokens: pass (48) · responsive: pass (49) · mobile: pass (34, 49, 50–57)
  */
@@ -48,9 +48,7 @@ h2,
 h3 {
   font-family: var(--font-display);
   font-style: normal;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-stretch: 90%;
+  font-weight: var(--weight-heading);
   letter-spacing: var(--tracking-heading);
   line-height: var(--leading-tight);
   text-wrap: balance;
@@ -64,8 +62,8 @@ p {
 
 .h2 {
   font-size: var(--text-2xl);
-  letter-spacing: var(--tracking-display);
-  line-height: 1.05;
+  letter-spacing: var(--tracking-title);
+  line-height: 1.08;
 }
 .h3 {
   font-size: var(--text-lg);
@@ -75,7 +73,6 @@ p {
   color: var(--color-muted);
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  font-stretch: 100%;
   font-weight: 600;
   letter-spacing: 0;
 }
@@ -124,7 +121,7 @@ p {
   background: var(--color-rule);
 }
 .ulink::after {
-  background: var(--color-kiln-deep);
+  background: var(--color-accent-deep);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--dur-short) var(--ease-out);
@@ -174,8 +171,8 @@ p {
   background: var(--color-ink);
   color: var(--color-paper);
 }
-.btn--kiln {
-  background: var(--color-kiln-deep);
+.btn--accent {
+  background: var(--color-accent-deep);
   color: var(--color-paper);
 }
 .btn--outline {
@@ -184,14 +181,14 @@ p {
   color: var(--color-ink);
 }
 .btn--small {
-  min-height: 2.25rem;
+  min-height: var(--control-height-sm);
   padding-inline: var(--space-md);
 }
 @media (hover: hover) {
   .btn--ink:hover:not(:disabled) {
     background: var(--color-ink-2);
   }
-  .btn--kiln:hover:not(:disabled) {
+  .btn--accent:hover:not(:disabled) {
     background: var(--color-ink);
   }
   .btn--outline:hover:not(:disabled) {
@@ -208,7 +205,7 @@ p {
 .spinner {
   width: 0.9em;
   height: 0.9em;
-  border: 1.5px solid currentColor;
+  border: var(--rule-mark) solid currentColor;
   border-right-color: transparent;
   border-radius: 50%;
   animation: spin 700ms linear infinite;
@@ -270,28 +267,16 @@ p {
   height: var(--nav-h);
   pointer-events: none;
 }
-.nav > *:not(.nav__strip) {
+.nav > * {
   pointer-events: auto;
 }
-.nav__strip {
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: calc(var(--nav-h) - var(--space-md));
-  border-bottom: var(--rule-hair) solid var(--color-rule);
-  background: var(--color-paper);
-  box-shadow: var(--shadow-1);
-  opacity: 0;
-  transition: opacity var(--dur-nav) var(--ease-out);
-  pointer-events: none;
-}
-.nav[data-scrolled="true"] .nav__strip,
-.nav[data-open="true"] .nav__strip {
-  opacity: 1;
-}
 
+/* N10 floating-on-scroll morph. At the top of the page the nav is bare paper; once the
+ * page scrolls it settles into a floating pill. The nav's height never changes and the
+ * pill only fades, scales and drops (opacity + transform), so nothing below it moves. */
 .nav__row {
   position: relative;
-  z-index: 1;
+  z-index: var(--z-base);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -300,7 +285,26 @@ p {
   transition: transform var(--dur-nav) var(--ease-out);
 }
 .nav[data-scrolled="true"] .nav__row {
-  transform: translateY(calc(-1 * var(--space-xs)));
+  transform: translateY(var(--space-2xs));
+}
+.nav__pill {
+  position: absolute;
+  z-index: -1;
+  inset-block: var(--space-xs);
+  inset-inline: max(var(--space-2xs), calc(var(--gutter) - var(--space-md)));
+  border-radius: var(--radius-pill);
+  background: var(--color-paper-hi);
+  box-shadow: var(--ring), var(--shadow-2);
+  opacity: 0;
+  transform: scale(0.98);
+  transition:
+    opacity var(--dur-nav) var(--ease-out),
+    transform var(--dur-nav) var(--ease-out);
+  pointer-events: none;
+}
+.nav[data-scrolled="true"] .nav__pill {
+  opacity: 1;
+  transform: none;
 }
 
 .wordmark {
@@ -310,9 +314,8 @@ p {
   color: var(--color-ink);
   font-family: var(--font-display);
   font-size: var(--text-md);
-  font-stretch: 90%;
   font-weight: 700;
-  letter-spacing: var(--tracking-heading);
+  letter-spacing: var(--tracking-title);
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
@@ -328,7 +331,7 @@ p {
   flex: none;
 }
 .wordmark__body {
-  fill: var(--color-kiln);
+  fill: var(--color-accent);
   stroke: var(--color-paper);
 }
 .wordmark--large {
@@ -382,7 +385,7 @@ p {
 .menu {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  isolation: isolate;
   padding-top: var(--nav-h);
   overflow-y: auto;
   overscroll-behavior: contain;
@@ -401,13 +404,12 @@ p {
   color: var(--color-ink);
   font-family: var(--font-display);
   font-size: var(--text-2xl);
-  font-stretch: 90%;
-  font-weight: 700;
-  letter-spacing: var(--tracking-display);
+  font-weight: var(--weight-heading);
+  letter-spacing: var(--tracking-title);
   text-decoration: none;
 }
 .menu__link[aria-current="page"] {
-  color: var(--color-kiln-deep);
+  color: var(--color-accent-deep);
 }
 .menu__cta {
   width: 100%;
@@ -463,7 +465,6 @@ p {
   color: var(--color-muted);
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  font-stretch: 100%;
   font-weight: 600;
   letter-spacing: 0;
 }
@@ -494,8 +495,9 @@ p {
 }
 @media (min-width: 60rem) {
   .footer__grid {
-    grid-template-columns: minmax(0, 5fr) repeat(3, minmax(0, 2fr));
-    column-gap: var(--column-gap);
+    /* Link columns take their content's width so no link wraps; the mast takes the rest. */
+    grid-template-columns: minmax(0, 1fr) repeat(3, max-content);
+    column-gap: var(--space-xl);
   }
   .footer__mast {
     grid-column: auto;
@@ -625,8 +627,8 @@ textarea.input {
   right: var(--space-md);
   width: var(--space-xs);
   height: var(--space-xs);
-  border-right: 1.5px solid var(--color-ink-2);
-  border-bottom: 1.5px solid var(--color-ink-2);
+  border-right: var(--rule-mark) solid var(--color-ink-2);
+  border-bottom: var(--rule-mark) solid var(--color-ink-2);
   transform: rotate(45deg);
   pointer-events: none;
 }
@@ -683,7 +685,8 @@ textarea.input {
     animation-name: fade-in;
   }
   .nav[data-scrolled="true"] .nav__row,
-  .nav[data-scrolled="true"] .wordmark {
+  .nav[data-scrolled="true"] .wordmark,
+  .nav__pill {
     transform: none;
   }
   .btn:active:not(:disabled) {

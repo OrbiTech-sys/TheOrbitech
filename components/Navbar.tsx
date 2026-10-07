@@ -57,8 +57,8 @@ export default function Navbar() {
     <>
       <div ref={sentinelRef} id="top" className="nav-sentinel" aria-hidden="true" />
       <header className="nav" data-scrolled={scrolled} data-open={open}>
-        <div className="nav__strip" aria-hidden="true" />
         <div className="wrap nav__row">
+          <div className="nav__pill" aria-hidden="true" />
           <Link href="/" className="wordmark" aria-label="OrbiTech, home">
             <Wordmark />
           </Link>
