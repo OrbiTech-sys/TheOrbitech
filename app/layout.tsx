@@ -1,53 +1,65 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import JsonLd from "@/components/JsonLd";
+import { site } from "@/content/site";
+import { DEFAULT_OG_IMAGE, organizationLd, siteUrl } from "@/lib/seo";
+import "../tokens.css";
 import "./globals.css";
+import "./site.css";
+import "./pages.css";
+
+const bricolage = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  axes: ["opsz", "wdth"],
+  display: "swap",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const viewport: Viewport = {
-  themeColor: "#090d16",
+  themeColor: "#f6f3ed",
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
 };
 
 export const metadata: Metadata = {
-  title: "OrbiTech | Elite Software Engineering, High-Scale SaaS & AI Solutions",
-  description:
-    "OrbiTech architects and delivers mission-critical web applications, high-scale SaaS platforms, autonomous AI agents, and secure cloud systems with zero technical debt.",
-  keywords: [
-    "software engineering startup",
-    "custom web apps",
-    "SaaS development",
-    "AI automation",
-    "autonomous AI agents",
-    "enterprise cybersecurity",
-    "Next.js engineering",
-    "backend systems",
-    "cloud devops",
-  ],
-  authors: [{ name: "OrbiTech Engineering Team" }],
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: `${site.name} — Websites and software, built layer by layer`,
+    template: `%s — ${site.name}`,
+  },
+  description: site.description,
+  applicationName: site.name,
+  authors: [{ name: site.name }],
+  alternates: { canonical: "/" },
   openGraph: {
-    title: "OrbiTech | Elite Software Engineering & AI Solutions",
-    description:
-      "We partner with visionary founders and enterprises to engineer scalable SaaS, custom web apps, and autonomous AI systems built with security-first architecture.",
-    url: "https://orbitech.dev",
-    siteName: "OrbiTech",
+    title: `${site.name} — Websites and software, built layer by layer`,
+    description: site.description,
+    url: "/",
+    siteName: site.name,
     locale: "en_US",
     type: "website",
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
-    title: "OrbiTech | Elite Software Engineering & AI Solutions",
-    description:
-      "Mission-critical web applications, AI automation, and secure high-scale architectures.",
+    title: `${site.name} — Websites and software, built layer by layer`,
+    description: site.description,
+    images: [DEFAULT_OG_IMAGE.url],
   },
 };
 
@@ -57,12 +69,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} scroll-smooth antialiased`}
-    >
-      <body className="min-h-screen bg-[#080c14] text-slate-100 selection:bg-blue-600 selection:text-white">
-        {children}
+    <html lang="en" className={`${bricolage.variable} ${geistSans.variable} ${geistMono.variable}`}>
+      <body>
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
+        <Navbar />
+        <main id="main" tabIndex={-1}>
+          {children}
+        </main>
+        <Footer />
+        <JsonLd data={organizationLd()} />
       </body>
     </html>
   );

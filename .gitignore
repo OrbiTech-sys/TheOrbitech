@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +40,38 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# test output
+/test-results/
+/playwright-report/
+/.next-test/
+
+# Hallmark metadata
+/.hallmark/
+/data/skills/hallmark/
+/skills/hallmark/
+
+# Local AI tool metadata
+/.agents/
+/.aider-desk/
+/.augment/
+/.autohand/
+/.claude/
+/.codeartsdoer/
+/.codebuddy/
+/.codemaker/
+/.codestudio/
+/.commandcode/
+/.continue/
+/.cortex/
+/.crush/
+/.devin/
+/.forge/
+/.fx/
+/.goose/
+/.grok/
+/.mcpjam/
+/.minimax/
+/.openhands/
+/.tinycloud/
+/.vibe/
