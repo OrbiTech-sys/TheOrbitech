@@ -1,0 +1,42 @@
+{
+  "status": 200,
+  "headers": {
+    "link": "</_next/static/media/797e433ab948586e-s.p.0r6juujl39pe6.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/media/caa3a2e1cccd8315-s.p.0wgildi0cnwt9.woff2>; rel=preload; as=\"font\"; crossorigin=\"\"; type=\"font/woff2\", </_next/static/chunks/1p4q44f78gkr0.css>; rel=preload; as=\"style\"",
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/work/layout,_N_T_/work/[slug]/layout,_N_T_/work/[slug]/page"
+  },
+  "postponed": "2997:8[\"slug\"][0,{\"nextSegmentId\":0,\"rootFormatContext\":{\"insertionMode\":0,\"selectedValue\":null,\"tagScope\":0,\"viewTransition\":null},\"progressiveChunkSize\":12800,\"resumableState\":{\"idPrefix\":\"\",\"nextFormID\":0,\"streamingFormat\":0,\"bootstrapScriptContent\":\"(globalThis[\\\"TURBOPACK\\\"] || (globalThis[\\\"TURBOPACK\\\"] = [])).push({\\\"otherChunks\\\":[\\\"static/chunks/1ckvzn7sfprko.js\\\",\\\"static/chunks/06bs-nf19b2js.js\\\",\\\"static/chunks/2-aubugw8unjj.js\\\",\\\"static/chunks/0zwkgt6z_hwdh.js\\\"],\\\"runtimeModuleIds\\\":[94553]});\",\"bootstrapScripts\":[{\"src\":\"/_next/static/chunks/1ckvzn7sfprko.js\"}],\"instructions\":0,\"hasBody\":false,\"hasHtml\":false,\"unknownResources\":{\"font\":{\"/_next/static/media/797e433ab948586e-s.p.0r6juujl39pe6.woff2\":[],\"/_next/static/media/caa3a2e1cccd8315-s.p.0wgildi0cnwt9.woff2\":[]}},\"dnsResources\":{},\"connectResources\":{\"default\":{},\"anonymous\":{},\"credentials\":{}},\"imageResources\":{},\"styleResources\":{\"/_next/static/chunks/1p4q44f78gkr0.css\":[]},\"scriptResources\":{},\"moduleUnknownResources\":{},\"moduleScriptResources\":{}},\"replayNodes\":[[\"sl\",0,[[\"Context\",0,[[\"Context\",0,[[\"ServerInsertedHTMLProvider\",0,[[\"Context\",0,[[\"io\",0,[[\"aV\",0,[[\"az\",0,[[\"aq\",0,[[\"is\",0,[[\"Fragment\",0,[[\"Context\",2,[[\"Context\",0,[[\"Context\",0,[[\"Context\",0,[[\"Context\",0,[[\"Context\",0,[[\"Context\",0,[[\"aV\",0,[[\"az\",0,[[\"aq\",0,[[\"ai\",0,[[\"aa\",0,[[\"ii\",\"/work/$d$slug/__PAGE__/_head\",[[\"Fragment\",\"h\",[[\"__next_metadata_boundary__\",2,[[\"div\",0,[[\"Suspense\",0,[],1,[\"Suspense Fallback\",0,[],null],1]],null]],null]],null]],null],[\"__next_root_layout_boundary__\",1,[[\"Fragment\",\"c\",[[\"html\",1,[[\"body\",0,[[\"main\",2,[[null,0,[[\"Activity\",\"work\",[[\"Context\",\"work\",[[null,2,[[\"Fragment\",0,[[\"E\",0,[[\"D\",0,[[\"Fragment\",0,[[\"n\",0,[[\"Fragment\",0,[[\"G\",0,[[\"Fragment\",0,[[null,0,[[\"l\",0,[[\"x\",0,[[\"w\",0,[[\"F\",0,[[\"Context\",0,[[\"Fragment\",\"c\",[[null,1,[[\"Activity\",\"slug|d\",[[\"Context\",\"slug|d\",[[null,2,[[\"Fragment\",0,[[\"E\",0,[[\"D\",0,[[\"Fragment\",0,[[\"n\",0,[[\"Fragment\",0,[[\"G\",0,[[\"Fragment\",0,[[null,0,[[\"Fragment\",0,[[\"x\",0,[[\"w\",0,[[\"F\",0,[[\"Context\",0,[[\"Fragment\",\"c\",[[null,1,[[\"Activity\",\"__PAGE__\",[[\"Context\",\"__PAGE__\",[[null,2,[[\"Fragment\",0,[[\"E\",0,[[\"D\",0,[[\"Fragment\",0,[[\"n\",0,[[\"Fragment\",0,[[\"G\",0,[[\"Fragment\",0,[[null,0,[[\"Fragment\",0,[[\"x\",0,[[\"w\",0,[[\"F\",0,[[\"Context\",0,[[\"Fragment\",\"c\",[[\"__next_outlet_boundary__\",2,[[\"Suspense\",0,[],3,[\"Suspense Fallback\",0,[],null],3]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],null]],\"replaySlots\":-1}]null",
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/work/$d$slug/__PAGE__"
+  ],
+  "prefetchHints": {
+    "hints": 49216,
+    "slots": {
+      "children": {
+        "hints": 49248,
+        "slots": {
+          "children": {
+            "hints": 49248,
+            "slots": {
+              "children": {
+                "hints": 49312,
+                "slots": null
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "routeCache": {
+    "key": "/route-cache/APP_PAGE/019267d7d0c7835dd85222bbf6a05cbfe3887a4775e74d8581b6f6e2aa6b375d/$/work/[slug]",
+    "owner": {
+      "kind": "APP_PAGE",
+      "sourceRoute": "/work/[slug]/page"
+    },
+    "isFallback": true
+  }
+}

@@ -1,5 +1,5 @@
 /**
- * "The exploded page": five sheets standing in steel clips on a concrete slab.
+ * "The exploded page": five sheets standing in steel clips on a dark slab.
  * The back sheet is the finished page; each glass sheet in front carries one
  * layer of how it was made: grid, spacing, focus states, print marks.
  *
@@ -17,7 +17,7 @@ import {
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   NeutralToneMapping,
-  PCFSoftShadowMap,
+  PCFShadowMap,
   PerspectiveCamera,
   PlaneGeometry,
   PMREMGenerator,
@@ -29,9 +29,36 @@ import {
   type Material,
   type Texture,
   WebGLRenderer,
+  getConsoleFunction,
+  setConsoleFunction,
 } from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
+
+/* ── Console ─────────────────────────────────────────────────── */
+
+// On Windows, browsers compile WebGL through Direct3D, whose shader compiler emits
+// X4122 notes ("cannot be represented accurately in double precision") for constants
+// in three's own environment-map shaders. The shaders compile and run correctly, but
+// three forwards the note as a warning. Drop shader logs made only of those notes and
+// pass everything else through. three keeps one console hook for the whole page.
+type ConsoleFn = Parameters<typeof setConsoleFunction>[0] & { dropsPrecisionNotes?: true };
+
+const isPrecisionNoteLog = (message: string, log: unknown) =>
+  message === "THREE.WebGLProgram: Program Info Log:" &&
+  typeof log === "string" &&
+  log.split("\n").every((line) => line.trim() === "" || line.includes("warning X4122:"));
+
+const previousConsole = getConsoleFunction() as ConsoleFn | null;
+if (!previousConsole?.dropsPrecisionNotes) {
+  const filtered: ConsoleFn = (type, message, ...params) => {
+    if (type === "warn" && isPrecisionNoteLog(message, params[0])) return;
+    if (previousConsole) previousConsole(type, message, ...params);
+    else console[type](message, ...params);
+  };
+  filtered.dropsPrecisionNotes = true;
+  setConsoleFunction(filtered);
+}
 
 export interface LayersOptions {
   /** First frame is on screen. */
@@ -62,17 +89,19 @@ const BASE_YAW = -0.6;
 
 // Used only if the browser can't parse the token's colour function in a canvas.
 const FALLBACK: Record<string, string> = {
-  "--color-paper-hi": "#FBF9F5",
-  "--color-stone": "#EAE6DE",
-  "--color-ink": "#1B1612",
-  "--color-ink-2": "#3D3732",
-  "--color-muted": "#5D5751",
-  "--color-night": "#0E1818",
-  "--color-glass": "#BDD7D7",
-  "--color-kiln": "#D2511A",
-  "--color-kiln-deep": "#B13C11",
-  "--color-concrete": "#A29E98",
-  "--color-steel": "#BABFBF",
+  "--color-paper-hi": "#FBFDFE",
+  "--color-stone": "#E7ECF1",
+  "--color-ink": "#0E1624",
+  "--color-ink-2": "#2F3848",
+  "--color-muted": "#505966",
+  "--color-night": "#0E1625",
+  "--color-glass": "#C2D8E5",
+  "--color-accent": "#2C6BE7",
+  "--color-accent-deep": "#1251CC",
+  "--color-concrete": "#9FA5AC",
+  "--color-steel": "#B8BFC3",
+  "--color-night-raised": "#192232",
+  "--color-accent-bright": "#65A7FA",
 };
 
 function readTokens() {
@@ -98,10 +127,12 @@ function readTokens() {
     muted: hex("--color-muted"),
     night: hex("--color-night"),
     glass: hex("--color-glass"),
-    kiln: hex("--color-kiln"),
-    kilnDeep: hex("--color-kiln-deep"),
+    accent: hex("--color-accent"),
+    accentDeep: hex("--color-accent-deep"),
     concrete: hex("--color-concrete"),
     steel: hex("--color-steel"),
+    nightRaised: hex("--color-night-raised"),
+    accentBright: hex("--color-accent-bright"),
   };
 }
 type Tokens = ReturnType<typeof readTokens>;
@@ -148,13 +179,13 @@ function drawPage(t: Tokens) {
   ctx.beginPath();
   ctx.arc(92, 74, 17, 0, Math.PI * 2);
   ctx.stroke();
-  ctx.fillStyle = t.kiln;
+  ctx.fillStyle = t.accent;
   ctx.beginPath();
   ctx.arc(104, 62, 7, 0, Math.PI * 2);
   ctx.fill();
   fillRR(ctx, 126, 64, 120, 20, 10, t.ink);
   for (let i = 0; i < 3; i++) fillRR(ctx, 800 + i * 120, 66, 84, 14, 7, t.ink2, 0.7);
-  fillRR(ctx, 1150, 50, 170, 46, 12, t.kilnDeep);
+  fillRR(ctx, 1150, 50, 170, 46, 12, t.accentDeep);
 
   // Hero copy
   fillRR(ctx, 80, 190, 640, 74, 16, t.ink);
@@ -171,7 +202,7 @@ function drawPage(t: Tokens) {
   fillRR(ctx, 822, 222, 300, 200, 12, t.glass, 0.92);
   fillRR(ctx, 822, 446, 200, 14, 7, t.glass, 0.5);
   fillRR(ctx, 822, 474, 300, 14, 7, t.glass, 0.3);
-  ctx.fillStyle = t.kiln;
+  ctx.fillStyle = t.accent;
   ctx.beginPath();
   ctx.arc(1220, 500, 54, 0, Math.PI * 2);
   ctx.fill();
@@ -194,12 +225,12 @@ function drawStructure(t: Tokens) {
   const gap = 20;
   const col = (width - gap * 11) / 12;
   for (let i = 0; i < 12; i++) {
-    ctx.fillStyle = t.kiln;
+    ctx.fillStyle = t.accent;
     ctx.globalAlpha = 0.1;
     ctx.fillRect(left + i * (col + gap), 40, col, TEX_H - 80);
   }
   ctx.globalAlpha = 0.7;
-  ctx.strokeStyle = t.kilnDeep;
+  ctx.strokeStyle = t.accentDeep;
   ctx.lineWidth = 2.5;
   ctx.setLineDash([]);
   for (const x of [left, left + width]) {
@@ -234,8 +265,8 @@ function drawSpacing(t: Tokens) {
   const callout = (x1: number, y1: number, x2: number, y2: number, label: string) => {
     ctx.save();
     ctx.globalAlpha = 0.95;
-    ctx.strokeStyle = t.kilnDeep;
-    ctx.fillStyle = t.kilnDeep;
+    ctx.strokeStyle = t.accentDeep;
+    ctx.fillStyle = t.accentDeep;
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(x1, y1);
@@ -256,7 +287,7 @@ function drawSpacing(t: Tokens) {
     ctx.fillStyle = t.paperHi;
     ctx.fillRect(vertical ? mx + 14 : mx - w / 2, vertical ? my - 17 : my - 36, w, 34);
     ctx.globalAlpha = 1;
-    ctx.fillStyle = t.kilnDeep;
+    ctx.fillStyle = t.accentDeep;
     ctx.fillText(label, (vertical ? mx + 14 : mx - w / 2) + 8, vertical ? my : my - 19);
     ctx.restore();
   };
@@ -271,7 +302,7 @@ function drawSpacing(t: Tokens) {
 /** Keyboard focus rings: the behaviour layer. */
 function drawBehaviour(t: Tokens) {
   const { canvas, ctx } = newCanvas();
-  ctx.strokeStyle = t.kilnDeep;
+  ctx.strokeStyle = t.accentDeep;
   ctx.lineWidth = 5;
   ctx.setLineDash([16, 10]);
   ctx.lineCap = "round";
@@ -396,9 +427,9 @@ export function createLayers(stage: HTMLElement, canvas: HTMLCanvasElement, opti
   renderer.setClearColor(0x000000, 0);
   renderer.outputColorSpace = SRGBColorSpace;
   renderer.toneMapping = NeutralToneMapping;
-  renderer.toneMappingExposure = 1;
+  renderer.toneMappingExposure = 1.05;
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = PCFSoftShadowMap;
+  renderer.shadowMap.type = PCFShadowMap; // soft edges come from key.shadow.radius
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 
   const scene = new Scene();
@@ -406,12 +437,12 @@ export function createLayers(stage: HTMLElement, canvas: HTMLCanvasElement, opti
   const room = new RoomEnvironment();
   const environment = pmrem.fromScene(room, 0.03).texture;
   scene.environment = environment;
-  scene.environmentIntensity = 0.85;
+  scene.environmentIntensity = 0.55;
   room.dispose();
 
   const camera = new PerspectiveCamera(24, 1, 0.5, 30);
 
-  const key = new DirectionalLight(new Color("#fff4e6"), 2.1);
+  const key = new DirectionalLight(new Color("#eef3ff"), 2.4);
   key.position.set(-2.6, 4.2, 3.1);
   key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024);
@@ -420,6 +451,11 @@ export function createLayers(stage: HTMLElement, canvas: HTMLCanvasElement, opti
   key.shadow.normalBias = 0.02;
   key.shadow.radius = 4;
   scene.add(key);
+
+  // A cool rim light from behind picks out the edges of the glass against the dark stage.
+  const rim = new DirectionalLight(new Color(tokens.accentBright), 2.4);
+  rim.position.set(3.2, 2.4, -3.4);
+  scene.add(rim);
 
   // Disposable resources
   const geometries: BufferGeometry[] = [];
@@ -440,16 +476,17 @@ export function createLayers(stage: HTMLElement, canvas: HTMLCanvasElement, opti
   };
 
   // Materials
-  const concreteMap = track(concreteTexture(tokens));
+  const slabColour = new Color(tokens.nightRaised).lerp(new Color(tokens.night), 0.45).lerp(new Color(tokens.accent), 0.02).getStyle();
+  const concreteMap = track(concreteTexture({ ...tokens, concrete: slabColour }));
   const concrete = track(
-    new MeshStandardMaterial({ map: concreteMap, bumpMap: concreteMap, bumpScale: 0.7, roughness: 0.94, metalness: 0 }),
+    new MeshStandardMaterial({ map: concreteMap, bumpMap: concreteMap, bumpScale: 0.45, roughness: 0.58, metalness: 0.12 }),
   );
   const steel = track(new MeshPhysicalMaterial({ color: tokens.steel, metalness: 1, roughness: 0.28 }));
   const glass = track(
     new MeshPhysicalMaterial({
-      color: new Color(tokens.glass).lerp(new Color("#ffffff"), 0.55),
+      color: new Color(tokens.glass).lerp(new Color(tokens.accentBright), 0.3),
       transparent: true,
-      opacity: 0.14,
+      opacity: 0.17,
       roughness: 0.04,
       metalness: 0,
       ior: 1.5,
@@ -462,7 +499,9 @@ export function createLayers(stage: HTMLElement, canvas: HTMLCanvasElement, opti
   );
   const glassEdge = track(
     new MeshPhysicalMaterial({
-      color: new Color(tokens.glass).lerp(new Color(tokens.ink2), 0.3),
+      color: new Color(tokens.glass).lerp(new Color(tokens.accentBright), 0.45),
+      emissive: new Color(tokens.accentBright),
+      emissiveIntensity: 0.22,
       roughness: 0.22,
       metalness: 0,
       clearcoat: 1,
@@ -490,7 +529,7 @@ export function createLayers(stage: HTMLElement, canvas: HTMLCanvasElement, opti
   object.add(slab);
 
   // Ground (shadow catcher) and a soft contact shadow, so the slab sits on the stage
-  const ground = new Mesh(track(new PlaneGeometry(10, 10)), track(new ShadowMaterial({ color: "#2a1c10", opacity: 0.2 })));
+  const ground = new Mesh(track(new PlaneGeometry(10, 10)), track(new ShadowMaterial({ color: "#000000", opacity: 0.4 })));
   ground.rotation.x = -Math.PI / 2;
   ground.receiveShadow = true;
   scene.add(ground);
@@ -501,6 +540,16 @@ export function createLayers(stage: HTMLElement, canvas: HTMLCanvasElement, opti
   contact.rotation.x = -Math.PI / 2;
   contact.position.y = 0.002;
   object.add(contact);
+
+  // A thin lit line along the slab's two visible faces: the one accent on the object's base.
+  const edgeLine = track(new MeshBasicMaterial({ color: tokens.accentBright }));
+  const frontLine = new Mesh(track(new PlaneGeometry(SLAB.w - 0.08, 0.012)), edgeLine);
+  frontLine.position.set(0, SLAB.h * 0.5, SLAB.d / 2 + 0.0015);
+  object.add(frontLine);
+  const sideLine = new Mesh(track(new PlaneGeometry(SLAB.d - 0.08, 0.012)), edgeLine);
+  sideLine.rotation.y = Math.PI / 2;
+  sideLine.position.set(SLAB.w / 2 + 0.0015, SLAB.h * 0.5, 0);
+  object.add(sideLine);
 
   // Shared geometry
   const clipGeometry = track(new RoundedBoxGeometry(0.15, 0.07, GLASS_T + 0.028, 3, 0.012));

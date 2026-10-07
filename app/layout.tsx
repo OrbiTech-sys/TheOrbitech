@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Bricolage_Grotesque, Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
@@ -9,13 +9,6 @@ import "../tokens.css";
 import "./globals.css";
 import "./site.css";
 import "./pages.css";
-
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
-  subsets: ["latin"],
-  axes: ["opsz", "wdth"],
-  display: "swap",
-});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +23,7 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#f6f3ed",
+  themeColor: "#f4f7fa",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -69,7 +62,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${bricolage.variable} ${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
         <a href="#main" className="skip-link">
           Skip to content

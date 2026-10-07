@@ -30,10 +30,10 @@ export default function TeamSection({ variant = "preview" }: TeamSectionProps) {
           {team.map((member) => (
             <li key={member.slug} className="member">
               <figure className="member__photo">
-                {member.photo && member.name ? (
+                {member.photo ? (
                   <Image
                     src={member.photo.src}
-                    alt={`Portrait of ${member.name}`}
+                    alt={member.name ? `Portrait of ${member.name}` : member.photo.alt}
                     width={member.photo.width}
                     height={member.photo.height}
                     sizes="(min-width: 60rem) 30vw, (min-width: 40rem) 50vw, 100vw"
