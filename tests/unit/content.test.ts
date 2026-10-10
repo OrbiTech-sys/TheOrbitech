@@ -107,9 +107,10 @@ describe("search engine files", () => {
     expect(org["@type"]).toBe("Organization");
     expect(org).not.toHaveProperty("email");
     expect(org).not.toHaveProperty("address");
-    expect(creativeWorkLd(projects[2], "/work/project-3")).toBeNull();
+    const emptyProject = { ...projects[0], name: null };
+    expect(creativeWorkLd(emptyProject, "/work/empty")).toBeNull();
 
-    const ld = creativeWorkLd({ ...projects[2], name: "Acme site", liveUrl: "https://acme.example" }, "/work/acme");
+    const ld = creativeWorkLd({ ...projects[0], name: "Acme site", liveUrl: "https://acme.example" }, "/work/acme");
     expect(ld).toMatchObject({ "@type": "CreativeWork", name: "Acme site", sameAs: "https://acme.example" });
     expect(ld).not.toHaveProperty("dateCreated");
   });

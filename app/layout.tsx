@@ -7,8 +7,7 @@ import { site } from "@/content/site";
 import { DEFAULT_OG_IMAGE, organizationLd, siteUrl } from "@/lib/seo";
 import "../tokens.css";
 import "./globals.css";
-import "./site.css";
-import "./pages.css";
+import "./portfolio.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,7 +22,7 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#f4f7fa",
+  themeColor: "#090d1b",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -32,26 +31,39 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${site.name} — Websites and software, built layer by layer`,
-    template: `%s — ${site.name}`,
+    default: "The OrbiTech Solutions | AI, Software & Business Growth",
+    template: "%s | The OrbiTech Solutions",
   },
-  description: site.description,
-  applicationName: site.name,
-  authors: [{ name: site.name }],
+  description:
+    "The OrbiTech Solutions delivers AI integration, intelligent automation, software engineering, data analytics, and business growth technology.",
+  keywords: [
+    "AI development",
+    "AI automation",
+    "software development",
+    "web development",
+    "data analytics",
+    "business intelligence",
+    "CRM automation",
+    "SaaS MVP",
+  ],
+  applicationName: "The OrbiTech Solutions",
+  authors: [{ name: "The OrbiTech Solutions" }],
   alternates: { canonical: "/" },
   openGraph: {
-    title: `${site.name} — Websites and software, built layer by layer`,
-    description: site.description,
+    title: "The OrbiTech Solutions | AI, Software & Business Growth",
+    description:
+      "The OrbiTech Solutions delivers AI integration, intelligent automation, software engineering, data analytics, and business growth technology.",
     url: "/",
-    siteName: site.name,
+    siteName: "The OrbiTech Solutions",
     locale: "en_US",
     type: "website",
     images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.name} — Websites and software, built layer by layer`,
-    description: site.description,
+    title: "The OrbiTech Solutions | AI, Software & Business Growth",
+    description:
+      "The OrbiTech Solutions delivers AI integration, intelligent automation, software engineering, data analytics, and business growth technology.",
     images: [DEFAULT_OG_IMAGE.url],
   },
 };
@@ -64,13 +76,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <a href="#main" className="skip-link">
-          Skip to content
-        </a>
         <Navbar />
-        <main id="main" tabIndex={-1}>
-          {children}
-        </main>
+        {children}
         <Footer />
         <JsonLd data={organizationLd()} />
       </body>
