@@ -1,8 +1,9 @@
 /**
  * Every word, number and link on the site lives in this file.
  *
- * - `null` or `[]` means "not provided yet". The site shows a bracketed
- *   placeholder such as [Project name] and never invents a replacement.
+ * - `null` or `[]` means "not provided yet". The page leaves that field out and
+ *   never invents a replacement. A page that cannot work without a value stays
+ *   out of search results until it is supplied (see `privacy.retention`).
  * - Run `npm run placeholders` to list everything still to fill in.
  * - Keep this file free of imports so scripts can read it directly.
  */
@@ -30,6 +31,20 @@ export interface Project {
   role: string | null;
   /** One line, shown on cards and in search results */
   summary: string | null;
+  /** How to read this work: a public demo, or a private project with no link. */
+  kind: "Live demo" | "Private project";
+  /** Page title without the brand suffix, written for search. */
+  seoTitle: string;
+  /** Meta description, 150–160 characters, written for search. */
+  seoDescription: string;
+  /** What the project does, restated from what the demo or the project text shows. */
+  features: string[];
+  /** Neutral note shown beside the demo link, e.g. about a slow first load. */
+  demoNote: string | null;
+  /** The service area this work belongs to: an id from `services`. */
+  serviceId: string;
+  /** ISO date the page content was last meaningfully changed. */
+  updated: string;
   /** Real, working https:// address of the finished site */
   liveUrl: string | null;
   stack: string[];
@@ -64,12 +79,17 @@ export interface Testimonial {
 }
 
 export interface Service {
+  /** Anchor on /services and in links from the home page: /services#<id> */
   id: string;
+  number: string;
+  /** Module name, shown on the home page */
   title: string;
+  /** Search-phrased heading used on /services */
+  heading: string;
   summary: string;
   includes: string[];
-  whoFor: string;
-  howWeWork: string;
+  /** One sentence for the Service structured data */
+  serviceType: string;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -77,165 +97,254 @@ export interface Service {
  * ───────────────────────────────────────────────────────────── */
 
 export const site = {
-  name: "OrbiTech",
+  /** Exact brand form. Use this in titles, headings, schema and the footer. */
+  name: "The OrbiTech Solutions",
+  /** Short form, only after the full name has been introduced. */
+  shortName: "OrbiTech",
+  /** Other spellings people use. Listed in schema as alternateName. */
+  alternateNames: ["OrbiTech", "OrbiTech Solutions"],
   /** Legal entity name for the privacy page and footer, e.g. "OrbiTech Ltd" */
   legalName: null as string | null,
-  /** 1–2 lines on what you do. Used in search results and the footer. */
+  tagline: "AI Automation & Web Development",
+  /**
+   * Two-sentence definition: who we are, what we build, who for. Shown as the
+   * first paragraph of the home page and reused as the Organization description
+   * in structured data, the footer and llms.txt. Keep all of them identical.
+   */
   description:
-    "OrbiTech designs, builds and looks after websites, web apps and AI automations.",
-  /** Public address of the live site, no trailing slash. Confirm before launch. */
-  url: "https://orbitech.dev",
-  email: null as string | null,
-  /** City and country */
-  location: null as string | null,
-  /** Booking page, e.g. a Cal.com or Calendly link. */
+    "The OrbiTech Solutions is a small AI automation and web development studio based in New York, US, working with businesses remotely worldwide. We build AI chatbots and assistants, workflow automation, websites, web apps and data dashboards for businesses that want less repetitive work and faster answers for customers.",
+  /**
+   * Public address of the live site, no trailing slash. The NEXT_PUBLIC_SITE_URL
+   * environment variable overrides it (see lib/site-config.ts).
+   */
+  url: "https://theorbitechsolution.com",
+  email: "nova@theorbitechsolution.com" as string | null,
+  /** City and country, as supplied by the owner. */
+  location: "New York, US" as string | null,
+  /** Where the studio works. The studio works remotely. Used in structured data and the footer. */
+  areaServed: "Worldwide",
+  /** ISO date the studio was founded. */
+  foundingDate: "2025-10-26" as string | null,
+  locale: "en_US",
+  /** Booking page, e.g. a Cal.com or Calendly link. Not supplied yet. */
   booking: {
     url: null as string | null,
     /** true when the booking page allows being shown inside an iframe */
     embed: false,
   },
-  /** Company profiles that belong to you, e.g. { label: "LinkedIn", url: "…" } */
-  profiles: [] as { label: string; url: string }[],
+  /**
+   * Company profiles that belong to you. These are the only profiles rendered in
+   * the footer and listed in structured data. `id` picks the icon.
+   */
+  social: [
+    { id: "linkedin", label: "LinkedIn", url: "https://www.linkedin.com/in/theorbitechsolution/" },
+    { id: "instagram", label: "Instagram", url: "https://www.instagram.com/theorbitechsolution/" },
+    { id: "facebook", label: "Facebook", url: "https://www.facebook.com/profile.php?id=61595882163169" },
+  ] as { id: "linkedin" | "instagram" | "facebook" | "x"; label: string; url: string }[],
   /** Update when you publish. Fixed here because pages are prerendered. */
   copyrightYear: 2026,
+  /** Real date of the last meaningful content update. Drives dateModified and the sitemap. */
+  contentUpdated: "2026-10-27",
 };
 
 export const nav = [
-  { label: "Work", href: "/work" },
   { label: "Services", href: "/services" },
+  { label: "Work", href: "/work" },
   { label: "Studio", href: "/studio" },
   { label: "Contact", href: "/contact" },
 ];
+
+/** Sections of the home page, linked from the header. */
+export const homeAnchors = [
+  { label: "Capabilities", href: "/#capabilities" },
+  { label: "Projects", href: "/#projects" },
+  { label: "Our approach", href: "/#approach" },
+];
+
+/* ─────────────────────────────────────────────────────────────
+ * Search titles and descriptions. Titles are 50–60 characters, descriptions
+ * 150–160, and no two pages share either. Case studies carry their own in
+ * `projects` (seoTitle, seoDescription).
+ * ───────────────────────────────────────────────────────────── */
+
+export const meta = {
+  home: {
+    title: "AI Automation & Web Development | The OrbiTech Solutions",
+    description:
+      "The OrbiTech Solutions is a small studio that builds AI automation, chatbots and websites for businesses. See live demos and get in touch to scope a project.",
+  },
+  services: {
+    title: "AI Automation, Web & Data Services | The OrbiTech Solutions",
+    description:
+      "Six service areas: AI automation and chatbots, data analytics, custom web and SaaS, digital strategy, CRM and workflow automation, and AI e-commerce search.",
+  },
+  work: {
+    title: "AI & Web Projects with Live Demos | The OrbiTech Solutions",
+    description:
+      "Browse four live demos and two private projects from The OrbiTech Solutions: a CRM copilot, property management, AI document chat, AI e-commerce and chatbots.",
+  },
+  studio: {
+    title: "About The OrbiTech Solutions | AI & Web Studio",
+    description:
+      "The OrbiTech Solutions is a small AI automation and web development studio in New York, US, working remotely worldwide. See how it works and the tools it uses.",
+  },
+  contact: {
+    title: "Contact The OrbiTech Solutions | Start a Project",
+    description:
+      "Contact The OrbiTech Solutions to start an AI automation, chatbot or web project. Send a message or email nova@theorbitechsolution.com and we reply by email.",
+  },
+  privacy: {
+    title: "Privacy Policy | The OrbiTech Solutions",
+    description:
+      "What The OrbiTech Solutions collects when you use the contact form on this website, why it is collected, and how to ask for your details to be deleted.",
+  },
+};
 
 /* ─────────────────────────────────────────────────────────────
  * Home page copy
  * ───────────────────────────────────────────────────────────── */
 
 export const home = {
-  headline: "Websites and software, built layer by layer.",
-  lede: "OrbiTech designs the page, builds what sits behind it and looks after it once it is live. Content, structure, behaviour and hosting each get their own attention.",
-  statement:
-    "A website is a stack of decisions: what it says, how it is laid out, how it behaves and where it runs. We make each one on purpose, and show you the result at every step.",
+  /** The H1: says what the company does, in plain words. */
+  headline: "AI automation and web development for growing businesses",
+  /** Supporting line under the H1 */
+  slogan: "Make work smarter. Make growth real.",
   closing: {
     heading: "Have a project in mind?",
-    text: "Tell us what you want to build. We reply by email and can arrange a short call.",
+    text: "Tell us what slows your team down, where customers need faster answers, or which systems should work better together.",
   },
 };
 
 /* ─────────────────────────────────────────────────────────────
- * Services (draft copy carried over and tightened from your old site)
+ * Services: the six areas shown on the home page and on /services.
  * ───────────────────────────────────────────────────────────── */
 
 export const services: Service[] = [
   {
-    id: "websites",
-    title: "Websites",
-    summary: "Marketing and brand sites you can edit yourself.",
+    id: "ai-solutions",
+    number: "01",
+    title: "AI Solutions & Intelligent Automation",
+    heading: "AI automation, chatbots and AI assistants for business",
+    summary:
+      "Design and integrate AI systems that help teams answer questions, automate repeatable work, and make better use of business knowledge.",
+    serviceType: "AI automation, AI chatbot and AI assistant development",
     includes: [
-      "Design and build in Next.js",
-      "A content system your team can edit without a developer",
-      "Performance and accessibility checks before launch",
-      "Structured data and technical SEO",
+      "AI integrations: automation, chatbots, and AI assistants",
+      "WhatsApp business chatbots for customer service and lead capture",
+      "AI agent development",
+      "AI-powered business operations",
+      "AI customer-support systems",
+      "AI sales and marketing assistants",
+      "Knowledge-base and RAG systems",
+      "Semantic search and retrieval",
+      "Intelligent document processing",
+      "Voice AI and multilingual AI solutions",
+      "AI strategy and implementation",
     ],
-    whoFor:
-      "Teams that need a site that loads quickly, reads clearly and doesn’t need a developer for every change to the text.",
-    howWeWork:
-      "We start from the page structure and your real content, design in the browser, and send a working preview link at the end of every two-week cycle.",
   },
   {
-    id: "web-apps",
-    title: "Web apps and SaaS",
-    summary: "Software people log into: accounts, data and the screens around them.",
+    id: "data-analytics",
+    number: "02",
+    title: "Data Science, Analytics & Business Intelligence",
+    heading: "Data analytics and business intelligence dashboards",
+    summary: "Turn business data into clear reporting, usable insights, and better-informed decisions.",
+    serviceType: "Data analytics, business intelligence and dashboard development",
     includes: [
-      "Accounts, roles and permissions",
-      "Subscription billing with Stripe",
-      "Dashboards, reports and exports",
-      "Automated tests for the parts that must not break",
+      "Data analysis and visualization",
+      "Data engineering and pipeline development",
+      "Business intelligence dashboards",
+      "AI-powered analytics and reporting",
+      "Predictive analytics solutions",
+      "Database design and optimization",
+      "Data migration and synchronization",
     ],
-    whoFor:
-      "Founders and teams turning a process or a product idea into software that several people use every day.",
-    howWeWork:
-      "We build the smallest version that proves the idea, put it in front of real users, and grow it from what we learn.",
   },
   {
-    id: "ai",
-    title: "AI automation and assistants",
-    summary: "Language-model tools for repetitive work, with a person checking the result.",
+    id: "software-engineering",
+    number: "03",
+    title: "Software & Digital Product Engineering",
+    heading: "Custom web, SaaS and MVP development",
+    summary: "Build modern digital products, from websites and internal tools to SaaS platforms and MVPs.",
+    serviceType: "Custom web development, SaaS and MVP development, website modernization",
     includes: [
-      "Extracting and sorting information from documents",
-      "Assistants that answer from your own documents and cite them",
-      "A review queue for anything uncertain",
-      "Tracking of accuracy, usage and cost",
+      "Modern website development",
+      "Custom web application development",
+      "E-commerce development",
+      "SaaS product development",
+      "MVP development and rapid prototyping",
+      "API development and third-party integrations",
+      "Internal dashboards and business portals",
+      "Cloud-based business solutions",
+      "Secure business systems",
+      "Role-based access control and audit logging",
+      "Website modernization, technical SEO, and performance optimization",
     ],
-    whoFor:
-      "Teams with repetitive, document-heavy work where a person still needs to approve the outcome.",
-    howWeWork:
-      "We test against your own examples first and only automate the steps that hold up. Everything the system does is logged so it can be reviewed.",
   },
   {
-    id: "integrations",
-    title: "Integrations and backend",
-    summary: "Dependable connections between your tools, and the services behind them.",
+    id: "business-growth",
+    number: "04",
+    title: "Business Growth & Digital Strategy",
+    heading: "Digital strategy and technology consulting",
+    summary:
+      "Connect technology decisions to business goals, customer experience, operational efficiency, and sustainable growth.",
+    serviceType: "Digital transformation and technology consulting",
     includes: [
-      "CRM sync with HubSpot, Salesforce or your own system",
-      "Payment and webhook handling that survives retries",
-      "APIs, queues and scheduled jobs",
-      "Database design in PostgreSQL",
+      "Business growth and scale-up strategy",
+      "Smart solutions for businesses",
+      "Digital transformation consulting",
+      "Technology consulting and architecture",
+      "Business process analysis",
+      "Operational efficiency consulting",
+      "Business workflow optimization",
+      "Conversion-rate optimization",
+      "Customer-experience optimization",
     ],
-    whoFor:
-      "Teams whose tools don’t talk to each other, or whose data has outgrown a spreadsheet.",
-    howWeWork:
-      "We map what moves where before writing code, then build in small steps with tests, so each connection can be checked on its own.",
   },
   {
-    id: "cloud",
-    title: "Cloud and DevOps",
-    summary: "Hosting, deployment and monitoring set up properly, in your own accounts.",
+    id: "business-automation",
+    number: "05",
+    title: "Business Automation & System Integration",
+    heading: "CRM and workflow automation for business",
+    summary:
+      "Reduce repetitive manual work by connecting business tools, customer workflows, and internal processes.",
+    serviceType: "CRM automation, workflow automation and system integration",
     includes: [
-      "Infrastructure written as code",
-      "Automated deployment with preview links",
-      "Error tracking and alerts",
-      "Secrets in a managed vault, least-privilege access",
+      "CRM automation and integrations",
+      "Lead generation and qualification automation",
+      "Business process automation",
+      "Workflow automation",
+      "Appointment scheduling automation",
+      "Email and communication automation",
+      "Data and application integrations",
     ],
-    whoFor:
-      "Teams who want releases to be routine and who need to own their infrastructure.",
-    howWeWork:
-      "Everything is created under accounts you own, documented as we go, and handed over with a walkthrough.",
   },
   {
-    id: "care",
-    title: "Care and maintenance",
-    summary: "Updates, fixes and small improvements after launch.",
+    id: "ai-commerce",
+    number: "06",
+    title: "AI-Powered Commerce & Customer Experience",
+    heading: "AI e-commerce search and product discovery",
+    summary:
+      "Create smoother digital buying journeys with intelligent discovery, responsive support, and tailored experiences.",
+    serviceType: "AI e-commerce development, semantic product search and conversational shopping assistants",
     includes: [
-      "Dependency updates and security patches",
-      "Uptime and error monitoring",
-      "A monthly block of time for improvements",
-      "A named person to contact",
+      "AI-powered e-commerce experiences",
+      "AI product discovery and recommendations",
+      "Conversational shopping assistants",
+      "Customer-support chatbots",
+      "Semantic product search",
+      "Customer-experience optimization",
+      "E-commerce workflow automation",
     ],
-    whoFor:
-      "Anyone who has launched something and doesn’t want it to quietly fall behind.",
-    howWeWork:
-      "Terms, response times and what is covered are written into the proposal before work starts.",
   },
 ];
 
+/** How a project runs. The same five steps appear on the home page and /services. */
 export const process: { title: string; text: string }[] = [
-  {
-    title: "Scoping call",
-    text: "Thirty minutes on the problem, the constraints and the timeline. No preparation needed.",
-  },
-  {
-    title: "Written proposal",
-    text: "Fixed-scope milestones with a price for each, and a plain list of what is out of scope.",
-  },
-  {
-    title: "Two-week build cycles",
-    text: "Every cycle ends with a working preview link and a short review with the people writing the code.",
-  },
-  {
-    title: "Handover",
-    text: "Code, infrastructure accounts and documentation are yours. Ongoing support is optional.",
-  },
+  { title: "Discover", text: "Understand the challenge and current process." },
+  { title: "Define", text: "Agree scope, priorities, and success measures." },
+  { title: "Prototype", text: "Demonstrate the proposed workflow early." },
+  { title: "Build and integrate", text: "Implement the approved solution." },
+  { title: "Validate", text: "Test, improve, and plan future iterations." },
 ];
 
 export const securityPractices: string[] = [
@@ -248,51 +357,70 @@ export const securityPractices: string[] = [
   "A mutual NDA is available before you share anything sensitive.",
 ];
 
+/**
+ * Questions buyers ask, each with a direct answer of 40–60 words that stands on
+ * its own. Shown as plain text on /services. Answers use only what the site
+ * already states; scope decides cost and timing, so none is given.
+ */
 export const faqs: { question: string; answer: string }[] = [
   {
-    question: "Who owns the code and the accounts?",
+    question: "What does AI automation for a business include?",
     answer:
-      "You do. Work happens in your Git organisation and cloud services are set up under your own accounts. Nothing is licensed back to you, and there is no lock-in.",
+      "AI automation uses software, often a language model, to take over repetitive work such as answering common questions, sorting documents, qualifying leads or drafting follow-ups. We scope it around your goals and existing tools. A person can stay in the loop to approve results. The work can cover chatbots, assistants, workflows and integrations.",
   },
   {
-    question: "How long does a project take?",
+    question: "What can a WhatsApp business chatbot do?",
     answer:
-      "It depends on the scope. After a scoping call, the written proposal gives a timeline for each milestone. The estimator on the contact page gives a rough range to plan with.",
+      "A WhatsApp business chatbot answers customer messages on your behalf. Our WhatsApp chatbot concept covers customer service, frequently asked questions, lead capture and hand-off to a person when a question needs one. It suits businesses and online shops that receive the same questions repeatedly. Details of that project are private and shared on request where authorised.",
   },
   {
-    question: "How do you approach security?",
+    question: "What is a knowledge-base (RAG) chatbot, and when does a business need one?",
     answer:
-      "As part of the build, not a phase at the end: least-privilege access, secrets in a vault, dependency audits on every release and a review against the OWASP Top 10 before launch. Formal compliance such as SOC 2, HIPAA or PCI DSS needs its own audit. If you need one, we scope that work with you openly.",
+      "A knowledge-base chatbot, also called a RAG system, answers questions from your own documents instead of general knowledge, and shows which passage it used. A business needs one when staff or customers keep searching long documents for answers. Our AidoChat demo shows this with uploaded documents and answers that cite the page they came from.",
   },
   {
-    question: "Do you support the software after launch?",
+    question: "How does a project run from discovery to launch?",
     answer:
-      "Yes. Every project includes a period for post-launch fixes, and ongoing care plans are available. The terms are written into the proposal.",
+      "A project runs in five steps. Discover: we learn the challenge and current process. Define: we agree scope, priorities and success measures. Prototype: we demonstrate the proposed workflow early. Build and integrate: we implement the approved solution. Validate: we test, improve and plan future iterations. Scope decides how long each step takes.",
   },
   {
-    question: "How will we communicate?",
+    question: "What do we need from a client to start?",
     answer:
-      "Through a shared Slack or Discord channel, a short review at the end of each two-week cycle, and a task board you can see at any time. You talk directly to the people doing the work.",
+      "Tell us what slows your team down, where customers wait for answers, or which tools should work better together. A short description is enough to begin. During Discover we ask about your current process, tools and goals, and in Define we agree scope and success measures before anything is built.",
+  },
+  {
+    question: "What does website modernization and technical SEO cover?",
+    answer:
+      "Website modernization updates an existing site so it loads quickly, works well on phones and is easy for search engines and AI assistants to read. Our work in this area covers technical SEO and performance optimization alongside rebuilding pages where needed. Scope depends on the current site, so we start by reviewing it.",
+  },
+  {
+    question: "How is AI e-commerce product search different from keyword search?",
+    answer:
+      "Keyword search matches the words a shopper types. AI product search reads the meaning, such as an occasion, a need or a budget, and returns products that fit. Our AI E-commerce demo lets visitors type a request like an anniversary gift under a set price and then browse matching collections.",
+  },
+  {
+    question: "What stays confidential in our work?",
+    answer:
+      "Private projects are listed without a public link to respect client and company confidentiality, and are shown only with approved screenshots or a controlled demo. A mutual NDA is available before you share anything sensitive. Work lives in your own repository and your own cloud accounts from the first day.",
   },
 ];
 
 /* ─────────────────────────────────────────────────────────────
- * Work: add one entry per finished project.
- * Three empty slots are included so every page can be reviewed.
+ * Work: one entry per project. Fields that do not apply stay empty and are not shown.
  * ───────────────────────────────────────────────────────────── */
 
+/**
+ * Fields that do not apply are left empty and are not shown on the page: the case
+ * study layout collapses empty client, year, role and stack rows instead of
+ * showing a bracket.
+ */
 const emptyProject = {
-  name: null,
   client: null,
   type: null,
   year: null,
   role: null,
-  summary: null,
-  liveUrl: null,
+  demoNote: null,
   stack: [] as string[],
-  cover: null,
-  desktop: null,
-  mobile: null,
   brief: [] as string[],
   approach: [] as string[],
   results: [] as Project["results"],
@@ -304,8 +432,21 @@ export const projects: Project[] = [
     slug: "orbit-operations",
     name: "Orbit Operations Copilot",
     type: "SaaS",
+    kind: "Live demo",
     summary:
       "A CRM and operations-copilot concept that brings customer relationships, deal pipelines, tasks, analytics, and AI-assisted follow-through into one workspace.",
+    seoTitle: "Orbit Operations Copilot: CRM Demo",
+    seoDescription:
+      "Orbit Operations Copilot is a live demo of a CRM with an AI copilot. It tracks deals and tasks, flags stalled deals and drafts follow-ups for approval.",
+    features: [
+      "A CRM for leads, deals and pipeline stages",
+      "An AI copilot that flags stalled deals and drafts follow-up messages for a person to approve",
+      "A task workspace with owners and deadlines",
+      "Analytics for pipeline value by stage, deal size and team workload",
+      "Role-based access and audit logging",
+    ],
+    serviceId: "business-automation",
+    updated: "2026-10-27",
     liveUrl: "https://orbit-operations.vercel.app/",
     cover: {
       src: "/work/orbit-operations-preview.webp",
@@ -331,8 +472,21 @@ export const projects: Project[] = [
     slug: "property-management",
     name: "Property Management System",
     type: "SaaS",
+    kind: "Live demo",
     summary:
       "A property-operations workspace concept for property/unit information, leasing activity, maintenance requests, payment records, and portfolio visibility.",
+    seoTitle: "Property Management System Demo",
+    seoDescription:
+      "A live demo of a property operations workspace. It brings property and unit details, leasing, maintenance requests and payment records into one dashboard view.",
+    features: [
+      "An overview of properties and units, with occupancy and resident details",
+      "Maintenance requests tracked from intake to vendor resolution",
+      "A leasing pipeline that shows where each prospect stands and upcoming tours",
+      "Payment balances and recorded activity",
+      "A dashboard marked as a sample view, so the figures shown are examples",
+    ],
+    serviceId: "software-engineering",
+    updated: "2026-10-27",
     liveUrl: "https://propertymanagementsystem-six.vercel.app/",
     cover: {
       src: "/work/property-management-preview.webp",
@@ -358,8 +512,22 @@ export const projects: Project[] = [
     slug: "aidochat",
     name: "AidoChat / DocuMind AI",
     type: "AI",
+    kind: "Live demo",
     summary:
-      "An AI document-intelligence experience. The public demo may take a moment to initialize; confirm current features before a client walkthrough.",
+      "An AI document-intelligence demo. Upload documents, ask questions and get answers that cite the page and passage they came from.",
+    seoTitle: "AidoChat: AI Document Chat Demo",
+    seoDescription:
+      "AidoChat is a live demo of AI document chat. Upload PDFs, scans and Word files, ask questions and get answers that cite the page and passage they came from.",
+    features: [
+      "Reads PDFs, scanned images, Word files and tables, with OCR for scans",
+      "Combines keyword search with semantic search",
+      "Answers questions about selected documents and cites the page and highlighted passage",
+      "Can decline to answer when the answer is not in the documents",
+      "Role-based access for admins, editors and viewers",
+    ],
+    demoNote: "Live demo. The first load can take a few seconds.",
+    serviceId: "ai-solutions",
+    updated: "2026-10-27",
     liveUrl: "https://aidochat.vercel.app/",
     cover: {
       src: "/work/aidochat-preview.webp",
@@ -385,8 +553,21 @@ export const projects: Project[] = [
     slug: "ecommerce-experience",
     name: "AI E-commerce Experience",
     type: "Web app",
+    kind: "Live demo",
     summary:
       "An AI-oriented commerce demo featuring natural-language product discovery, product collections, product details, and a luxury storefront experience.",
+    seoTitle: "AI E-commerce Product Search Demo",
+    seoDescription:
+      "A live demo of an AI e-commerce storefront. Visitors search in plain language by occasion, need or budget, and browse collections, filters and product details.",
+    features: [
+      "Natural-language search by occasion, intent and budget",
+      "An AI concierge that suggests gifts and styles",
+      "Collections for jewelry, watches, leather goods, perfume and audio",
+      "Sorting and filters by price band, occasion and stock",
+      "Product detail views",
+    ],
+    serviceId: "ai-commerce",
+    updated: "2026-10-27",
     liveUrl: "https://ecommerceorbitech.vercel.app/",
     cover: {
       src: "/work/ecommerce-preview.webp",
@@ -412,8 +593,20 @@ export const projects: Project[] = [
     slug: "whatsapp-chatbot",
     name: "WhatsApp Business Chatbot",
     type: "AI",
+    kind: "Private project",
     summary:
-      "Custom WhatsApp chatbot concept for business and e-commerce customer service, FAQs, lead capture, and customer hand-off. Link withheld due to client/company privacy.",
+      "Custom WhatsApp chatbot concept for business and e-commerce customer service, FAQs, lead capture, and customer hand-off. The link is withheld for client and company privacy.",
+    seoTitle: "WhatsApp Business Chatbot Concept",
+    seoDescription:
+      "A private concept for a WhatsApp business chatbot that handles customer service questions, FAQs and lead capture, then hands customers to a person when needed.",
+    features: [
+      "Customer service for businesses and online shops",
+      "Answers to frequently asked questions",
+      "Lead capture",
+      "Hand-off to a person",
+    ],
+    serviceId: "ai-solutions",
+    updated: "2026-10-27",
     liveUrl: null,
     cover: {
       src: "/work/whatsapp-chatbot-preview.webp",
@@ -439,8 +632,15 @@ export const projects: Project[] = [
     slug: "bulk-email-agent",
     name: "Bulk Email Agent / Sender",
     type: "AI",
+    kind: "Private project",
     summary:
-      "Bulk email workflow tool concept for sending and managing outreach campaigns. Link withheld due to client/company privacy; present only with approved screenshots or a controlled demo.",
+      "Bulk email workflow tool concept for sending and managing outreach campaigns. The link is withheld for client and company privacy.",
+    seoTitle: "Bulk Email Agent Outreach Concept",
+    seoDescription:
+      "A private concept for a bulk email workflow tool that sends and manages outreach campaigns. There is no public link, and details are shared on request.",
+    features: ["Sending outreach campaigns", "Managing outreach campaigns"],
+    serviceId: "business-automation",
+    updated: "2026-10-27",
     liveUrl: null,
     cover: {
       src: "/work/bulk-email-agent-preview.webp",
@@ -468,8 +668,15 @@ export const projects: Project[] = [
  * ───────────────────────────────────────────────────────────── */
 
 export const studio = {
-  /** The story of how and why the company started. Two or three short paragraphs. */
-  story: [] as string[],
+  /**
+   * The studio in the plain third person, built only from facts the site already
+   * states. Add a founder's story here only when it is real.
+   */
+  about: [
+    "The studio was founded in October 2025. It is based in New York, US, and works with businesses remotely, worldwide.",
+    "It works from the problem outward, not from a tool looking for a use case. Each project starts with the challenge and the current process, agrees scope and success measures, shows a prototype of the proposed workflow early, and then builds, integrates and validates the approved solution.",
+    "Selected work includes four live demos and two private projects. Demos and prototypes are labelled as demos and prototypes, and private work is listed without a public link to respect confidentiality.",
+  ],
   workingAgreements: [
     "You own the code, the repositories and the accounts from the first day.",
     "You see working software every two weeks, not at the end.",
@@ -478,37 +685,11 @@ export const studio = {
   ],
 };
 
-export const team: TeamMember[] = [
-  // The three photos below are dummy stand-ins. Swap `photo` for a real portrait
-  // (and fill in name and role) before launch.
-  {
-    slug: "member-1",
-    name: null,
-    role: null,
-    credentials: [],
-    bio: null,
-    photo: { src: "/team/ceo.jpg", alt: "Portrait of a team member (placeholder photo)", width: 1024, height: 1024 },
-    links: [],
-  },
-  {
-    slug: "member-2",
-    name: null,
-    role: null,
-    credentials: [],
-    bio: null,
-    photo: { src: "/team/eng-lead.jpg", alt: "Portrait of a team member (placeholder photo)", width: 1024, height: 1024 },
-    links: [],
-  },
-  {
-    slug: "member-3",
-    name: null,
-    role: null,
-    credentials: [],
-    bio: null,
-    photo: { src: "/team/ai-lead.jpg", alt: "Portrait of a team member (placeholder photo)", width: 1024, height: 1024 },
-    links: [],
-  },
-];
+/**
+ * Add a person only with their real name, role and bio. The studio page and the
+ * home page show nobody until at least one person is listed here.
+ */
+export const team: TeamMember[] = [];
 
 export const skills: { discipline: string; tools: string[] }[] = [
   {
@@ -560,8 +741,13 @@ export const nextSteps = [
   "A written proposal with a fixed price for each milestone.",
 ];
 
-/** Indicative figures for the estimator. These are placeholders: confirm or replace before launch. */
+/**
+ * Indicative figures for the estimator. These were written as placeholders, so the
+ * estimator is hidden from the contact page until the owner confirms them: set
+ * `confirmed` to true only after checking every price and week count.
+ */
 export const estimator = {
+  confirmed: false,
   projectTypes: [
     { id: "website", name: "Website", basePrice: 5000, baseWeeks: 3, desc: "Brand or marketing site with a CMS.", enquiry: "Website" },
     { id: "saas", name: "Web app or SaaS", basePrice: 12000, baseWeeks: 6, desc: "Multi-user app with billing and teams.", enquiry: "Web app or SaaS" },
@@ -588,14 +774,17 @@ export const estimator = {
  * ───────────────────────────────────────────────────────────── */
 
 export const privacy = {
-  /** How long you keep enquiries, e.g. "12 months". */
+  /**
+   * How long you keep enquiries, e.g. "12 months". Not supplied yet: until it is,
+   * the retention paragraph is left out and /privacy stays out of search results.
+   */
   retention: null as string | null,
   /** Who handles privacy questions: an email address. */
-  contactEmail: null as string | null,
-  /** When this page's text was last reviewed, e.g. "7 October 2026". */
-  updated: null as string | null,
+  contactEmail: "nova@theorbitechsolution.com" as string | null,
+  /** When this page's text was last reviewed. */
+  updated: "27 October 2026" as string | null,
   /** Who delivers the contact-form email. Matches the code; change both if you switch provider. */
   emailProvider: "Resend",
-  /** Where the site is hosted, e.g. "Vercel". */
-  hosting: null as string | null,
+  /** Where the site is hosted. */
+  hosting: "Vercel" as string | null,
 };
