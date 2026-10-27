@@ -4,7 +4,8 @@ import JsonLd from "@/components/JsonLd";
 import LastUpdated from "@/components/LastUpdated";
 import PageIntro from "@/components/PageIntro";
 import WorkIndex from "@/components/WorkIndex";
-import { meta } from "@/content/site";
+import { meta, projectTypes } from "@/content/site";
+import { showcaseProjects } from "@/lib/projects";
 import { staticPages } from "@/lib/pages";
 import { breadcrumbNode, projectListNode, webPageNode, type Crumb } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
@@ -60,7 +61,7 @@ export default function WorkPage() {
       </section>
 
       <section className="wrap" aria-label="Projects">
-        <WorkIndex />
+        <WorkIndex projects={showcaseProjects()} projectTypes={projectTypes} />
       </section>
       <ClosingCta />
     </>

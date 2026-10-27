@@ -3,21 +3,42 @@
 import { useEffect, useId, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import AtAGlance from "@/components/AtAGlance";
-import { home, process as processSteps, projects, services, site, type Project } from "@/content/site";
-import { glanceRows } from "@/lib/glance";
-import { displayHost, isPublished, projectHref, serviceHref } from "@/lib/projects";
+import AtAGlance, { type GlanceRow } from "@/components/AtAGlance";
+import type { Project, Service } from "@/content/site";
+import { displayHost, projectHref, serviceHref } from "@/lib/paths";
 
 const PRIVATE_NOTE = "Private showcase · available on request where authorized";
-
-/** The home page shows every published project, in the order they are listed in content/site.ts. */
-const portfolioProjects = projects.filter(isPublished);
 
 const isPrivate = (project: Project) => !project.liveUrl;
 const tagFor = (project: Project) => project.kind.toUpperCase();
 const domainFor = (project: Project) => (project.liveUrl ? displayHost(project.liveUrl) : "Private project, link withheld");
 
-export default function PortfolioHome() {
+export interface PortfolioHomeProps {
+  siteName: string;
+  /** The two-sentence company definition, shown as the first paragraph */
+  description: string;
+  slogan: string;
+  closingText: string;
+  email: string | null;
+  glanceRows: GlanceRow[];
+  services: Service[];
+  processSteps: { title: string; text: string }[];
+  /** Published projects, in the order they are listed in content/site.ts */
+  projects: Project[];
+}
+
+/** The data comes from the server page as props, so the content file stays out of the browser bundle. */
+export default function PortfolioHome({
+  siteName,
+  description,
+  slogan,
+  closingText,
+  email,
+  glanceRows,
+  services,
+  processSteps,
+  projects: portfolioProjects,
+}: PortfolioHomeProps) {
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
   const [previewProject, setPreviewProject] = useState<Project | null>(null);
   const modulePanelId = useId();
@@ -93,11 +114,11 @@ export default function PortfolioHome() {
       {/* ─────────────────── HERO SECTION ─────────────────── */}
       <div className="wrap hero">
         <div>
-          <div className="eyebrow">{home.slogan}</div>
+          <div className="eyebrow">{slogan}</div>
           <h1>
             AI automation and web development <span className="gradient">for growing businesses</span>
           </h1>
-          <p>{site.description}</p>
+          <p>{description}</p>
           <div className="actions">
             <a className="btn btn-primary" href="#projects">
               Explore live projects <span aria-hidden="true">↗</span>
@@ -120,7 +141,7 @@ export default function PortfolioHome() {
       </div>
 
       {/* ─────────────────── AT A GLANCE ─────────────────── */}
-      <AtAGlance id="glance-title" title={`${site.name} at a glance`} rows={glanceRows} />
+      <AtAGlance id="glance-title" title={`${siteName} at a glance`} rows={glanceRows} />
 
       {/* ─────────────────── CAPABILITIES SECTION ─────────────────── */}
       <section id="capabilities" className="wrap">
@@ -349,7 +370,7 @@ export default function PortfolioHome() {
               <br />
               into a practical solution.
             </h2>
-            <p>{home.closing.text}</p>
+            <p>{closingText}</p>
           </div>
           <Link className="btn btn-primary" href="/contact">
             Start a conversation <span aria-hidden="true">↗</span>
@@ -396,7 +417,7 @@ export default function PortfolioHome() {
                   </a>
                 ) : (
                   <a
-                    href={`mailto:${site.email}?subject=Private%20Demo%20Request`}
+                    href={`mailto:${email ?? ""}?subject=Private%20Demo%20Request`}
                     className="modal-btn-action"
                   >
                     Request Demo ↗

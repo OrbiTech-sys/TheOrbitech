@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Project } from "@/content/site";
 import ProjectFrame from "@/components/ProjectFrame";
-import { projectHref } from "@/lib/projects";
+import { projectHref } from "@/lib/paths";
 
 interface WorkCardProps {
   project: Project;

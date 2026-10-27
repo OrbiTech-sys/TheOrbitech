@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { site } from "@/content/site";
+import { homeAnchors, nav, site } from "@/content/site";
 import { siteUrl } from "@/lib/site-config";
 import "../tokens.css";
 import "./globals.css";
@@ -51,7 +51,7 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        <Navbar />
+        <Navbar links={[...nav, ...homeAnchors]} siteName={site.name} />
         <main id="main" tabIndex={-1}>
           {children}
         </main>

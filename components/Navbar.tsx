@@ -3,12 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { homeAnchors, nav, site } from "@/content/site";
 
 /** A route link is "current" on its own page and on any page below it, e.g. /work/aidochat. */
 const isCurrent = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
-export default function Navbar() {
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+/** Links and the brand name come from the server layout, so the content file stays out of the browser bundle. */
+export default function Navbar({ links, siteName }: { links: NavLink[]; siteName: string }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -20,12 +25,10 @@ export default function Navbar() {
     setMobileMenuOpen(false);
   };
 
-  const links = [...nav, ...homeAnchors];
-
   return (
     <header className="portfolio-header">
       <div className="wrap nav">
-        <Link className="brand" href="/" aria-label={`${site.name} home`} onClick={closeMenu}>
+        <Link className="brand" href="/" aria-label={`${siteName} home`} onClick={closeMenu}>
           <span className="brand-mark" aria-hidden="true">
             <span>O</span>
           </span>

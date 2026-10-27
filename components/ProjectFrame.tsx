@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { Img } from "@/content/site";
-import { displayHost } from "@/lib/projects";
+import { displayHost } from "@/lib/paths";
 
 interface ProjectFrameProps {
   image: Img | null;
