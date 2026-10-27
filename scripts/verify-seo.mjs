@@ -6,6 +6,7 @@
  *
  * Exits with 1 if any check fails. No dependencies: plain fetch and regular expressions.
  */
+/* eslint-disable @typescript-eslint/no-unused-expressions -- each check reads as `condition ? ok() : fail()` */
 
 const base = (process.argv[2] || "http://localhost:3000").replace(/\/$/, "");
 const origin = "https://theorbitechsolution.com";
