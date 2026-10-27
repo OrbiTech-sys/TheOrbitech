@@ -1164,3 +1164,147 @@ footer {
     transform: none;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+ * SEO pass: navigation state, links on cards, footer, glance block
+ * ───────────────────────────────────────────────────────────── */
+
+.nav-links a[aria-current="page"],
+.mobile-menu-drawer a[aria-current="page"] {
+  color: var(--text);
+  box-shadow: 0 2px 0 var(--cyan);
+}
+
+.hero h1 {
+  /* The H1 now states what the company does, so it is a little longer than the old slogan. */
+  font-size: clamp(36px, 5.2vw, 62px);
+}
+
+.hero .eyebrow {
+  max-width: 560px;
+}
+
+ol.process {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Capability modules: the panel holds the list and a link to the services page */
+.module-details-inner {
+  overflow: hidden;
+  min-height: 0;
+  visibility: hidden;
+  transition: visibility 0s 0.35s;
+}
+
+.module.open .module-details-inner {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.module-link {
+  display: block;
+  padding: 0 28px 0 90px;
+  color: var(--cyan);
+  font-weight: 700;
+  font-size: 13.5px;
+}
+
+.module-link:hover {
+  text-decoration: underline;
+}
+
+.module.open .module-link {
+  padding-top: 4px;
+  padding-bottom: 24px;
+}
+
+.module.open .module-details ul {
+  padding-bottom: 14px;
+}
+
+/* Project cards: case study first, live demo second */
+.project-actions {
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.project-link:hover {
+  text-decoration: underline;
+}
+
+.project-link--demo {
+  color: var(--muted);
+}
+
+.demo-note {
+  color: #7f8ca5;
+  font-size: 12.5px;
+  margin: -6px 0 12px;
+}
+
+/* Footer */
+.site-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 0.7fr);
+  align-items: start;
+  gap: 28px 40px;
+}
+
+.site-footer .footer-about p {
+  margin: 8px 0 0;
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.site-footer a {
+  color: var(--muted);
+}
+
+.site-footer a:hover {
+  color: var(--cyan);
+}
+
+.footer-social {
+  list-style: none;
+  display: flex;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+}
+
+.footer-social a {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+
+.footer-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  font-weight: 650;
+  font-size: 14px;
+}
+
+.footer-legal {
+  grid-column: 1 / -1;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 560px) {
+  .site-footer {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .site-footer .footer-legal {
+    margin-top: 0;
+  }
+}
