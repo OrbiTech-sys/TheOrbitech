@@ -101,6 +101,14 @@ Commit `13e3f7e` ("Update project") switched the layout from `site.css` and `pag
 
 `app/inner.css` styles these pages using only the variables in `portfolio.css`: navy background, cyan and violet accents, the same panels, radii and buttons. The closing call to action reuses the home page's `.cta` panel. The H1s are visible. The 3D scene on `/services` (three.js) was dropped with the old process section, which also removed a large script from that page. Please look at the pages; this is the one place where the visible design changed beyond copy.
 
+## Update, 28 October 2026: landing page previews
+
+- The four live-demo previews now show each demo's current landing page, captured on 28 October 2026 at 1440×900 and saved at 1200×750 (40 to 79 KB each): `public/work/orbit-operations-landing.webp`, `property-management-landing.webp`, `aidochat-landing.webp` and `ecommerce-landing.webp`. The AidoChat preview showed its sign-in screen before; it now shows the landing page.
+- The files have new names, so no browser or CDN can keep serving the old picture from its image cache (browsers cache optimised images for 4 hours).
+- The 1200×630 social preview JPEGs for those four case studies were regenerated. Their `updated` date is now 28 October 2026, which flows into the sitemap, `dateModified` and the "Last updated" line.
+- `scripts/capture-previews.mjs` repeats the capture whenever a demo changes.
+- Verified: build passes, all 150 `verify-seo` checks pass, and the home grid and case-study heroes show the new images at 1440 px.
+
 ## Before and after: titles, descriptions, canonicals, H1s
 
 Before is the current `main` (commit `13e3f7e`), built locally. After is this branch.
