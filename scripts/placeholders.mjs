@@ -7,12 +7,13 @@
  */
 import * as content from "../content/site.ts";
 
+// Fields that pages leave out when empty. Only fill them with real information.
 const OPTIONAL = [
-  /^site\.profiles$/,
-  /^site\.booking\.embed$/,
+  /^site\.legalName$/,
+  /^site\.booking\.(url|embed)$/,
   /^testimonials$/,
-  /^projects\[\d+\]\.results$/,
-  /^privacy\.hosting$/,
+  /^team$/,
+  /^projects\[\d+\]\.(client|year|role|demoNote|liveUrl|stack|brief|approach|results)$/,
 ];
 
 const todo = [];
@@ -20,7 +21,7 @@ const optional = [];
 
 function walk(value, path) {
   if (value === null) {
-    todo.push(path);
+    (OPTIONAL.some((re) => re.test(path)) ? optional : todo).push(path);
   } else if (Array.isArray(value)) {
     if (value.length === 0) (OPTIONAL.some((re) => re.test(path)) ? optional : todo).push(path);
     value.forEach((item, i) => walk(item, `${path}[${i}]`));
@@ -62,10 +63,10 @@ console.log("\nOptional: leave empty if you have nothing real to put here");
 for (const p of optional) console.log(`    - ${p}`);
 
 console.log("\nAlso confirm (values exist but were written for you, not by you)");
-console.log("    - estimator: all prices and week counts are indicative placeholders");
-console.log("    - services, process, faqs, securityPractices, studio.workingAgreements: draft copy carried over from the old site");
-console.log("    - home.headline, home.lede, home.statement, home.closing: draft positioning copy");
-console.log("    - site.url: carried over from the old metadata");
+console.log("    - estimator: prices and week counts are placeholders; it stays hidden until estimator.confirmed is true");
+console.log("    - services, faqs, meta, studio.about: written in the SEO pass from what the site states; confirm the wording");
+console.log("    - studio.workingAgreements, nextSteps: two-week cycles and per-milestone prices are stated; confirm they are true");
+console.log("    - securityPractices: draft copy carried over from the old site");
 console.log("    - skills: carried over from the old site's tech list");
 
 console.log(`\n${todo.length} empty field(s) to fill, ${optional.length} optional.`);
