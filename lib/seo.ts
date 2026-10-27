@@ -1,81 +1,63 @@
 import type { Metadata } from "next";
-import { site, type Project } from "@/content/site";
+import { site } from "@/content/site";
+import { absoluteUrl, siteConfig, socialUrl } from "@/lib/site-config";
 
-export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || site.url).replace(/\/$/, "");
+export { absoluteUrl, siteUrl } from "@/lib/site-config";
 
-export const absoluteUrl = (path = "/") => new URL(path, `${siteUrl}/`).toString();
+export interface SocialImage {
+  /** Path under /public or an absolute URL */
+  url: string;
+  width: number;
+  height: number;
+  alt: string;
+}
 
-export const DEFAULT_OG_IMAGE = {
+export const DEFAULT_OG_IMAGE: SocialImage = {
   url: "/og/default.png",
   width: 1200,
   height: 630,
-  alt: "OrbiTech: websites and software, built layer by layer",
+  alt: `${site.name}: ${site.tagline}`,
 };
 
 interface PageMetaInput {
-  /** Short page title. The root layout adds "— OrbiTech". */
+  /** The complete <title>, brand included. Written per page, 50–60 characters. */
   title: string;
+  /** 150–160 characters, unique per page */
   description: string;
   path: string;
-  image?: { url: string; width: number; height: number; alt: string };
+  image?: SocialImage;
+  /** Keeps the page out of search results. Links on it are still followed. */
   noindex?: boolean;
 }
 
+const asAbsolute = (url: string) => (/^https?:\/\//.test(url) ? url : absoluteUrl(url));
+
+/** Title, description, canonical, Open Graph and Twitter tags for one page. */
 export function pageMetadata({ title, description, path, image = DEFAULT_OG_IMAGE, noindex }: PageMetaInput): Metadata {
+  const url = absoluteUrl(path);
+  const picture = { ...image, url: asAbsolute(image.url) };
+  const xProfile = socialUrl("x");
+
   return {
-    title,
+    title: { absolute: title },
     description,
-    alternates: { canonical: path },
-    robots: noindex ? { index: false, follow: false } : undefined,
+    alternates: { canonical: url },
+    robots: noindex ? { index: false, follow: true } : undefined,
     openGraph: {
-      title: `${title} — ${site.name}`,
+      title,
       description,
-      url: path,
+      url,
       siteName: site.name,
-      locale: "en_US",
+      locale: siteConfig.locale,
       type: "website",
-      images: [image],
+      images: [picture],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} — ${site.name}`,
+      title,
       description,
-      images: [image.url],
+      images: [{ url: picture.url, alt: picture.alt }],
+      ...(xProfile ? { site: `@${new URL(xProfile).pathname.replace(/\//g, "")}` } : {}),
     },
   };
-}
-
-type JsonLd = Record<string, unknown>;
-
-/** Only includes details you have actually provided. */
-export function organizationLd(): JsonLd {
-  const ld: JsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: site.legalName ?? site.name,
-    url: siteUrl,
-    description: site.description,
-  };
-  if (site.email) ld.email = site.email;
-  if (site.location) ld.address = site.location;
-  if (site.profiles.length) ld.sameAs = site.profiles.map((p) => p.url);
-  return ld;
-}
-
-export function creativeWorkLd(project: Project, path: string): JsonLd | null {
-  if (!project.name) return null;
-  const ld: JsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CreativeWork",
-    name: project.name,
-    url: absoluteUrl(path),
-    creator: { "@type": "Organization", name: site.name, url: siteUrl },
-  };
-  if (project.summary) ld.description = project.summary;
-  if (project.year) ld.dateCreated = project.year;
-  if (project.client) ld.sourceOrganization = { "@type": "Organization", name: project.client };
-  if (project.liveUrl) ld.sameAs = project.liveUrl;
-  if (project.cover) ld.image = absoluteUrl(project.cover.src);
-  if (project.stack.length) ld.keywords = project.stack.join(", ");
-  return ld;
 }
