@@ -1,8 +1,8 @@
 # SEO, AEO and GEO changelog
 
-Branch `seo-aeo-geo`, 27 October 2026. Not pushed, merged or deployed.
+Branch `seo-aeo-geo`, 27 October 2026. Merged into `main` with the Next.js 16.4.1 upgrade and deployed to production on 28 October 2026 (commit `060ada2`).
 
-Every change below was checked against a local production build (`next build` + `next start`). The live site has not been checked yet; the commands for that are at the end of `OWNER-TASKS.md`.
+Every change below was checked against a local production build (`next build` + `next start`). After deployment, `node scripts/verify-seo.mjs https://theorbitechsolution.com` passed all 150 checks on the live site.
 
 ## Summary
 

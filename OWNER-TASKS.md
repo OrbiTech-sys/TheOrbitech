@@ -119,9 +119,9 @@ The demos live on `*.vercel.app`, so links to them do not strengthen your domain
 - `components/Hero.tsx`, `ProjectsSection.tsx`, `ServicesSection.tsx`, `Wordmark.tsx`, `components/hero/` and `components/scenes/` belong to the previous design and are unused.
 - The Playwright specs in `tests/e2e/` still describe the previous design: old titles, `/work/project-3`, `header.nav`. They were already out of date before this branch, and were not run.
 
-## 11. Next.js security advisory
+## 11. Next.js security advisory: resolved (28 October 2026)
 
-Every `next build` on this project, on `main` too, first stops with **"Your version of Next.js is affected by a known security vulnerability. We strongly recommend you upgrade Next.js."** It continues when the command is run again. The project is on Next.js 16.4.0. The advisory is listed at <https://registry.npmjs.org/-/npm/v1/security/advisories/bulk>. Upgrading is a separate change to test on its own branch; it was not done here.
+Next.js 16.4.0 was affected by a known security advisory, and every first `next build` stopped to say so. The project is now on **16.4.1** (commit `f4cdddf`, deployed with `060ada2`), and the build passes on its first run. No action needed.
 
 ## After deployment: repeat the checks against the live site
 
