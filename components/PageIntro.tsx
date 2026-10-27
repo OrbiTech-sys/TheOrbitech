@@ -1,27 +1,24 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import type { Crumb } from "@/lib/schema";
 
-const step = (i: number) => ({ "--i": i }) as CSSProperties;
-
-/** Opening block of an inner page: a large heading and one short paragraph. */
+/** Opening block of an inner page: breadcrumbs, the one H1, and a short paragraph. */
 export default function PageIntro({
   title,
   lede,
+  crumbs,
   children,
 }: {
   title: ReactNode;
   lede?: ReactNode;
+  crumbs?: Crumb[];
   children?: ReactNode;
 }) {
   return (
     <header className="wrap page-intro">
-      <h1 className="page-intro__title reveal" style={step(0)}>
-        {title}
-      </h1>
-      {lede && (
-        <p className="page-intro__lede reveal" style={step(1)}>
-          {lede}
-        </p>
-      )}
+      {crumbs && <Breadcrumbs crumbs={crumbs} />}
+      <h1 className="page-intro__title">{title}</h1>
+      {lede && <p className="page-intro__lede">{lede}</p>}
       {children}
     </header>
   );

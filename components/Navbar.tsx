@@ -1,10 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { homeAnchors, nav, site } from "@/content/site";
+
+/** A route link is "current" on its own page and on any page below it, e.g. /work/aidochat. */
+const isCurrent = (pathname: string, href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleMenu = () => {
     setMobileMenuOpen((prev) => !prev);
@@ -14,10 +20,12 @@ export default function Navbar() {
     setMobileMenuOpen(false);
   };
 
+  const links = [...nav, ...homeAnchors];
+
   return (
     <header className="portfolio-header">
       <div className="wrap nav">
-        <Link className="brand" href="/#top" aria-label="The OrbiTech Solutions home" onClick={closeMenu}>
+        <Link className="brand" href="/" aria-label={`${site.name} home`} onClick={closeMenu}>
           <span className="brand-mark" aria-hidden="true">
             <span>O</span>
           </span>
@@ -27,16 +35,22 @@ export default function Navbar() {
         </Link>
 
         <nav className="nav-links" aria-label="Primary">
-          <a href="/#capabilities">Capabilities</a>
-          <a href="/#projects">Projects</a>
-          <a href="/#approach">Our approach</a>
-          <a href="/#contact">Contact</a>
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={isCurrent(pathname, link.href) ? "page" : undefined}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         <button
           type="button"
           className="mobile-toggle"
           aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-menu"
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
           onClick={toggleMenu}
         >
@@ -44,20 +58,18 @@ export default function Navbar() {
         </button>
       </div>
 
-      <div className={`mobile-menu-drawer ${mobileMenuOpen ? "open" : ""}`}>
-        <a href="/#capabilities" onClick={closeMenu}>
-          Capabilities
-        </a>
-        <a href="/#projects" onClick={closeMenu}>
-          Projects
-        </a>
-        <a href="/#approach" onClick={closeMenu}>
-          Our approach
-        </a>
-        <a href="/#contact" onClick={closeMenu}>
-          Contact
-        </a>
-      </div>
+      <nav id="mobile-menu" className={`mobile-menu-drawer ${mobileMenuOpen ? "open" : ""}`} aria-label="Mobile">
+        {links.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            onClick={closeMenu}
+            aria-current={isCurrent(pathname, link.href) ? "page" : undefined}
+          >
+            {link.label}
+          </Link>
+        ))}
+      </nav>
     </header>
   );
 }
