@@ -62,9 +62,9 @@ Copilot draws on the Bing index, and some other AI search products rely on it to
 2. Submit `https://theorbitechsolution.com/sitemap.xml`.
 3. Optional: **IndexNow**. Bing Webmaster Tools can generate a key. Using it means adding a key file to `public/` and pinging after each deploy. Ask for this as a separate change if you want it; it is not in this branch.
 
-## 5. Decide the AI training-crawler policy
+## 5. AI training-crawler policy: decided, allow (27 October 2026)
 
-Today `robots.txt` has one open rule for all crawlers. Nothing changes until you decide.
+You chose to keep allowing training crawlers. `robots.txt` keeps one open rule for all crawlers, and no change is needed. The notes below are kept for reference if you revisit the decision.
 
 - **Answer and search crawlers** stay allowed in every option: Googlebot, Bingbot, OAI-SearchBot, ChatGPT-User, PerplexityBot, ClaudeBot and Claude-SearchBot. They decide whether assistants can find and cite the site.
 - **Training-only crawlers** are the open question: GPTBot (OpenAI), Google-Extended (Gemini training), CCBot (Common Crawl).
