@@ -1190,6 +1190,16 @@ ol.process {
   padding: 0;
 }
 
+/* The header has seven links now, so the menu button takes over below laptop width. */
+@media (max-width: 1024px) {
+  .nav-links {
+    display: none;
+  }
+  .mobile-toggle {
+    display: inline-flex;
+  }
+}
+
 /* Capability modules: the panel holds the list and a link to the services page */
 .module-details-inner {
   overflow: hidden;
