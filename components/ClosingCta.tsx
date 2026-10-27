@@ -1,33 +1,27 @@
 import Link from "next/link";
 import BookingLink from "@/components/BookingLink";
-import { Pending } from "@/components/Pending";
-import { home, site } from "@/content/site";
+import { home, privacy, site } from "@/content/site";
 
+/** The closing call to action on inner pages. It reuses the home page's CTA panel. */
 export default function ClosingCta() {
+  const email = site.email ?? privacy.contactEmail;
   return (
-    <section className="section section--close" aria-labelledby="close-title">
-      <div className="wrap close">
-        <h2 id="close-title" className="close__title">
-          {home.closing.heading}
-        </h2>
-        <div className="close__side">
-          <p className="close__text">{home.closing.text}</p>
-          <div className="close__actions">
-            <Link href="/contact" className="btn btn--accent">
-              Start a project
-            </Link>
-            <BookingLink className="btn btn--outline">Book a 30-minute call</BookingLink>
-          </div>
-          <p className="close__mail">
-            Or write to{" "}
-            {site.email ? (
-              <a href={`mailto:${site.email}`} className="ulink">
-                {site.email}
-              </a>
-            ) : (
-              <Pending>Email address</Pending>
-            )}
-          </p>
+    <section className="wrap" aria-labelledby="close-title">
+      <div className="cta">
+        <div>
+          <h2 id="close-title">{home.closing.heading}</h2>
+          <p>{home.closing.text}</p>
+          {email && (
+            <p className="close-mail">
+              Or write to <a href={`mailto:${email}`}>{email}</a>
+            </p>
+          )}
+        </div>
+        <div className="cta-actions">
+          <Link href="/contact" className="btn btn-primary">
+            Start a project <span aria-hidden="true">↗</span>
+          </Link>
+          <BookingLink className="btn">Book a 30-minute call</BookingLink>
         </div>
       </div>
     </section>

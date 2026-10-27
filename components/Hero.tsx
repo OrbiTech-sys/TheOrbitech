@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import BookingLink from "@/components/BookingLink";
 import HeroScene from "@/components/hero/HeroScene";
-import { home } from "@/content/site";
+import { home, site } from "@/content/site";
 
 const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
@@ -22,7 +22,7 @@ export default function Hero() {
             {home.headline}
           </h1>
           <p className="hero__lede reveal" style={step(1)}>
-            {home.lede}
+            {site.description}
           </p>
           <div className="hero__actions reveal" style={step(2)}>
             <Link href="/contact" className="btn btn--accent">

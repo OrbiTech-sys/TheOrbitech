@@ -1,201 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import AtAGlance from "@/components/AtAGlance";
+import { home, process as processSteps, projects, services, site, type Project } from "@/content/site";
+import { glanceRows } from "@/lib/glance";
+import { displayHost, isPublished, projectHref, serviceHref } from "@/lib/projects";
 
-interface ProjectItem {
-  id: string;
-  index: string;
-  title: string;
-  tag: string;
-  isPrivate: boolean;
-  domain: string;
-  description: string;
-  liveUrl?: string;
-  previewImage: string;
-  note?: string;
-}
+const PRIVATE_NOTE = "Private showcase · available on request where authorized";
 
-const portfolioProjects: ProjectItem[] = [
-  {
-    id: "orbit-operations",
-    index: "001",
-    title: "Orbit Operations Copilot",
-    tag: "LIVE DEMO",
-    isPrivate: false,
-    domain: "orbit-operations.vercel.app",
-    description:
-      "A CRM and operations-copilot concept that brings customer relationships, deal pipelines, tasks, analytics, and AI-assisted follow-through into one workspace.",
-    liveUrl: "https://orbit-operations.vercel.app",
-    previewImage: "/work/orbit-operations-preview.webp",
-  },
-  {
-    id: "property-management",
-    index: "002",
-    title: "Property Management System",
-    tag: "LIVE DEMO",
-    isPrivate: false,
-    domain: "propertymanagementsystem-six.vercel.app",
-    description:
-      "A property-operations workspace concept for property/unit information, leasing activity, maintenance requests, payment records, and portfolio visibility.",
-    liveUrl: "https://propertymanagementsystem-six.vercel.app",
-    previewImage: "/work/property-management-preview.webp",
-  },
-  {
-    id: "aidochat",
-    index: "003",
-    title: "AidoChat / DocuMind AI",
-    tag: "LIVE DEMO",
-    isPrivate: false,
-    domain: "aidochat.vercel.app",
-    description:
-      "An AI document-intelligence experience. The public demo may take a moment to initialize; confirm current features before a client walkthrough.",
-    liveUrl: "https://aidochat.vercel.app",
-    previewImage: "/work/aidochat-preview.webp",
-  },
-  {
-    id: "ecommerce-experience",
-    index: "004",
-    title: "AI E-commerce Experience",
-    tag: "LIVE DEMO",
-    isPrivate: false,
-    domain: "ecommerceorbitech.vercel.app",
-    description:
-      "An AI-oriented commerce demo featuring natural-language product discovery, product collections, product details, and a luxury storefront experience.",
-    liveUrl: "https://ecommerceorbitech.vercel.app",
-    previewImage: "/work/ecommerce-preview.webp",
-  },
-  {
-    id: "whatsapp-chatbot",
-    index: "005",
-    title: "WhatsApp Business Chatbot",
-    tag: "PRIVATE PROJECT",
-    isPrivate: true,
-    domain: "internal.orbitech.sys/whatsapp-bot",
-    description:
-      "Custom WhatsApp chatbot concept for business and e-commerce customer service, FAQs, lead capture, and customer hand-off. Link withheld due to client/company privacy.",
-    previewImage: "/work/whatsapp-chatbot-preview.webp",
-    note: "Private showcase · available on request where authorized",
-  },
-  {
-    id: "bulk-email-agent",
-    index: "006",
-    title: "Bulk Email Agent / Sender",
-    tag: "PRIVATE PROJECT",
-    isPrivate: true,
-    domain: "internal.orbitech.sys/email-agent",
-    description:
-      "Bulk email workflow tool concept for sending and managing outreach campaigns. Link withheld due to client/company privacy; present only with approved screenshots or a controlled demo.",
-    previewImage: "/work/bulk-email-agent-preview.webp",
-    note: "Private showcase · available on request where authorized",
-  },
-];
+/** The home page shows every published project, in the order they are listed in content/site.ts. */
+const portfolioProjects = projects.filter(isPublished);
 
-const capabilityModules = [
-  {
-    number: "01",
-    title: "AI Solutions & Intelligent Automation",
-    subtitle:
-      "Design and integrate AI systems that help teams answer questions, automate repeatable work, and make better use of business knowledge.",
-    items: [
-      "AI integrations: automation, chatbots, and AI assistants",
-      "AI agent development",
-      "AI-powered business operations",
-      "AI customer-support systems",
-      "AI sales and marketing assistants",
-      "Knowledge-base and RAG systems",
-      "Semantic search and retrieval",
-      "Intelligent document processing",
-      "Voice AI and multilingual AI solutions",
-      "AI strategy and implementation",
-    ],
-  },
-  {
-    number: "02",
-    title: "Data Science, Analytics & Business Intelligence",
-    subtitle:
-      "Turn business data into clear reporting, usable insights, and better-informed decisions.",
-    items: [
-      "Data analysis and visualization",
-      "Data engineering and pipeline development",
-      "Business intelligence dashboards",
-      "AI-powered analytics and reporting",
-      "Predictive analytics solutions",
-      "Database design and optimization",
-      "Data migration and synchronization",
-    ],
-  },
-  {
-    number: "03",
-    title: "Software & Digital Product Engineering",
-    subtitle:
-      "Build modern digital products—from websites and internal tools to SaaS platforms and MVPs.",
-    items: [
-      "Modern website development",
-      "Custom web application development",
-      "E-commerce development",
-      "SaaS product development",
-      "MVP development and rapid prototyping",
-      "API development and third-party integrations",
-      "Internal dashboards and business portals",
-      "Cloud-based business solutions",
-      "Secure business systems",
-      "Role-based access control and audit logging",
-      "Website modernization, technical SEO, and performance optimization",
-    ],
-  },
-  {
-    number: "04",
-    title: "Business Growth & Digital Strategy",
-    subtitle:
-      "Connect technology decisions to business goals, customer experience, operational efficiency, and sustainable growth.",
-    items: [
-      "Business growth and scale-up strategy",
-      "Smart solutions for businesses",
-      "Digital transformation consulting",
-      "Technology consulting and architecture",
-      "Business process analysis",
-      "Operational efficiency consulting",
-      "Business workflow optimization",
-      "Conversion-rate optimization",
-      "Customer-experience optimization",
-    ],
-  },
-  {
-    number: "05",
-    title: "Business Automation & System Integration",
-    subtitle:
-      "Reduce repetitive manual work by connecting business tools, customer workflows, and internal processes.",
-    items: [
-      "CRM automation and integrations",
-      "Lead generation and qualification automation",
-      "Business process automation",
-      "Workflow automation",
-      "Appointment scheduling automation",
-      "Email and communication automation",
-      "Data and application integrations",
-    ],
-  },
-  {
-    number: "06",
-    title: "AI-Powered Commerce & Customer Experience",
-    subtitle:
-      "Create smoother digital buying journeys with intelligent discovery, responsive support, and tailored experiences.",
-    items: [
-      "AI-powered e-commerce experiences",
-      "AI product discovery and recommendations",
-      "Conversational shopping assistants",
-      "Customer-support chatbots",
-      "Semantic product search",
-      "Customer-experience optimization",
-      "E-commerce workflow automation",
-    ],
-  },
-];
+const isPrivate = (project: Project) => !project.liveUrl;
+const tagFor = (project: Project) => project.kind.toUpperCase();
+const domainFor = (project: Project) => (project.liveUrl ? displayHost(project.liveUrl) : "Private project, link withheld");
 
 export default function PortfolioHome() {
   const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
-  const [previewProject, setPreviewProject] = useState<ProjectItem | null>(null);
+  const [previewProject, setPreviewProject] = useState<Project | null>(null);
+  const modulePanelId = useId();
 
   // IntersectionObserver & scroll reveal handler
   useEffect(() => {
@@ -256,10 +81,10 @@ export default function PortfolioHome() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [previewProject]);
 
-  const toggleModule = (moduleNumber: string) => {
+  const toggleModule = (moduleId: string) => {
     setOpenModules((prev) => ({
       ...prev,
-      [moduleNumber]: !prev[moduleNumber],
+      [moduleId]: !prev[moduleId],
     }));
   };
 
@@ -268,23 +93,17 @@ export default function PortfolioHome() {
       {/* ─────────────────── HERO SECTION ─────────────────── */}
       <div className="wrap hero">
         <div>
-          <div className="eyebrow">AI • Software • Data • Growth</div>
+          <div className="eyebrow">{home.slogan}</div>
           <h1>
-            Make work smarter.
-            <br />
-            <span className="gradient">Make growth real.</span>
+            AI automation and web development <span className="gradient">for growing businesses</span>
           </h1>
-          <p>
-            The OrbiTech Solutions builds practical AI experiences, modern digital
-            products, connected business systems, and data-led workflows that help
-            teams work with greater clarity.
-          </p>
+          <p>{site.description}</p>
           <div className="actions">
             <a className="btn btn-primary" href="#projects">
-              Explore live projects <span>↗</span>
+              Explore live projects <span aria-hidden="true">↗</span>
             </a>
             <a className="btn" href="#capabilities">
-              Explore capabilities ↓
+              Explore capabilities <span aria-hidden="true">↓</span>
             </a>
           </div>
         </div>
@@ -299,6 +118,9 @@ export default function PortfolioHome() {
           <span className="float-label fl4">Digital Products</span>
         </div>
       </div>
+
+      {/* ─────────────────── AT A GLANCE ─────────────────── */}
+      <AtAGlance id="glance-title" title={`${site.name} at a glance`} rows={glanceRows} />
 
       {/* ─────────────────── CAPABILITIES SECTION ─────────────────── */}
       <section id="capabilities" className="wrap">
@@ -319,36 +141,38 @@ export default function PortfolioHome() {
         </div>
 
         <div className="module-list">
-          {capabilityModules.map((module) => {
-            const isOpen = Boolean(openModules[module.number]);
+          {services.map((module) => {
+            const isOpen = Boolean(openModules[module.id]);
+            const panelId = `${modulePanelId}-${module.id}`;
             return (
-              <article
-                key={module.number}
-                className={`module ${isOpen ? "open" : ""}`}
-                tabIndex={0}
-                aria-expanded={isOpen}
-              >
+              <article key={module.id} className={`module ${isOpen ? "open" : ""}`}>
                 <button
                   className="module-head"
                   type="button"
                   aria-expanded={isOpen}
-                  onClick={() => toggleModule(module.number)}
+                  aria-controls={panelId}
+                  onClick={() => toggleModule(module.id)}
                 >
                   <span className="module-number">{module.number}</span>
                   <span className="module-title-wrap">
                     <strong>{module.title}</strong>
-                    <small>{module.subtitle}</small>
+                    <small>{module.summary}</small>
                   </span>
                   <span className="module-toggle" aria-hidden="true">
                     ＋
                   </span>
                 </button>
-                <div className="module-details">
-                  <ul>
-                    {module.items.map((item, idx) => (
-                      <li key={idx}>{item}</li>
-                    ))}
-                  </ul>
+                <div id={panelId} className="module-details" role="region" aria-label={module.title}>
+                  <div className="module-details-inner">
+                    <ul>
+                      {module.includes.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                    <Link className="module-link" href={serviceHref(module)}>
+                      {module.heading}: details on the services page <span aria-hidden="true">→</span>
+                    </Link>
+                  </div>
                 </div>
               </article>
             );
@@ -375,97 +199,91 @@ export default function PortfolioHome() {
         </div>
 
         <div className="project-grid">
-          {portfolioProjects.map((project) => (
-            <article key={project.id} className="project-card">
-              <div className="project-top">
-                <span className="project-index">{project.index}</span>
-                <span className={`tag ${project.isPrivate ? "tag-private" : ""}`}>
-                  {project.tag}
-                </span>
-              </div>
-
-              {/* Landing Page Preview Container */}
-              <div className="project-preview-wrap">
-                <div className="browser-chrome">
-                  <div className="browser-dots" aria-hidden="true">
-                    <span className="dot red" />
-                    <span className="dot yellow" />
-                    <span className="dot green" />
-                  </div>
-                  <div className="browser-url">
-                    <span
-                      className="security-lock"
-                      title={project.isPrivate ? "Confidential showcase" : "Secure HTTPS Connection"}
-                    >
-                      {project.isPrivate ? "🛡️" : "🔒"}
-                    </span>
-                    <span>{project.domain}</span>
-                  </div>
+          {portfolioProjects.map((project, index) => {
+            const title = project.name ?? "Project";
+            const privateProject = isPrivate(project);
+            return (
+              <article key={project.slug} className="project-card">
+                <div className="project-top">
+                  <span className="project-index">{String(index + 1).padStart(3, "0")}</span>
+                  <span className={`tag ${privateProject ? "tag-private" : ""}`}>{tagFor(project)}</span>
                 </div>
 
-                <div
-                  className="project-thumb-box"
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`View preview for ${project.title}`}
-                  onClick={() => setPreviewProject(project)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      setPreviewProject(project);
-                    }
-                  }}
-                >
-                  <Image
-                    src={project.previewImage}
-                    alt={`${project.title} landing page preview`}
-                    width={600}
-                    height={375}
-                    className="project-thumb-img"
-                    loading="lazy"
-                  />
-                  {project.isPrivate && (
-                    <div className="private-badge-overlay">
-                      <span>Confidential Showcase</span>
+                {/* Landing Page Preview Container */}
+                <div className="project-preview-wrap">
+                  <div className="browser-chrome">
+                    <div className="browser-dots" aria-hidden="true">
+                      <span className="dot red" />
+                      <span className="dot yellow" />
+                      <span className="dot green" />
                     </div>
-                  )}
-                  <div className="preview-overlay">
-                    <button
-                      type="button"
-                      className="preview-zoom-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setPreviewProject(project);
-                      }}
-                      aria-label={`Preview ${project.title}`}
-                    >
-                      <span>🔍 View Preview</span>
-                    </button>
+                    <div className="browser-url">
+                      <span
+                        className="security-lock"
+                        title={privateProject ? "Confidential showcase" : "Secure HTTPS Connection"}
+                      >
+                        {privateProject ? "🛡️" : "🔒"}
+                      </span>
+                      <span>{domainFor(project)}</span>
+                    </div>
+                  </div>
+
+                  <div className="project-thumb-box" onClick={() => setPreviewProject(project)}>
+                    {project.cover && (
+                      <Image
+                        src={project.cover.src}
+                        alt={project.cover.alt}
+                        width={600}
+                        height={375}
+                        className="project-thumb-img"
+                        loading="lazy"
+                      />
+                    )}
+                    {privateProject && (
+                      <div className="private-badge-overlay">
+                        <span>Confidential Showcase</span>
+                      </div>
+                    )}
+                    <div className="preview-overlay">
+                      <button
+                        type="button"
+                        className="preview-zoom-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPreviewProject(project);
+                        }}
+                        aria-label={`Preview ${title}`}
+                      >
+                        <span>🔍 View Preview</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <h3>{project.title}</h3>
-              <p>{project.description}</p>
+                <h3>{title}</h3>
+                <p>{project.summary}</p>
+                {project.demoNote && <p className="demo-note">{project.demoNote}</p>}
 
-              <div className="project-actions">
-                {project.liveUrl ? (
-                  <a
-                    className="project-link"
-                    href={project.liveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Explore live demo <span aria-hidden="true">↗</span>
-                  </a>
-                ) : (
-                  <span className="private-note">
-                    {project.note ?? "Private showcase · available on request where authorized"}
-                  </span>
-                )}
-              </div>
-            </article>
-          ))}
+                <div className="project-actions">
+                  <Link className="project-link" href={projectHref(project)}>
+                    Read the case study <span aria-hidden="true">→</span>
+                    <span className="sr-only"> for {title}</span>
+                  </Link>
+                  {project.liveUrl ? (
+                    <a className="project-link project-link--demo" href={project.liveUrl} target="_blank" rel="noopener">
+                      Open the live demo <span aria-hidden="true">↗</span>
+                      <span className="sr-only">
+                        {" "}
+                        of {title} (opens in a new tab)
+                      </span>
+                    </a>
+                  ) : (
+                    <span className="private-note">{PRIVATE_NOTE}</span>
+                  )}
+                </div>
+              </article>
+            );
+          })}
         </div>
       </section>
 
@@ -510,33 +328,15 @@ export default function PortfolioHome() {
             <h2>Clear steps. Shared outcomes.</h2>
           </div>
         </div>
-        <div className="process">
-          <div className="step">
-            <span>STEP 01</span>
-            <h3>Discover</h3>
-            <p>Understand the challenge and current process.</p>
-          </div>
-          <div className="step">
-            <span>STEP 02</span>
-            <h3>Define</h3>
-            <p>Agree scope, priorities, and success measures.</p>
-          </div>
-          <div className="step">
-            <span>STEP 03</span>
-            <h3>Prototype</h3>
-            <p>Demonstrate the proposed workflow early.</p>
-          </div>
-          <div className="step">
-            <span>STEP 04</span>
-            <h3>Build & integrate</h3>
-            <p>Implement the approved solution.</p>
-          </div>
-          <div className="step">
-            <span>STEP 05</span>
-            <h3>Validate</h3>
-            <p>Test, improve, and plan future iterations.</p>
-          </div>
-        </div>
+        <ol className="process">
+          {processSteps.map((step, index) => (
+            <li key={step.title} className="step">
+              <span>STEP {String(index + 1).padStart(2, "0")}</span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
+          ))}
+        </ol>
       </section>
 
       {/* ─────────────────── CONTACT / CTA SECTION ─────────────────── */}
@@ -549,21 +349,12 @@ export default function PortfolioHome() {
               <br />
               into a practical solution.
             </h2>
-            <p>
-              Tell us what slows your team down, where customers need faster answers,
-              or which systems should work better together.
-            </p>
+            <p>{home.closing.text}</p>
           </div>
-          <a
-            className="btn btn-primary"
-            href="mailto:hello@orbitechsolutions.com?subject=Project%20Discovery%20Call"
-          >
-            Start a conversation ↗
-          </a>
+          <Link className="btn btn-primary" href="/contact">
+            Start a conversation <span aria-hidden="true">↗</span>
+          </Link>
         </div>
-        <p className="contact-note">
-          Replace the example email address with your verified business contact before publishing.
-        </p>
       </section>
 
       {/* ─────────────────── INTERACTIVE PREVIEW MODAL / LIGHTBOX ─────────────────── */}
@@ -583,13 +374,13 @@ export default function PortfolioHome() {
               <div className="modal-title-wrap">
                 <span
                   className={`modal-status ${
-                    previewProject.isPrivate ? "private" : "live"
+                    isPrivate(previewProject) ? "private" : "live"
                   }`}
                 >
-                  {previewProject.tag}
+                  {tagFor(previewProject)}
                 </span>
                 <h3 id="modal-preview-title" className="modal-title">
-                  {previewProject.title}
+                  {previewProject.name}
                 </h3>
               </div>
 
@@ -598,14 +389,14 @@ export default function PortfolioHome() {
                   <a
                     href={previewProject.liveUrl}
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener"
                     className="modal-btn-action"
                   >
                     Visit Live Site ↗
                   </a>
                 ) : (
                   <a
-                    href="mailto:hello@orbitechsolutions.com?subject=Private%20Demo%20Request"
+                    href={`mailto:${site.email}?subject=Private%20Demo%20Request`}
                     className="modal-btn-action"
                   >
                     Request Demo ↗
@@ -629,20 +420,21 @@ export default function PortfolioHome() {
                 <span className="dot green" />
               </div>
               <div className="modal-url-pill">
-                <span>{previewProject.isPrivate ? "🛡️" : "🔒"}</span>
-                <span>{previewProject.domain}</span>
+                <span>{isPrivate(previewProject) ? "🛡️" : "🔒"}</span>
+                <span>{domainFor(previewProject)}</span>
               </div>
             </div>
 
             <div className="modal-preview-body">
-              <Image
-                src={previewProject.previewImage}
-                alt={`${previewProject.title} high-resolution preview`}
-                width={1200}
-                height={750}
-                className="modal-preview-img"
-                priority
-              />
+              {previewProject.cover && (
+                <Image
+                  src={previewProject.cover.src}
+                  alt={`${previewProject.name} high-resolution preview`}
+                  width={1200}
+                  height={750}
+                  className="modal-preview-img"
+                />
+              )}
             </div>
           </div>
         </div>

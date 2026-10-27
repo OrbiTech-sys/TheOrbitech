@@ -4,7 +4,6 @@ import { startTransition, useActionState, useEffect, useRef, useState } from "re
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { sendEnquiry, type EnquiryState } from "@/app/actions/enquiry";
-import { Pending } from "@/components/Pending";
 import { contactOptions, site } from "@/content/site";
 import { ENQUIRY_FIELDS, MAX, parseEnquiry, type EnquiryErrors, type EnquiryField } from "@/lib/enquiry-schema";
 
@@ -262,19 +261,10 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
           <AlertCircle size={18} strokeWidth={2} aria-hidden="true" className="notice__icon" />
           <div>
             <p className="notice__title">{state.message}</p>
-            {state.status === "unconfigured" && (
+            {state.status === "unconfigured" && site.email && (
               <p>
-                {site.email ? (
-                  <>
-                    Please email{" "}
-                    <a href={`mailto:${site.email}`} className="ulink">
-                      {site.email}
-                    </a>{" "}
-                    instead.
-                  </>
-                ) : (
-                  <Pending>Fallback email address</Pending>
-                )}
+                Please email{" "}
+                <a href={`mailto:${site.email}`}>{site.email}</a> instead.
               </p>
             )}
           </div>
@@ -282,7 +272,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
       )}
 
       <div className="form__submit">
-        <button type="submit" className="btn btn--accent" disabled={pending} aria-busy={pending}>
+        <button type="submit" className="btn btn-primary" disabled={pending} aria-busy={pending}>
           {pending ? (
             <>
               <span className="spinner" aria-hidden="true" />
@@ -293,7 +283,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
           )}
         </button>
         <p className="form__privacy">
-          We use these details only to reply to you. <Link href="/privacy" className="ulink">Privacy</Link>
+          We use these details only to reply to you. <Link href="/privacy">Privacy</Link>
         </p>
       </div>
     </form>

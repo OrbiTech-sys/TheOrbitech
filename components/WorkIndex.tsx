@@ -39,7 +39,6 @@ export default function WorkIndex() {
           </button>
         ))}
       </div>
-      {!anyTyped && <p className="filter__note">Filters switch on once each project has a type.</p>}
 
       <p className="sr-only" aria-live="polite">
         Showing {visible.length} {visible.length === 1 ? "project" : "projects"}
@@ -51,7 +50,7 @@ export default function WorkIndex() {
             <WorkCard
               key={project.slug}
               project={project}
-              priority={index < 2}
+              priority={index === 0}
               sizes="(min-width: 48rem) 46vw, 100vw"
             />
           ))}
