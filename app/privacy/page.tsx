@@ -61,12 +61,9 @@ export default function PrivacyPage() {
             reply to you and to scope any work you ask about.
           </p>
           <p>
-            <strong>How the message reaches us.</strong> The form sends your message by email through {privacy.emailProvider}, an
-            email delivery service. It is not stored in a database on this website.
-          </p>
-          <p>
-            <strong>Spam protection.</strong> To limit repeated submissions, the server briefly remembers your network
-            address in memory for ten minutes. It is not written to disk or shared.
+            <strong>How the message reaches us.</strong> The form doesn’t send anything itself. It opens your own email app
+            with your message written out, and nothing reaches us until you press send there. What you type is not sent to
+            or stored by this website.
           </p>
           <p>
             <strong>Server logs.</strong> Our hosting provider{privacy.hosting ? ` (${privacy.hosting})` : ""} may keep standard

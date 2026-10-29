@@ -1,10 +1,10 @@
 "use client";
 
-import { startTransition, useActionState, useEffect, useRef, useState } from "react";
-import { AlertCircle } from "lucide-react";
+import { useState } from "react";
+import { AlertCircle, Mail } from "lucide-react";
 import Link from "next/link";
-import { sendEnquiry, type EnquiryState } from "@/app/actions/enquiry";
 import { contactOptions, site } from "@/content/site";
+import { enquiryEmail, mailtoHref } from "@/lib/enquiry-email";
 import { ENQUIRY_FIELDS, MAX, parseEnquiry, type EnquiryErrors, type EnquiryField } from "@/lib/enquiry-schema";
 
 export interface ContactPrefill {
@@ -15,20 +15,19 @@ export interface ContactPrefill {
   message?: string;
 }
 
-const initialState: EnquiryState = { status: "idle", message: "" };
-
 const blank = { name: "", email: "", company: "", projectType: "", budget: "", timeline: "", message: "" };
 type Values = typeof blank;
 
 export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
-  const formRef = useRef<HTMLFormElement>(null);
-  const [state, formAction, pending] = useActionState(sendEnquiry, initialState);
   const [values, setValues] = useState<Values>(blank);
   const [clientErrors, setClientErrors] = useState<EnquiryErrors>({});
   // Fields edited since the last submit no longer show their old error.
   const [edited, setEdited] = useState<Partial<Record<EnquiryField, true>>>({});
   const [appliedKey, setAppliedKey] = useState("");
   const [estimate, setEstimate] = useState("");
+  // The drafted email, shown only when no email app opened for it.
+  const [noMailApp, setNoMailApp] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   // Take new pre-fill (from the estimator) while rendering, not in an effect.
   if (prefill && prefill.key !== appliedKey) {
@@ -41,16 +40,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
     }));
   }
 
-  const errors: EnquiryErrors = { ...state.fieldErrors, ...clientErrors };
-  const errorFor = (field: EnquiryField) => (edited[field] ? undefined : errors[field]);
-
-  // After the server reports problems, move focus to the first one.
-  useEffect(() => {
-    if (state.status === "invalid" && state.fieldErrors) {
-      const first = ENQUIRY_FIELDS.find((f) => state.fieldErrors?.[f]);
-      if (first) (formRef.current?.elements.namedItem(first) as HTMLElement | null)?.focus();
-    }
-  }, [state]);
+  const errorFor = (field: EnquiryField) => (edited[field] ? undefined : clientErrors[field]);
 
   const onChange =
     (field: keyof Values) =>
@@ -71,7 +61,38 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
       return;
     }
     setClientErrors({});
-    startTransition(() => formAction(data));
+    if (!site.email) return;
+    // Open the visitor's own email app with the message written and addressed.
+    const email = enquiryEmail(result.data, site.name);
+    setNoMailApp(null);
+    setCopied(false);
+
+    // Browsers can't say whether an email app is installed. When one opens, this
+    // page loses focus; if nothing takes focus shortly after, assume there is none.
+    let opened = false;
+    const markOpened = () => {
+      opened = true;
+    };
+    window.addEventListener("blur", markOpened, { once: true });
+    document.addEventListener("visibilitychange", markOpened, { once: true });
+    window.location.href = mailtoHref(site.email, email);
+    window.setTimeout(() => {
+      window.removeEventListener("blur", markOpened);
+      document.removeEventListener("visibilitychange", markOpened);
+      if (!opened) setNoMailApp(`Subject: ${email.subject}
+
+${email.body}`);
+    }, 1500);
+  };
+
+  const copyMessage = async () => {
+    if (!noMailApp) return;
+    try {
+      await navigator.clipboard.writeText(noMailApp);
+      setCopied(true);
+    } catch {
+      setCopied(false);
+    }
   };
 
   const message = (field: EnquiryField, hint?: string) => {
@@ -85,14 +106,8 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
   };
   const invalid = (field: EnquiryField) => (errorFor(field) ? true : undefined);
 
-  const showNotice = state.status !== "idle" && state.status !== "invalid";
-
   return (
-    <form ref={formRef} className="form" action={formAction} onSubmit={onSubmit} noValidate>
-      <div className="honeypot" aria-hidden="true">
-        <label htmlFor="contact-website">Leave this field empty</label>
-        <input id="contact-website" type="text" name="website" tabIndex={-1} autoComplete="off" />
-      </div>
+    <form className="form" onSubmit={onSubmit} noValidate>
       <input type="hidden" name="estimate" value={estimate} />
 
       {estimate && (
@@ -256,34 +271,35 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
         {message("message", "What it does, who it’s for, and anything already in place.")}
       </div>
 
-      {showNotice && (
+      {!site.email && (
         <div className="notice notice--error" role="alert">
           <AlertCircle size={18} strokeWidth={2} aria-hidden="true" className="notice__icon" />
+          <p className="notice__title">Our email address isn’t set up yet, so this form can’t prepare your message.</p>
+        </div>
+      )}
+
+      {noMailApp && site.email && (
+        <div className="notice notice--ready" role="alert">
+          <Mail size={18} strokeWidth={2} aria-hidden="true" className="notice__icon" />
           <div>
-            <p className="notice__title">{state.message}</p>
-            {state.status === "unconfigured" && site.email && (
-              <p>
-                Please email{" "}
-                <a href={`mailto:${site.email}`}>{site.email}</a> instead.
-              </p>
-            )}
+            <p className="notice__title">No email app was found on this device.</p>
+            <p>
+              Please email your enquiry to <a href={`mailto:${site.email}`}>{site.email}</a> from any email account, such as
+              Gmail or Outlook on the web. Your message is already written:{" "}
+              <button type="button" className="notice__action" onClick={copyMessage}>
+                {copied ? "Copied" : "Copy your message"}
+              </button>
+            </p>
           </div>
         </div>
       )}
 
       <div className="form__submit">
-        <button type="submit" className="btn btn-primary" disabled={pending} aria-busy={pending}>
-          {pending ? (
-            <>
-              <span className="spinner" aria-hidden="true" />
-              Sending
-            </>
-          ) : (
-            "Send message"
-          )}
+        <button type="submit" className="btn btn-primary">
+          Send message
         </button>
         <p className="form__privacy">
-          We use these details only to reply to you. <Link href="/privacy">Privacy</Link>
+          Opens your email app with your message written and ready to send. <Link href="/privacy">Privacy</Link>
         </p>
       </div>
     </form>

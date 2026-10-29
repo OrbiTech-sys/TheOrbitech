@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-// This file runs against the server where email delivery is NOT configured.
+// The form opens the visitor's email app with a drafted message; it never posts to the server.
 
 const name = (page: Page) => page.getByLabel("Your name");
 const email = (page: Page) => page.getByLabel("Email", { exact: true });
@@ -47,44 +47,34 @@ test.describe("contact form validation", () => {
     await expect(email(page)).toBeFocused();
   });
 
-  test("fields are labelled and the spam trap is hidden from everyone", async ({ page }) => {
+  test("every field is labelled", async ({ page }) => {
     await page.goto("/contact");
     for (const label of ["Your name", "Email", "Company", "Project type", "Budget", "Timing", "About the project"]) {
       await expect(page.getByLabel(label, { exact: false }).first()).toBeVisible();
     }
-    const trap = page.locator("#contact-website");
-    await expect(trap).toHaveAttribute("tabindex", "-1");
-    const box = await trap.boundingBox();
-    expect((box?.x ?? 0) < 0 || (box?.width ?? 0) <= 1).toBe(true);
   });
 });
 
-test.describe("when email delivery is not configured", () => {
-  test("says so plainly, keeps what was typed and does not pretend it was sent", async ({ page }) => {
+test.describe("sending a message", () => {
+  async function fillAndSend(page: Page) {
     await page.goto("/contact");
     await name(page).fill("Sam Tan");
     await email(page).fill("sam@example.com");
-    await message(page).fill("We need a new marketing site.");
+    await page.getByLabel("Company").fill("Tan & Co");
+    await page.getByLabel("Project type").selectOption("Website");
+    await message(page).fill("We need a new marketing site with a CMS.");
     await send(page).click();
+  }
 
+  test("when no email app opens, asks the visitor to email the studio directly", async ({ page }) => {
+    const posts: string[] = [];
+    page.on("request", (request) => request.method() === "POST" && posts.push(request.url()));
+    await fillAndSend(page);
     const alert = page.getByRole("alert");
-    await expect(alert).toContainText(/switched on yet/);
-    await expect(alert).toContainText(/wasn.t sent/);
-    await expect(page).toHaveURL(/\/contact$/);
+    await expect(alert).toContainText("No email app was found on this device.");
+    await expect(alert.getByRole("link", { name: "nova@theorbitechsolution.com" })).toBeVisible();
     await expect(name(page)).toHaveValue("Sam Tan");
-    await expect(message(page)).toHaveValue("We need a new marketing site.");
-  });
-
-  test("a bot that fills the hidden field is waved through to the thank-you page", async ({ page }) => {
-    await page.goto("/contact");
-    await name(page).fill("Bot");
-    await email(page).fill("bot@example.com");
-    await message(page).fill("Buy cheap watches online now.");
-    await page.locator("#contact-website").evaluate((el: HTMLInputElement) => {
-      el.value = "http://spam.example";
-    });
-    await send(page).click();
-    await expect(page).toHaveURL(/\/contact\/thanks$/);
+    expect(posts).toEqual([]);
   });
 });
 

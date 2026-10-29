@@ -121,7 +121,8 @@ textarea:focus-visible {
 .case-links a,
 .close-mail a,
 .contact__details a,
-.form__privacy a {
+.form__privacy a,
+.notice a {
   color: var(--cyan);
 }
 
@@ -130,7 +131,8 @@ textarea:focus-visible {
 .case-links a:hover,
 .close-mail a:hover,
 .contact__details a:hover,
-.form__privacy a:hover {
+.form__privacy a:hover,
+.notice a:hover {
   text-decoration: underline;
 }
 
@@ -851,6 +853,33 @@ textarea.input {
 .notice__icon {
   flex-shrink: 0;
   color: #ff9a9a;
+}
+
+.notice--ready {
+  border-color: color-mix(in srgb, var(--cyan) 45%, transparent);
+  background: color-mix(in srgb, var(--cyan) 7%, transparent);
+}
+
+.notice--ready .notice__icon {
+  color: var(--cyan);
+}
+
+.notice--ready p + p {
+  margin-top: 4px;
+}
+
+.notice__action {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--cyan);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.notice__action:hover {
+  text-decoration: underline;
 }
 
 .spinner {

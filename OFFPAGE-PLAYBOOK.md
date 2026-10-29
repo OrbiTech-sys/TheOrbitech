@@ -46,7 +46,7 @@ Written 27 October 2026. Items marked **[account needed]** need an account that 
 
 **Proof to point to (all on the site)**
 
-- Orbit Operations Copilot, a live CRM demo: https://theorbitechsolution.com/work/orbit-operations
+- OrbitOS, a live AI business operating system demo: https://theorbitechsolution.com/work/orbitos
 - Property Management System, a live demo: https://theorbitechsolution.com/work/property-management
 - AidoChat, a live AI document chat demo: https://theorbitechsolution.com/work/aidochat
 - AI E-commerce Experience, a live product search demo: https://theorbitechsolution.com/work/ecommerce-experience
@@ -102,7 +102,7 @@ We build AI chatbots and assistants, workflow automation, websites, web apps and
 
 **Live demos**
 
-- [Orbit Operations Copilot](https://theorbitechsolution.com/work/orbit-operations): a CRM demo with an AI copilot
+- [OrbitOS](https://theorbitechsolution.com/work/orbitos): an AI-powered business operating system demo
 - [Property Management System](https://theorbitechsolution.com/work/property-management): a property operations workspace demo
 - [AidoChat](https://theorbitechsolution.com/work/aidochat): AI document chat that cites its sources (demo)
 - [AI E-commerce Experience](https://theorbitechsolution.com/work/ecommerce-experience): natural-language product search (demo)

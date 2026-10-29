@@ -14,7 +14,7 @@ const origin = "https://theorbitechsolution.com";
 const allowedHosts = [
   "theorbitechsolution.com",
   "schema.org",
-  "orbit-operations.vercel.app",
+  "orbitos-beta.vercel.app",
   "propertymanagementsystem-six.vercel.app",
   "aidochat.vercel.app",
   "ecommerceorbitech.vercel.app",
