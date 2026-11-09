@@ -63,6 +63,10 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  async redirects() {
+    // The CRM demo was replaced by OrbitOS; keep old links and search results working.
+    return [{ source: "/work/orbit-operations", destination: "/work/orbitos", permanent: true }];
+  },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
