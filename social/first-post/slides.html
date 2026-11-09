@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>First post: The OrbiTech Solutions</title>
+<style>
+  @font-face { font-family: "Geist"; src: url("fonts/Geist.woff2") format("woff2"); font-weight: 100 900; }
+  @font-face { font-family: "Geist Mono"; src: url("fonts/GeistMono.woff2") format("woff2"); font-weight: 100 900; }
+
+  :root {
+    --navy: #090d1b;
+    --panel: #10172a;
+    --line: rgba(177, 198, 230, 0.16);
+    --text: #f4f7ff;
+    --muted: #a9b5ca;
+    --dim: #6f7c95;
+    --cyan: #63e6df;
+    --violet: #a99bff;
+    --gold: #f2d49a;
+    --serif: Georgia, "Times New Roman", serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #222; display: grid; gap: 40px; padding: 40px; justify-content: center; }
+
+  .slide {
+    width: 1080px;
+    height: 1350px;
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 45% at 100% 0%, rgba(24, 36, 75, 0.9), transparent 70%),
+      radial-gradient(ellipse 55% 40% at 0% 100%, rgba(16, 46, 59, 0.55), transparent 70%),
+      var(--navy);
+    color: var(--text);
+    font-family: "Geist", sans-serif;
+    padding: 72px 84px 64px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Film grain, so the flat colour reads as print rather than a render */
+  .grain { position: absolute; inset: 0; pointer-events: none; opacity: 0.09; mix-blend-mode: overlay; z-index: 5; }
+
+  /* The brand mark, drawn large and cropped as a quiet background shape */
+  .ghost { position: absolute; z-index: 0; opacity: 0.11; }
+  .slide > *:not(.ghost):not(.grain) { position: relative; z-index: 2; }
+
+  header, footer { display: flex; align-items: center; justify-content: space-between; }
+  header { padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+  footer { margin-top: auto; padding-top: 26px; border-top: 1px solid var(--line); }
+  .brand { display: flex; align-items: center; gap: 16px; font-weight: 650; font-size: 21px; letter-spacing: 0.2em; }
+  .brand svg { width: 46px; height: 46px; }
+  .mono { font-family: "Geist Mono", monospace; }
+  .count { font-family: "Geist Mono", monospace; font-size: 21px; color: var(--dim); letter-spacing: 0.08em; }
+  .handle { font-family: "Geist Mono", monospace; font-size: 22px; color: var(--muted); }
+  .next { font-family: "Geist Mono", monospace; font-size: 22px; color: var(--cyan); letter-spacing: 0.06em; }
+
+  .kicker { font-family: "Geist Mono", monospace; color: var(--cyan); font-size: 25px; letter-spacing: 0.14em; text-transform: uppercase; }
+  .accent { font-family: var(--serif); font-style: italic; font-weight: 400; color: var(--gold); letter-spacing: -0.02em; }
+  .muted { color: var(--muted); }
+
+  /* 1: the hook */
+  .s1 .body { margin-top: 150px; }
+  .s1 h1 { font-size: 168px; line-height: 0.9; font-weight: 800; letter-spacing: -0.06em; margin-top: 40px; }
+  .s1 .accent { font-size: 108px; line-height: 1; margin-top: 30px; white-space: nowrap; }
+  .s1 .sub { font-size: 34px; line-height: 1.45; margin-top: 64px; max-width: 790px; }
+
+  /* 2: the problem */
+  .s2 .body { margin-top: 64px; }
+  .s2 h2 { font-size: 84px; line-height: 0.98; font-weight: 750; letter-spacing: -0.05em; margin-top: 34px; max-width: 880px; }
+  .ledger { list-style: none; margin-top: 48px; border-top: 1px solid var(--line); }
+  .ledger li { display: grid; grid-template-columns: 92px 1fr; align-items: baseline; padding: 24px 0; border-bottom: 1px solid var(--line); font-size: 36px; line-height: 1.25; letter-spacing: -0.015em; }
+  .ledger .n { font-family: "Geist Mono", monospace; font-size: 24px; color: var(--cyan); letter-spacing: 0.06em; }
+  .ledger .again { color: var(--muted); }
+  .verdict { margin-top: 48px; }
+  .verdict .plain { font-size: 56px; font-weight: 700; letter-spacing: -0.04em; }
+  .verdict .accent { font-size: 70px; line-height: 1.05; display: block; margin-top: 6px; }
+
+  /* 3: the fix */
+  .s3 .body { margin-top: 64px; }
+  .s3 h2 { font-size: 96px; line-height: 0.95; font-weight: 800; letter-spacing: -0.055em; margin-top: 34px; }
+  .s3 h2 .accent { font-weight: 400; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 48px; }
+  .card { border: 1px solid var(--line); border-radius: 24px; padding: 38px 36px 40px; background: rgba(16, 23, 42, 0.72); min-height: 278px; display: flex; flex-direction: column; }
+  .card .n { font-family: "Geist Mono", monospace; font-size: 22px; color: var(--cyan); letter-spacing: 0.08em; }
+  .card h3 { font-size: 40px; line-height: 1.05; letter-spacing: -0.03em; font-weight: 700; margin-top: 40px; }
+  .card p { font-size: 27px; line-height: 1.42; color: var(--muted); margin-top: 16px; }
+  .card:nth-child(2) .n { color: var(--violet); }
+  .card:nth-child(3) .n { color: var(--gold); }
+  .card:nth-child(4) .n { color: var(--muted); }
+  .s3 .note { font-size: 27px; margin-top: 30px; }
+
+  /* 4: the proof */
+  .s4 .body { margin-top: 60px; }
+  .s4 h2 { font-size: 66px; line-height: 1; font-weight: 800; letter-spacing: -0.045em; margin-top: 30px; white-space: nowrap; }
+  .s4 h2 .accent { display: block; font-weight: 400; font-size: 70px; margin-top: 10px; }
+  .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 22px; margin-top: 44px; }
+  .shot .frame { border: 1px solid rgba(177, 198, 230, 0.22); border-radius: 18px; overflow: hidden; background: #060a14; }
+  .shot .bar { height: 34px; display: flex; align-items: center; gap: 7px; padding: 0 14px; background: #0d1426; border-bottom: 1px solid rgba(177, 198, 230, 0.1); }
+  .shot .bar i { width: 9px; height: 9px; border-radius: 50%; background: #2a3550; display: block; }
+  .shot .bar span { font-family: "Geist Mono", monospace; font-size: 14px; color: #7b8ea8; margin-left: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .shot img { display: block; width: 100%; height: 196px; object-fit: cover; object-position: top center; }
+  .shot .cap { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; gap: 12px; }
+  .shot .cap b { font-size: 25px; font-weight: 650; letter-spacing: -0.015em; }
+  .shot .cap em { font-style: normal; font-family: "Geist Mono", monospace; font-size: 17px; color: var(--cyan); letter-spacing: 0.08em; white-space: nowrap; }
+  .s4 .note { font-size: 28px; margin-top: 32px; }
+
+  /* 5: the close */
+  .s5 .body { margin-top: 138px; }
+  .s5 h2 { font-size: 132px; line-height: 0.92; font-weight: 800; letter-spacing: -0.058em; margin-top: 40px; max-width: 900px; }
+  .s5 .accent { font-size: 70px; line-height: 1.1; margin-top: 34px; max-width: 860px; }
+  .contact { margin-top: 84px; padding-top: 40px; border-top: 1px solid var(--line); }
+  .contact .site { font-size: 50px; font-weight: 700; letter-spacing: -0.03em; }
+  .contact .mail { font-family: "Geist Mono", monospace; font-size: 30px; color: var(--cyan); margin-top: 14px; }
+  .contact .place { font-size: 26px; color: var(--muted); margin-top: 18px; }
+</style>
+</head>
+<body>
+
+<!-- Shared pieces: the brand mark and the grain filter -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="mark" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="20" fill="none" stroke="#63e6df" stroke-opacity="0.8" stroke-width="1.4"/>
+      <ellipse cx="24" cy="24" rx="13" ry="5.5" fill="none" stroke="#a99bff" stroke-width="1.4" transform="rotate(-35 24 24)"/>
+      <ellipse cx="24" cy="24" rx="15.5" ry="6.5" fill="none" stroke="#f2d49a" stroke-width="1.4" transform="rotate(55 24 24)"/>
+      <text x="24" y="28.6" font-size="13" font-weight="900" text-anchor="middle" fill="#63e6df" font-family="Geist, sans-serif">O</text>
+    </symbol>
+    <symbol id="orbits" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="20" fill="none" stroke="#63e6df" stroke-width="0.35"/>
+      <ellipse cx="24" cy="24" rx="13" ry="5.5" fill="none" stroke="#a99bff" stroke-width="0.35" transform="rotate(-35 24 24)"/>
+      <ellipse cx="24" cy="24" rx="15.5" ry="6.5" fill="none" stroke="#f2d49a" stroke-width="0.35" transform="rotate(55 24 24)"/>
+    </symbol>
+    <filter id="noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+    </filter>
+  </defs>
+</svg>
+
+<!-- 1 · Hook -->
+<section class="slide s1" id="slide-1">
+  <svg class="ghost" style="width:1250px;height:1250px;right:-560px;bottom:-470px"><use href="#orbits"/></svg>
+  <header>
+    <div class="brand"><svg><use href="#mark"/></svg>THE ORBITECH SOLUTIONS</div>
+    <div class="count">01 / 05</div>
+  </header>
+  <div class="body">
+    <p class="kicker">Let's get one thing straight.</p>
+    <h1>Your team<br>isn't slow.</h1>
+    <p class="accent">Your systems are.</p>
+    <p class="sub muted">AI automation and web development for businesses that are done losing hours to busywork.</p>
+  </div>
+  <footer>
+    <span class="handle">@theorbitechsolution</span>
+    <span class="next">Swipe →</span>
+  </footer>
+  <svg class="grain" width="100%" height="100%"><rect width="100%" height="100%" filter="url(#noise)"/></svg>
+</section>
+
+<!-- 2 · Problem -->
+<section class="slide s2" id="slide-2">
+  <svg class="ghost" style="width:900px;height:900px;left:-520px;top:300px"><use href="#orbits"/></svg>
+  <header>
+    <div class="brand"><svg><use href="#mark"/></svg>THE ORBITECH SOLUTIONS</div>
+    <div class="count">02 / 05</div>
+  </header>
+  <div class="body">
+    <p class="kicker">Where your week actually goes</p>
+    <h2>The work nobody hired you to do.</h2>
+    <ul class="ledger">
+      <li><span class="n">01</span><span>Copying data from one tool into another.</span></li>
+      <li><span class="n">02</span><span>Answering the same customer question. <span class="again">Again.</span></span></li>
+      <li><span class="n">03</span><span>Chasing follow-ups that should send themselves.</span></li>
+      <li><span class="n">04</span><span>Digging through PDFs for one answer.</span></li>
+    </ul>
+    <div class="verdict">
+      <span class="plain">That's not hard work.</span>
+      <span class="accent">That's a leak.</span>
+    </div>
+  </div>
+  <footer>
+    <span class="handle">@theorbitechsolution</span>
+    <span class="next">Swipe →</span>
+  </footer>
+  <svg class="grain" width="100%" height="100%"><rect width="100%" height="100%" filter="url(#noise)"/></svg>
+</section>
+
+<!-- 3 · Fix -->
+<section class="slide s3" id="slide-3">
+  <svg class="ghost" style="width:1100px;height:1100px;right:-760px;top:520px"><use href="#orbits"/></svg>
+  <header>
+    <div class="brand"><svg><use href="#mark"/></svg>THE ORBITECH SOLUTIONS</div>
+    <div class="count">03 / 05</div>
+  </header>
+  <div class="body">
+    <p class="kicker">What we build</p>
+    <h2>So we <span class="accent">fix</span> the leak.</h2>
+    <div class="grid">
+      <div class="card"><span class="n">01</span><h3>AI chatbots</h3><p>Answers from your own documents, with the source shown.</p></div>
+      <div class="card"><span class="n">02</span><h3>Automation</h3><p>CRM and workflow automation that doesn't wait for reminders.</p></div>
+      <div class="card"><span class="n">03</span><h3>Websites &amp; web apps</h3><p>Fast, clear, and built to be found.</p></div>
+      <div class="card"><span class="n">04</span><h3>Dashboards</h3><p>Your numbers in one place, where you can actually see them.</p></div>
+    </div>
+    <p class="note muted">Based in New York. Working with businesses anywhere.</p>
+  </div>
+  <footer>
+    <span class="handle">@theorbitechsolution</span>
+    <span class="next">Swipe →</span>
+  </footer>
+  <svg class="grain" width="100%" height="100%"><rect width="100%" height="100%" filter="url(#noise)"/></svg>
+</section>
+
+<!-- 4 · Proof -->
+<section class="slide s4" id="slide-4">
+  <header>
+    <div class="brand"><svg><use href="#mark"/></svg>THE ORBITECH SOLUTIONS</div>
+    <div class="count">04 / 05</div>
+  </header>
+  <div class="body">
+    <p class="kicker">Proof, not promises</p>
+    <h2>We don't sell slide decks.<span class="accent">We ship working software.</span></h2>
+    <div class="shots">
+      <figure class="shot">
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>orbit-operations.vercel.app</span></div><img src="../../public/work/orbit-operations-landing.webp" alt=""></div>
+        <figcaption class="cap"><b>CRM with an AI copilot</b><em>LIVE DEMO</em></figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>propertymanagementsystem-six.vercel.app</span></div><img src="../../public/work/property-management-landing.webp" alt=""></div>
+        <figcaption class="cap"><b>Property management</b><em>LIVE DEMO</em></figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>aidochat.vercel.app</span></div><img src="../../public/work/aidochat-landing.webp" alt=""></div>
+        <figcaption class="cap"><b>AI document chat</b><em>LIVE DEMO</em></figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>ecommerceorbitech.vercel.app</span></div><img src="../../public/work/ecommerce-landing.webp" alt=""></div>
+        <figcaption class="cap"><b>AI product search</b><em>LIVE DEMO</em></figcaption>
+      </figure>
+    </div>
+    <p class="note muted">Four live demos. Go click around. Link in bio.</p>
+  </div>
+  <footer>
+    <span class="handle">@theorbitechsolution</span>
+    <span class="next">Swipe →</span>
+  </footer>
+  <svg class="grain" width="100%" height="100%"><rect width="100%" height="100%" filter="url(#noise)"/></svg>
+</section>
+
+<!-- 5 · Close -->
+<section class="slide s5" id="slide-5">
+  <svg class="ghost" style="width:1300px;height:1300px;right:-700px;bottom:-560px;opacity:.14"><use href="#orbits"/></svg>
+  <header>
+    <div class="brand"><svg><use href="#mark"/></svg>THE ORBITECH SOLUTIONS</div>
+    <div class="count">05 / 05</div>
+  </header>
+  <div class="body">
+    <p class="kicker">Your move</p>
+    <h2>Tell us what's slowing you down.</h2>
+    <p class="accent">We'll tell you straight if it's worth fixing.</p>
+    <div class="contact">
+      <p class="site">theorbitechsolution.com</p>
+      <p class="mail">nova@theorbitechsolution.com</p>
+      <p class="place">New York, US · Remote, worldwide</p>
+    </div>
+  </div>
+  <footer>
+    <span class="handle">@theorbitechsolution</span>
+    <span class="next">Link in bio</span>
+  </footer>
+  <svg class="grain" width="100%" height="100%"><rect width="100%" height="100%" filter="url(#noise)"/></svg>
+</section>
+
+</body>
+</html>

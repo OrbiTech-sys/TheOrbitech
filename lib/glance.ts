@@ -27,6 +27,6 @@ export const glanceRows: GlanceRow[] = [
   { term: "Where we work", detail: where },
   {
     term: "Selected work",
-    detail: `${published.filter((p) => p.liveUrl).length} live demos and ${published.filter((p) => !p.liveUrl).length} private projects.`,
+    detail: `${published.filter((p) => p.kind === "Live demo").length} live demos and ${published.filter((p) => p.kind === "Private project").length} private projects.`,
   },
 ];

@@ -71,8 +71,8 @@ describe("content", () => {
   });
 
   it("keeps the project counts in the written copy true", () => {
-    expect(projects.filter((p) => p.liveUrl)).toHaveLength(4);
-    expect(projects.filter((p) => !p.liveUrl)).toHaveLength(2);
+    expect(projects.filter((p) => p.kind === "Live demo")).toHaveLength(7);
+    expect(projects.filter((p) => p.kind === "Private project")).toHaveLength(2);
   });
 
   it("never shows a bracketed stand-in or an internal note", () => {
@@ -145,7 +145,7 @@ describe("answers and definitions", () => {
 
 describe("projects", () => {
   it("publishes all six case studies", () => {
-    expect(projects.filter(isPublished)).toHaveLength(6);
+    expect(projects.filter(isPublished)).toHaveLength(9);
   });
 
   it("finds projects and the next one, wrapping around", () => {

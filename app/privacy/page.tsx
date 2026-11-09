@@ -61,6 +61,13 @@ export default function PrivacyPage() {
             reply to you and to scope any work you ask about.
           </p>
           <p>
+            <strong>Opening a demo.</strong> Some demos open only after you confirm an email address. We use the address
+            to send you a 6-digit code, and we email the OrbiTech team the address and the name of the demo you opened, so
+            we know who looked and can reply if you get in touch. We do not add it to a mailing list or sell it. The code is
+            sent by email through an SMTP mail provider, and a short-lived record of your network address is kept in memory
+            to limit abuse.
+          </p>
+          <p>
             <strong>How the message reaches us.</strong> The form sends your message by email through {privacy.emailProvider}, an
             email delivery service. It is not stored in a database on this website.
           </p>
@@ -75,8 +82,13 @@ export default function PrivacyPage() {
 
           <h2>What we don’t do</h2>
           <p>
-            This site sets no cookies, runs no analytics or advertising trackers, and loads its fonts from its own
-            server, so your browser makes no requests to font or analytics companies.
+            This site runs no analytics or advertising trackers and sets no advertising cookies. It loads its fonts from
+            its own server, so your browser makes no requests to font or analytics companies.
+          </p>
+          <p>
+            The only cookies are two small ones used when you open a demo: one holds your pending code for 10 minutes, and
+            one remembers that you confirmed your email for 24 hours so you do not have to repeat it. Both are signed so
+            they cannot be altered, are not readable by scripts on the page, and are deleted when they expire.
           </p>
           {site.booking.url && (
             <p>

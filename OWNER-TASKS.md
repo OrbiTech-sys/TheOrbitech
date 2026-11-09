@@ -76,7 +76,7 @@ You chose to keep allowing training crawlers. `robots.txt` keeps one open rule f
 - The site now uses only `nova@theorbitechsolution.com`. The old placeholder `hello@orbitechsolutions.com` is gone.
 - If `orbitechsolutions.com` (no "the") is a domain you own, redirect it to `https://theorbitechsolution.com`. Do not publish it anywhere else, so search engines and AI systems see one domain.
 - Make sure `nova@theorbitechsolution.com` actually receives mail. Its MX records need to be set at your DNS provider.
-- The contact form sends nothing until `RESEND_API_KEY`, `CONTACT_TO_EMAIL` and `CONTACT_FROM_EMAIL` are set in Vercel (see `.env.example`). Until then it tells visitors to email instead.
+- The contact form sends nothing until `SMTP_HOST`, `SMTP_USER` and `SMTP_PASS` are set in Vercel (see `.env.example`). It sends from the SMTP mailbox to `CONTACT_TO_EMAIL` (subhan.orbitech@gmail.com). Until then it tells visitors to email instead.
 
 ## 7. Inputs still missing
 

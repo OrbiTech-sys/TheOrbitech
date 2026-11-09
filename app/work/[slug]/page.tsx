@@ -4,17 +4,21 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import ClosingCta from "@/components/ClosingCta";
+import DemoCard from "@/components/DemoCard";
 import JsonLd from "@/components/JsonLd";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ProjectFrame from "@/components/ProjectFrame";
 import { projects, site } from "@/content/site";
 import { formatDate } from "@/lib/pages";
-import { displayHost, getNextProject, getProject, getService, isPublished, projectHref, serviceHref } from "@/lib/projects";
+import { demoOpenHref, displayHost, getNextProject, getProject, getService, isPublished, projectHref, serviceHref } from "@/lib/projects";
 import { breadcrumbNode, projectNodes, webPageNode, type Crumb } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 import { absoluteUrl } from "@/lib/site-config";
 
 type Props = { params: Promise<{ slug: string }> };
+
+// Pages for every known slug are built ahead of time. They may block on a client navigation.
+export const instant = false;
 
 const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
@@ -50,8 +54,11 @@ export default async function CaseStudyPage({ params }: Props) {
   const service = getService(project.serviceId);
   const heroImage = project.cover ?? project.desktop;
   // The phone screenshot is shown only when it is a different picture from the hero.
-  const phoneImage = project.mobile && project.mobile.src !== heroImage?.src ? project.mobile : null;
-  const isPrivate = !project.liveUrl;
+  const hasDemos = project.demos.length > 0;
+  // A project with demos shows its phone screenshot inside the demo card, and a single demo shows its own picture there too.
+  const phoneImage = !hasDemos && project.mobile && project.mobile.src !== heroImage?.src ? project.mobile : null;
+  const showHero = project.demos.length !== 1;
+  const isPrivate = project.kind === "Private project";
 
   const crumbs: Crumb[] = [
     { name: "Home", path: "/" },
@@ -77,6 +84,23 @@ export default async function CaseStudyPage({ params }: Props) {
                 ))}
               </ul>
             ),
+          },
+        ]
+      : []),
+    ...(hasDemos
+      ? [
+          {
+            label: project.demos.length > 1 ? "Live demos" : "Live demo",
+            value:
+              project.demos.length > 1 ? (
+                <a href="#demos">{project.demos.length} samples below</a>
+              ) : (
+                <a href={demoOpenHref(project.demos[0].id)} target="_blank" rel="noopener noreferrer">
+                  Open the demo
+                  <ArrowUpRight size={14} strokeWidth={1.75} aria-hidden="true" />
+                  <span className="sr-only"> (opens in a new tab after an email check)</span>
+                </a>
+              ),
           },
         ]
       : []),
@@ -131,9 +155,25 @@ export default async function CaseStudyPage({ params }: Props) {
         </dl>
       </header>
 
-      <div className="wrap case-image">
-        <ProjectFrame image={heroImage} sizes="(min-width: 80rem) 76rem, 100vw" priority className="frame--hero" />
-      </div>
+      {showHero && (
+        <div className="wrap case-image">
+          <ProjectFrame image={heroImage} sizes="(min-width: 80rem) 76rem, 100vw" priority className="frame--hero" />
+        </div>
+      )}
+
+      {hasDemos && (
+        <section className="wrap case-section" id="demos" aria-labelledby="demos-title">
+          <h2 id="demos-title">{project.demos.length > 1 ? `Try all ${project.demos.length} live demos` : "Try the live demo"}</h2>
+          <p className="demos__lede">
+            Each demo opens after a quick email check: we send a 6-digit code, you type it in, and the demo opens.
+          </p>
+          <ul className="demos" data-count={project.demos.length}>
+            {project.demos.map((demo, index) => (
+              <DemoCard key={demo.id} demo={demo} priority={index === 0 && !showHero} phone={project.demos.length === 1} />
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="wrap case-section" aria-labelledby="shows-title">
         <h2 id="shows-title">{isPrivate ? "What the concept covers" : "What this demo shows"}</h2>
@@ -191,6 +231,20 @@ export default async function CaseStudyPage({ params }: Props) {
         </section>
       )}
 
+      {project.faqs.length > 0 && (
+        <section className="wrap case-section" aria-labelledby="faq-title">
+          <h2 id="faq-title">Common questions</h2>
+          <div className="qa">
+            {project.faqs.map((faq) => (
+              <div key={faq.q} className="qa__item">
+                <h3>{faq.q}</h3>
+                <p>{faq.a}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="wrap case-section" aria-labelledby="more-title">
         <h2 id="more-title">Keep exploring</h2>
         <ul className="case-links">
@@ -207,7 +261,7 @@ export default async function CaseStudyPage({ params }: Props) {
           </li>
           {next && next.slug !== project.slug && (
             <li>
-              <Link href={projectHref(next)}>Next project: {next.name}</Link>
+              <Link href={projectHref(next)}>Next project: {next.shortName ?? next.name}</Link>
             </li>
           )}
         </ul>

@@ -5,13 +5,26 @@ import Image from "next/image";
 import Link from "next/link";
 import AtAGlance, { type GlanceRow } from "@/components/AtAGlance";
 import type { Project, Service } from "@/content/site";
-import { displayHost, projectHref, serviceHref } from "@/lib/paths";
+import { demoOpenHref, displayHost, projectHref, serviceHref } from "@/lib/paths";
 
 const PRIVATE_NOTE = "Private showcase · available on request where authorized";
 
-const isPrivate = (project: Project) => !project.liveUrl;
+const isPrivate = (project: Project) => project.kind === "Private project";
 const tagFor = (project: Project) => project.kind.toUpperCase();
-const domainFor = (project: Project) => (project.liveUrl ? displayHost(project.liveUrl) : "Private project, link withheld");
+const domainFor = (project: Project) => {
+  if (project.liveUrl) return displayHost(project.liveUrl);
+  if (project.demos.length > 1) return `${project.demos.length} live demos · email check`;
+  if (project.demos.length === 1) return "Live demo · email check";
+  return "Private project, link withheld";
+};
+
+/** Where the "open the demo" link goes: straight to a single gated demo, or to the page that lists several. */
+function demoLink(project: Project): { href: string; label: string; external: boolean } | null {
+  if (project.liveUrl) return { href: project.liveUrl, label: "Open the live demo", external: true };
+  if (project.demos.length === 1) return { href: demoOpenHref(project.demos[0].id), label: "Open the live demo", external: true };
+  if (project.demos.length > 1) return { href: `${projectHref(project)}#demos`, label: `Try all ${project.demos.length} demos`, external: false };
+  return null;
+}
 
 export interface PortfolioHomeProps {
   siteName: string;
@@ -223,6 +236,7 @@ export default function PortfolioHome({
           {portfolioProjects.map((project, index) => {
             const title = project.name ?? "Project";
             const privateProject = isPrivate(project);
+            const demo = demoLink(project);
             return (
               <article key={project.slug} className="project-card">
                 <div className="project-top">
@@ -290,14 +304,21 @@ export default function PortfolioHome({
                     Read the case study <span aria-hidden="true">→</span>
                     <span className="sr-only"> for {title}</span>
                   </Link>
-                  {project.liveUrl ? (
-                    <a className="project-link project-link--demo" href={project.liveUrl} target="_blank" rel="noopener">
-                      Open the live demo <span aria-hidden="true">↗</span>
-                      <span className="sr-only">
-                        {" "}
-                        of {title} (opens in a new tab)
-                      </span>
-                    </a>
+                  {demo ? (
+                    demo.external ? (
+                      <a className="project-link project-link--demo" href={demo.href} target="_blank" rel="noopener noreferrer">
+                        {demo.label} <span aria-hidden="true">↗</span>
+                        <span className="sr-only">
+                          {" "}
+                          of {title} (opens in a new tab{project.liveUrl ? "" : " after an email check"})
+                        </span>
+                      </a>
+                    ) : (
+                      <Link className="project-link project-link--demo" href={demo.href}>
+                        {demo.label} <span aria-hidden="true">→</span>
+                        <span className="sr-only"> for {title}</span>
+                      </Link>
+                    )
                   ) : (
                     <span className="private-note">{PRIVATE_NOTE}</span>
                   )}
@@ -406,14 +427,13 @@ export default function PortfolioHome({
               </div>
 
               <div className="modal-controls">
-                {previewProject.liveUrl ? (
+                {demoLink(previewProject) ? (
                   <a
-                    href={previewProject.liveUrl}
-                    target="_blank"
-                    rel="noopener"
+                    href={demoLink(previewProject)!.href}
+                    {...(demoLink(previewProject)!.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     className="modal-btn-action"
                   >
-                    Visit Live Site ↗
+                    {previewProject.liveUrl ? "Visit Live Site ↗" : demoLink(previewProject)!.external ? "Open Live Demo ↗" : `${demoLink(previewProject)!.label} →`}
                   </a>
                 ) : (
                   <a

@@ -1,6 +1,6 @@
 import { projects, services, type Project, type Service } from "@/content/site";
 
-export { displayHost, projectHref, serviceHref } from "@/lib/paths";
+export { demoOpenHref, displayHost, projectHref, serviceHref } from "@/lib/paths";
 
 /** A project is published once it has a name and a summary. A live address is optional: private projects have none. */
 export function isPublished(project: Project): boolean {

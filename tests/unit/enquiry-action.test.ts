@@ -1,8 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const mocks = vi.hoisted(() => ({ requestHeaders: new Headers() }));
+const mocks = vi.hoisted(() => ({
+  requestHeaders: new Headers(),
+  configured: true,
+  send: vi.fn(),
+}));
 
 vi.mock("next/headers", () => ({ headers: async () => mocks.requestHeaders }));
+vi.mock("@/lib/mailer", () => ({
+  mailConfigured: () => mocks.configured,
+  sendEnquiryEmail: (message: unknown) => mocks.send(message),
+}));
 vi.mock("next/navigation", () => ({
   redirect: (url: string) => {
     throw new Error(`NEXT_REDIRECT:${url}`);
@@ -32,10 +40,7 @@ function form(values: Record<string, string> = {}) {
 }
 
 const configure = () => {
-  vi.stubEnv("RESEND_API_KEY", "re_test_key");
-  vi.stubEnv("CONTACT_TO_EMAIL", "inbox@orbitech.test");
-  vi.stubEnv("CONTACT_FROM_EMAIL", "OrbiTech <enquiries@orbitech.test>");
-  vi.stubEnv("RESEND_API_URL", "http://mail.test/emails");
+  mocks.configured = true;
 };
 
 type Outcome = EnquiryState | { redirected: string };
@@ -53,17 +58,15 @@ async function run(data: FormData): Promise<Outcome> {
 }
 
 describe("sendEnquiry", () => {
-  const fetchMock = vi.fn();
+  const sendMock = mocks.send;
 
   beforeEach(() => {
     setRequest();
-    fetchMock.mockReset();
-    vi.stubGlobal("fetch", fetchMock);
+    mocks.configured = true;
+    sendMock.mockReset();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
   });
   afterEach(() => {
-    vi.unstubAllEnvs();
-    vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
 
@@ -71,7 +74,7 @@ describe("sendEnquiry", () => {
     configure();
     setRequest({ origin: "https://evil.example" });
     expect(await run(form())).toMatchObject({ status: "forbidden" });
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(sendMock).not.toHaveBeenCalled();
   });
 
   it("refuses cross-site requests that carry no Origin header", async () => {
@@ -90,67 +93,49 @@ describe("sendEnquiry", () => {
     expect(result.status).toBe("invalid");
     expect(result.fieldErrors).toHaveProperty("email");
     expect(result.fieldErrors).toHaveProperty("name");
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(sendMock).not.toHaveBeenCalled();
   });
 
   it("pretends success to bots that fill the honeypot, and sends nothing", async () => {
     configure();
     expect(await run(form({ website: "http://spam.example" }))).toEqual({ redirected: "/contact/thanks" });
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(sendMock).not.toHaveBeenCalled();
   });
 
   it("says plainly when email delivery isn't configured, and doesn't fake success", async () => {
-    vi.stubEnv("RESEND_API_KEY", "");
+    mocks.configured = false;
     const result = (await run(form())) as EnquiryState;
     expect(result.status).toBe("unconfigured");
     expect(result.message).toMatch(/wasn.t sent/);
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(sendMock).not.toHaveBeenCalled();
   });
 
   it("emails the enquiry and redirects to the thank-you page", async () => {
     configure();
-    fetchMock.mockResolvedValue(new Response("{}", { status: 200 }));
+    sendMock.mockResolvedValue({ ok: true });
     const result = await run(form({ company: "Tan & Co", projectType: "Website" }));
 
     expect(result).toEqual({ redirected: "/contact/thanks" });
-    expect(fetchMock).toHaveBeenCalledOnce();
-    const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe("http://mail.test/emails");
-    expect((init.headers as Record<string, string>).Authorization).toBe("Bearer re_test_key");
-    const payload = JSON.parse(init.body as string);
-    expect(payload).toMatchObject({
-      to: ["inbox@orbitech.test"],
-      from: "OrbiTech <enquiries@orbitech.test>",
-      reply_to: "sam@example.com",
-    });
-    expect(payload.subject).toContain("Sam Tan");
-    expect(payload.text).toContain("Project type: Website");
-    expect(payload.text).toContain("We need a new marketing site.");
+    expect(sendMock).toHaveBeenCalledOnce();
+    const message = sendMock.mock.calls[0][0] as { subject: string; text: string; replyTo: string };
+    expect(message.replyTo).toBe("sam@example.com");
+    expect(message.subject).toBe("Project enquiry from Sam Tan (Tan & Co)");
+    expect(message.text).toContain("Name: Sam Tan");
+    expect(message.text).toContain("Project type: Website");
+    expect(message.text).toContain("We need a new marketing site.");
   });
 
   it("reports a mail-service error instead of pretending it worked", async () => {
     configure();
-    fetchMock.mockResolvedValue(new Response("nope", { status: 500 }));
+    sendMock.mockResolvedValue({ ok: false });
     const result = (await run(form())) as EnquiryState;
     expect(result.status).toBe("error");
     expect(result.message).toMatch(/wasn.t sent/);
   });
 
-  it("reports a network failure", async () => {
-    configure();
-    fetchMock.mockRejectedValue(new TypeError("fetch failed"));
-    expect(await run(form())).toMatchObject({ status: "error" });
-  });
-
-  it("never puts the API key in what it returns", async () => {
-    configure();
-    fetchMock.mockResolvedValue(new Response("nope", { status: 401 }));
-    expect(JSON.stringify(await run(form()))).not.toContain("re_test_key");
-  });
-
   it("rate-limits repeated submissions from one address", async () => {
     configure();
-    fetchMock.mockResolvedValue(new Response("{}", { status: 200 }));
+    sendMock.mockResolvedValue({ ok: true });
     const outcomes: Outcome[] = [];
     for (let i = 0; i < 6; i += 1) {
       mocks.requestHeaders = new Headers({
@@ -162,6 +147,6 @@ describe("sendEnquiry", () => {
     }
     expect(outcomes.slice(0, 5).every((o) => "redirected" in o)).toBe(true);
     expect(outcomes[5]).toMatchObject({ status: "rate_limited" });
-    expect(fetchMock).toHaveBeenCalledTimes(5);
+    expect(sendMock).toHaveBeenCalledTimes(5);
   });
 });

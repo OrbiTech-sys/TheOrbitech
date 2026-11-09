@@ -13,7 +13,7 @@ const OPTIONAL = [
   /^site\.booking\.(url|embed)$/,
   /^testimonials$/,
   /^team$/,
-  /^projects\[\d+\]\.(client|year|role|demoNote|liveUrl|stack|brief|approach|results)$/,
+  /^projects\[\d+\]\.(client|year|role|demoNote|liveUrl|stack|brief|approach|results|demos|faqs)$/,
 ];
 
 const todo = [];

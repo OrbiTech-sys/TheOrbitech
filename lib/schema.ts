@@ -181,6 +181,38 @@ export function projectNodes(project: Project): Node[] {
       creator: organizationRef,
     };
   }
-  return [work];
+  const nodes: Node[] = [work];
+
+  // Demo addresses are gated, so these nodes carry names, text and pictures only.
+  if (project.demos.length > 1) {
+    nodes.push({
+      "@type": "ItemList",
+      "@id": `${caseUrl}#demos`,
+      numberOfItems: project.demos.length,
+      itemListElement: project.demos.map((demo, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "CreativeWork",
+          name: demo.name,
+          description: demo.summary,
+          image: absoluteUrl(demo.cover.src),
+          creator: organizationRef,
+        },
+      })),
+    });
+  }
+  if (project.faqs.length > 0) {
+    nodes.push({
+      "@type": "FAQPage",
+      "@id": `${caseUrl}#faq`,
+      mainEntity: project.faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.q,
+        acceptedAnswer: { "@type": "Answer", text: faq.a },
+      })),
+    });
+  }
+  return nodes;
 }
 

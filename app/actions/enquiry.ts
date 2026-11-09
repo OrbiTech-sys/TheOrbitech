@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { site } from "@/content/site";
 import { parseEnquiry, toEnquiryObject, type EnquiryErrors } from "@/lib/enquiry-schema";
+import { mailConfigured, sendEnquiryEmail } from "@/lib/mailer";
 
 export interface EnquiryState {
   status: "idle" | "invalid" | "unconfigured" | "rate_limited" | "forbidden" | "error";
@@ -13,7 +14,6 @@ export interface EnquiryState {
 
 const WINDOW_MS = 10 * 60 * 1000;
 const MAX_PER_WINDOW = 5;
-const DEFAULT_MAIL_ENDPOINT = "https://api.resend.com/emails";
 
 // Per-instance limiter. It stops casual abuse; use a shared store such as
 // Redis if the site ever runs on several instances.
@@ -89,10 +89,7 @@ export async function sendEnquiry(_previous: EnquiryState, formData: FormData): 
     };
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.CONTACT_TO_EMAIL;
-  const from = process.env.CONTACT_FROM_EMAIL;
-  if (!apiKey || !to || !from) {
+  if (!mailConfigured()) {
     return {
       status: "unconfigured",
       message: "Online enquiries aren’t switched on yet, so this message wasn’t sent.",
@@ -114,35 +111,17 @@ export async function sendEnquiry(_previous: EnquiryState, formData: FormData): 
     enquiry.message,
   ].join("\n");
 
-  let failed: EnquiryState | null = null;
-  try {
-    const response = await fetch(process.env.RESEND_API_URL || DEFAULT_MAIL_ENDPOINT, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from,
-        to: [to],
-        reply_to: enquiry.email,
-        subject: `Project enquiry from ${enquiry.name}${enquiry.company ? ` (${enquiry.company})` : ""}`,
-        text: body,
-      }),
-      signal: AbortSignal.timeout(10_000),
-    });
-    if (!response.ok) {
-      console.error("Enquiry email failed with status", response.status);
-      failed = {
-        status: "error",
-        message: "The mail service returned an error, so your message wasn’t sent. Please try again in a moment.",
-      };
-    }
-  } catch {
-    console.error("Enquiry email request did not complete");
-    failed = {
+  const sent = await sendEnquiryEmail({
+    subject: `Project enquiry from ${enquiry.name}${enquiry.company ? ` (${enquiry.company})` : ""}`,
+    text: body,
+    replyTo: enquiry.email,
+  });
+  if (!sent.ok) {
+    return {
       status: "error",
-      message: "We couldn’t reach the mail service, so your message wasn’t sent. Check your connection and try again.",
+      message: "The mail service returned an error, so your message wasn’t sent. Please try again in a moment.",
     };
   }
-  if (failed) return failed;
 
   // Outside try/catch: redirect() works by throwing.
   redirect("/contact/thanks");

@@ -51,11 +51,13 @@ export default function WorkPage() {
         <div className="prose">
           <h2 id="demos-title">What our demos show</h2>
           <p>
-            The OrbiTech Solutions shows its work as four live demos and two private projects. The live demos are Orbit Operations Copilot, a CRM with an AI
-            copilot; Property Management System, a property operations workspace; AidoChat, an AI document chat that cites its sources;
-            and AI E-commerce Experience, a storefront with natural-language product search. The private projects are a WhatsApp business
-            chatbot and a bulk email agent. They are listed without public links to respect confidentiality. Demos and prototypes are
-            labelled as such, and each case study says what the project does and which service area it belongs to.
+            The OrbiTech Solutions shows its work as seven live demos and two private projects. The live demos are three restaurant
+            website demos, a hair salon website, an AI voice receptionist, Orbit Operations Copilot (a CRM with an AI copilot), Property
+            Management System (a property operations workspace), AidoChat (an AI document chat that cites its sources) and AI E-commerce
+            Experience (a storefront with natural-language product search). The private projects are a WhatsApp business chatbot and a
+            bulk email agent. Some demos open after a quick email check; private work is listed without public links to respect
+            confidentiality. Demos and prototypes are labelled as such, and each case study says what the project does and which
+            service area it belongs to.
           </p>
         </div>
       </section>
