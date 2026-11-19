@@ -1,10 +1,19 @@
 import type { Metadata } from "next";
+import AtAGlance from "@/components/AtAGlance";
+import ClosingCta from "@/components/ClosingCta";
 import JsonLd from "@/components/JsonLd";
-import PortfolioHome from "@/components/PortfolioHome";
-import { home, meta, process as processSteps, projects, services, site } from "@/content/site";
+import ProcessSection from "@/components/ProcessSection";
+import CapabilityStrip from "@/components/sections/CapabilityStrip";
+import FeaturedProjects from "@/components/sections/FeaturedProjects";
+import Hero from "@/components/sections/Hero";
+import IndustriesGrid from "@/components/sections/IndustriesGrid";
+import ServicesOverview from "@/components/sections/ServicesOverview";
+import WhyOrbitech from "@/components/sections/WhyOrbitech";
+import TechStackSection from "@/components/TechStackSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import { meta, testimonials } from "@/content/site";
 import { glanceRows } from "@/lib/glance";
 import { staticPages } from "@/lib/pages";
-import { showcaseProjects } from "@/lib/projects";
 import { webPageNode } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
 
@@ -25,17 +34,17 @@ export default function Home() {
           }),
         ]}
       />
-      <PortfolioHome
-        siteName={site.name}
-        description={site.description}
-        slogan={home.slogan}
-        closingText={home.closing.text}
-        email={site.email}
-        glanceRows={glanceRows}
-        services={services}
-        processSteps={processSteps}
-        projects={showcaseProjects(projects)}
-      />
+      <Hero />
+      <CapabilityStrip />
+      <ServicesOverview />
+      <FeaturedProjects />
+      <IndustriesGrid />
+      <ProcessSection />
+      <WhyOrbitech />
+      {/* Approved testimonials when there are any; until then, the technology the studio genuinely uses. */}
+      {testimonials.length > 0 ? <TestimonialsSection /> : <TechStackSection />}
+      <AtAGlance id="glance-title" title="At a glance" rows={glanceRows} />
+      <ClosingCta />
     </>
   );
 }

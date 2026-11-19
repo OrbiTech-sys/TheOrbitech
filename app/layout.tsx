@@ -1,28 +1,40 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { homeAnchors, nav, site } from "@/content/site";
+import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import Footer from "@/components/layout/Footer";
+import Navbar, { type NavItem } from "@/components/layout/Navbar";
+import { industryPages } from "@/content/industries";
+import { servicePages } from "@/content/offerings";
+import { nav, site } from "@/content/site";
 import { siteUrl } from "@/lib/site-config";
-import "../tokens.css";
 import "./globals.css";
-import "./portfolio.css";
-import "./inner.css";
+import "./styles/tokens.css";
+import "./styles/base.css";
+import "./styles/layout.css";
+import "./styles/components.css";
+import "./styles/home.css";
+import "./styles/pages.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
   display: "swap",
 });
 
 export const viewport: Viewport = {
-  themeColor: "#090d1b",
+  themeColor: "#080b12",
+  colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -40,18 +52,41 @@ export const metadata: Metadata = {
   authors: [{ name: site.name }],
 };
 
+/** The primary navigation: the links from content, with a menu under Services and Industries. */
+const navItems: NavItem[] = nav.map((item) => {
+  if (item.href === "/services") {
+    return {
+      ...item,
+      menu: {
+        allLabel: "All services",
+        links: servicePages.map((page) => ({ label: page.navLabel, href: `/services/${page.slug}`, text: page.navText })),
+      },
+    };
+  }
+  if (item.href === "/industries") {
+    return {
+      ...item,
+      menu: {
+        allLabel: "All industries",
+        links: industryPages.map((page) => ({ label: page.name, href: `/industries/${page.slug}`, text: page.summary })),
+      },
+    };
+  }
+  return item;
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
       <body>
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        <Navbar links={[...nav, ...homeAnchors]} siteName={site.name} />
+        <Navbar items={navItems} siteName={site.name} shortName={site.shortName} />
         <main id="main" tabIndex={-1}>
           {children}
         </main>

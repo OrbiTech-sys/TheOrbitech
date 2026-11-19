@@ -1,0 +1,77 @@
+/* ─────────────────────────────────────────────────────────────
+ * The OrbiTech Solutions: design tokens
+ *
+ * Every colour, font, radius, space and timing on the site comes from here.
+ * Need a new value? Add a named token first, then use it.
+ *
+ * Contrast (WCAG): text on bg 17.9:1, secondary text on cards 6.4:1, accent text
+ * on cards 7.4:1, white on the solid button 5.3:1. --muted is for borders, icons
+ * and decoration only: it is under 4.5:1 and is never used for reading text.
+ * ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Surfaces */
+  --bg: #080b12;
+  --bg-2: #0d111b;
+  --card: #121826;
+  --elevated: #171e2d;
+  --border: #252c3a;
+  --border-strong: #343d50;
+
+  /* Brand */
+  --accent: #8065ff; /* the brand purple: glows, borders, icons, gradients */
+  --accent-2: #438bff; /* blue: gradients and highlights only */
+  --accent-text: #a99bff; /* the purple as small text on dark surfaces */
+  --accent-solid: #6b4ef0; /* the purple under white text (buttons) */
+  --accent-solid-hover: #7658f6;
+
+  /* Text */
+  --text: #f5f6fa;
+  --text-2: #929bad;
+  --muted: #687386;
+
+  /* Status */
+  --danger: #ff8d8d;
+  --success: #6fdc9d;
+
+  /* Type */
+  --font-display: var(--font-space-grotesk), "Segoe UI", system-ui, sans-serif;
+  --font-body: var(--font-inter), "Segoe UI", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Shape */
+  --radius-sm: 10px;
+  --radius: 14px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --maxw: 1200px;
+  --maxw-narrow: 760px;
+  --gutter: clamp(20px, 4.5vw, 40px);
+  --header-h: 68px;
+
+  /* Space (4px base) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --section: clamp(72px, 9vw, 120px);
+
+  /* Light and motion */
+  --gradient-accent: linear-gradient(120deg, #b2a6ff 0%, #8065ff 45%, #438bff 100%);
+  --ring: 0 0 0 1px var(--border);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 24px 48px -24px rgba(0, 0, 0, 0.6);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.28s;
+  --dur-long: 0.6s;
+
+  /* Stacking */
+  --z-header: 50;
+  --z-drawer: 60;
+}

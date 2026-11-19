@@ -20,6 +20,9 @@ export interface Img {
 export const projectTypes = ["Restaurant", "Salon", "AI", "SaaS", "Website", "Web app"] as const;
 export type ProjectType = (typeof projectTypes)[number];
 
+/** The groups shown as filters on /work. */
+export const projectCategories = ["AI & Automation", "SaaS Platforms", "Web Applications", "E-commerce"] as const;
+export type ProjectCategory = (typeof projectCategories)[number];
 /** One live sample inside a project. Its real address lives in lib/demo-targets.ts, on the server only. */
 export interface Demo {
   /** Used in /demo/<id>. Lowercase words and hyphens. */
@@ -47,6 +50,8 @@ export interface Project {
   shortName?: string;
   client: string | null;
   type: ProjectType | null;
+  /** The filter group on /work */
+  category: ProjectCategory;
   year: string | null;
   /** Your part in the project, e.g. "Design, build, hosting" */
   role: string | null;
@@ -73,10 +78,12 @@ export interface Project {
   cover: Img | null;
   desktop: Img | null;
   mobile: Img | null;
-  /** Paragraphs. What the client needed. */
+  /** Paragraphs. The business problem the project addresses. */
   brief: string[];
-  /** Paragraphs. What you did and why. */
+  /** Paragraphs. What was built and why. */
   approach: string[];
+  /** How it is built, as titled paragraphs. Left empty until the owner supplies verified detail. */
+  architecture: { title: string; text: string }[];
   /** Only real, measured outcomes, each with where the number came from. */
   results: { label: string; value: string; source: string }[];
   /** Live samples that open after the visitor confirms an email address. */
@@ -169,21 +176,17 @@ export const site = {
   /** Update when you publish. Fixed here because pages are prerendered. */
   copyrightYear: 2026,
   /** Real date of the last meaningful content update. Drives dateModified and the sitemap. */
-  contentUpdated: "2026-11-09",
+  contentUpdated: "2026-11-19",
 };
 
 export const nav = [
+  { label: "Home", href: "/" },
   { label: "Services", href: "/services" },
+  { label: "Industries", href: "/industries" },
   { label: "Work", href: "/work" },
   { label: "Studio", href: "/studio" },
+  { label: "Insights", href: "/insights" },
   { label: "Contact", href: "/contact" },
-];
-
-/** Sections of the home page, linked from the header. */
-export const homeAnchors = [
-  { label: "Capabilities", href: "/#capabilities" },
-  { label: "Projects", href: "/#projects" },
-  { label: "Our approach", href: "/#approach" },
 ];
 
 /* ─────────────────────────────────────────────────────────────
@@ -218,6 +221,21 @@ export const meta = {
     description:
       "Contact The OrbiTech Solutions to start an AI automation, chatbot or web project. Send a message or email nova@theorbitechsolution.com and we reply by email.",
   },
+  industries: {
+    title: "AI & Software Solutions by Industry | The OrbiTech Solutions",
+    description:
+      "How AI and software solutions apply in real estate, e-commerce, restaurants, healthcare and professional services, with example workflows and related demos.",
+  },
+  insights: {
+    title: "AI & Software Insights | The OrbiTech Solutions",
+    description:
+      "Insights on AI engineering, automation and software development from The OrbiTech Solutions. Articles are in progress and are marked as drafts until published.",
+  },
+  terms: {
+    title: "Terms of Use for This Website | The OrbiTech Solutions",
+    description:
+      "The terms for using the website of The OrbiTech Solutions: what the demos are, how the content may be used, and how project work is agreed in writing.",
+  },
   privacy: {
     title: "Privacy Policy | The OrbiTech Solutions",
     description:
@@ -230,13 +248,38 @@ export const meta = {
  * ───────────────────────────────────────────────────────────── */
 
 export const home = {
-  /** The H1: says what the company does, in plain words. */
-  headline: "AI automation and web development for growing businesses",
-  /** Supporting line under the H1 */
+  /** Small line above the H1 */
+  eyebrow: "AI ENGINEERING · SOFTWARE · AUTOMATION",
+  /** The H1 */
+  headline: "Engineering Intelligent Systems for a Smarter Business.",
+  lede: "We build AI-powered products, intelligent automation, and scalable digital solutions that help businesses operate smarter and grow faster.",
+  /** Supporting line used in structured data and the footer */
   slogan: "Make work smarter. Make growth real.",
+  /** The capability strip under the hero. Capabilities only: no figures and no client names. */
+  capabilities: ["AI Engineering", "Custom Software", "Intelligent Automation", "Data Intelligence"],
+  /** What makes the studio different. Each point restates something the site already says elsewhere. */
+  whyOrbitech: [
+    {
+      title: "Business-First Engineering",
+      text: "We work from the problem outward, not from a tool looking for a use case. Every project starts with your challenge and your current process.",
+    },
+    {
+      title: "Practical AI Implementation",
+      text: "AI is connected to your documents and tools, tested on real examples and kept under a person's review where it matters. Our work page has live demos you can try.",
+    },
+    {
+      title: "Transparent Development",
+      text: "You see working software every two weeks, prices are written down per milestone, and you talk directly to the people doing the work.",
+    },
+    {
+      title: "Scalable Architecture",
+      text: "Cloud-based systems with APIs, role-based access control and audit logging, built in your own repository and cloud accounts from the first day.",
+    },
+  ],
   closing: {
-    heading: "Have a project in mind?",
-    text: "Tell us what slows your team down, where customers need faster answers, or which systems should work better together.",
+    heading: "Let's Turn Your Next Big Idea Into Reality.",
+    text: "From intelligent automation to custom software, let's build something meaningful.",
+    cta: "Let's Talk About Your Project",
   },
 };
 
@@ -368,8 +411,8 @@ export const process: { title: string; text: string }[] = [
   { title: "Discover", text: "Understand the challenge and current process." },
   { title: "Define", text: "Agree scope, priorities, and success measures." },
   { title: "Prototype", text: "Demonstrate the proposed workflow early." },
-  { title: "Build and integrate", text: "Implement the approved solution." },
-  { title: "Validate", text: "Test, improve, and plan future iterations." },
+  { title: "Build & Integrate", text: "Implement the approved solution." },
+  { title: "Launch & Improve", text: "Test, launch, and plan future iterations." },
 ];
 
 export const securityPractices: string[] = [
@@ -406,7 +449,7 @@ export const faqs: { question: string; answer: string }[] = [
   {
     question: "How does a project run from discovery to launch?",
     answer:
-      "A project runs in five steps. Discover: we learn the challenge and current process. Define: we agree scope, priorities and success measures. Prototype: we demonstrate the proposed workflow early. Build and integrate: we implement the approved solution. Validate: we test, improve and plan future iterations. Scope decides how long each step takes.",
+      "A project runs in five steps. Discover: we learn the challenge and current process. Define: we agree scope, priorities and success measures. Prototype: we demonstrate the proposed workflow early. Build and integrate: we implement the approved solution. Launch and improve: we test, launch and plan future iterations. Scope decides how long each step takes.",
   },
   {
     question: "What do we need from a client to start?",
@@ -449,6 +492,7 @@ const emptyProject = {
   brief: [] as string[],
   approach: [] as string[],
   results: [] as Project["results"],
+  architecture: [] as Project["architecture"],
   demos: [] as Demo[],
   faqs: [] as Faq[],
 };
@@ -465,6 +509,7 @@ export const projects: Project[] = [
     client: "Self-initiated demos",
     type: "Restaurant",
     kind: "Live demo",
+    category: "Web Applications",
     year: "2026",
     role: "Design and build",
     summary:
@@ -551,6 +596,7 @@ export const projects: Project[] = [
     client: "Self-initiated demo",
     type: "Salon",
     kind: "Live demo",
+    category: "Web Applications",
     year: "2026",
     role: "Design and build",
     summary:
@@ -610,6 +656,7 @@ export const projects: Project[] = [
     client: "Our own product demo",
     type: "AI",
     kind: "Live demo",
+    category: "AI & Automation",
     year: "2026",
     role: "Design and build",
     summary:
@@ -666,6 +713,7 @@ export const projects: Project[] = [
     name: "OrbitOS",
     type: "SaaS",
     kind: "Live demo",
+    category: "SaaS Platforms",
     summary:
       "An AI-powered business operating system that connects CRM, sales, inventory, invoicing and operations in one workspace, with a copilot that surfaces what needs attention.",
     seoTitle: "OrbitOS: AI Business OS Demo",
@@ -699,6 +747,13 @@ export const projects: Project[] = [
       width: 390,
       height: 844,
     },
+    brief: [
+      "Growing businesses often run sales, stock and invoicing in separate tools, so one order is typed in more than once and nothing shows what needs attention. OrbitOS is a demo of how those jobs can share a single record.",
+    ],
+    approach: [
+      "OrbitOS connects a CRM, quotations, orders, invoices and inventory in one workspace. A quotation converts to an order and an invoice without re-keying and reserves stock along the way, and dashboards show revenue, receivables, pipeline and stock together.",
+      "A copilot answers from the workspace's own records and flags overdue invoices, low stock and leads that need follow-up, so attention goes where it is needed.",
+    ],
   },
   {
     ...emptyProject,
@@ -706,6 +761,7 @@ export const projects: Project[] = [
     name: "Property Management System",
     type: "SaaS",
     kind: "Live demo",
+    category: "SaaS Platforms",
     summary:
       "A property-operations workspace concept for property/unit information, leasing activity, maintenance requests, payment records, and portfolio visibility.",
     seoTitle: "Property Management System Demo",
@@ -739,6 +795,13 @@ export const projects: Project[] = [
       width: 390,
       height: 844,
     },
+    brief: [
+      "Property teams track units, leasing, maintenance and payments in different places, which makes it hard to see what is happening across a portfolio. This demo explores a single workspace for those records.",
+    ],
+    approach: [
+      "The workspace gives an overview of properties and units with occupancy and resident details, tracks maintenance requests from intake to vendor resolution, shows a leasing pipeline with upcoming tours, and records payment balances and activity.",
+      "The dashboard is marked as a sample view, so the figures shown are examples.",
+    ],
   },
   {
     ...emptyProject,
@@ -746,6 +809,7 @@ export const projects: Project[] = [
     name: "AidoChat / DocuMind AI",
     type: "AI",
     kind: "Live demo",
+    category: "AI & Automation",
     summary:
       "An AI document-intelligence demo. Upload documents, ask questions and get answers that cite the page and passage they came from.",
     seoTitle: "AidoChat: AI Document Chat Demo",
@@ -780,6 +844,13 @@ export const projects: Project[] = [
       width: 1200,
       height: 750,
     },
+    brief: [
+      "Long documents hide the answers people need, and a chatbot that answers from general knowledge cannot be trusted with them. AidoChat is a demo of document question-answering that shows where each answer came from.",
+    ],
+    approach: [
+      "AidoChat reads PDFs, scanned images, Word files and tables, using OCR for scans. It combines keyword search with semantic search, answers questions about selected documents and cites the page and the highlighted passage.",
+      "It can decline to answer when the answer is not in the documents, and it has role-based access for admins, editors and viewers.",
+    ],
   },
   {
     ...emptyProject,
@@ -787,6 +858,7 @@ export const projects: Project[] = [
     name: "AI E-commerce Experience",
     type: "Web app",
     kind: "Live demo",
+    category: "E-commerce",
     summary:
       "An AI-oriented commerce demo featuring natural-language product discovery, product collections, product details, and a luxury storefront experience.",
     seoTitle: "AI E-commerce Product Search Demo",
@@ -820,6 +892,12 @@ export const projects: Project[] = [
       width: 1200,
       height: 750,
     },
+    brief: [
+      "Shoppers describe an occasion, an intent or a budget, and keyword search cannot read that. This demo explores how natural-language discovery changes browsing in a luxury storefront.",
+    ],
+    approach: [
+      "Visitors can search by occasion, intent and budget, and an AI concierge suggests gifts and styles. Collections cover jewelry, watches, leather goods, perfume and audio, with sorting and filters by price band, occasion and stock, and product detail views.",
+    ],
   },
   {
     ...emptyProject,
@@ -827,6 +905,7 @@ export const projects: Project[] = [
     name: "WhatsApp Business Chatbot",
     type: "AI",
     kind: "Private project",
+    category: "AI & Automation",
     summary:
       "Custom WhatsApp chatbot concept for business and e-commerce customer service, FAQs, lead capture, and customer hand-off. The link is withheld for client and company privacy.",
     seoTitle: "WhatsApp Business Chatbot Concept",
@@ -859,6 +938,12 @@ export const projects: Project[] = [
       width: 1200,
       height: 675,
     },
+    brief: [
+      "Businesses and online shops receive the same customer questions on WhatsApp all day. This private concept explores a chatbot that handles them and passes the conversation to a person when needed.",
+    ],
+    approach: [
+      "The concept covers customer service, answers to frequently asked questions, lead capture and hand-off to a person. The link is withheld for client and company privacy, and details are shared on request where authorized.",
+    ],
   },
   {
     ...emptyProject,
@@ -866,6 +951,7 @@ export const projects: Project[] = [
     name: "Bulk Email Agent / Sender",
     type: "AI",
     kind: "Private project",
+    category: "AI & Automation",
     summary:
       "Bulk email workflow tool concept for sending and managing outreach campaigns. The link is withheld for client and company privacy.",
     seoTitle: "Bulk Email Agent Outreach Concept",
@@ -893,6 +979,12 @@ export const projects: Project[] = [
       width: 1200,
       height: 675,
     },
+    brief: [
+      "Outreach campaigns involve repetitive steps: preparing lists, sending and tracking messages. This private concept explores a workflow tool for sending and managing campaigns.",
+    ],
+    approach: [
+      "The concept covers sending and managing outreach campaigns as an automated workflow. The link is withheld for client and company privacy.",
+    ],
   },
 ];
 
@@ -910,6 +1002,23 @@ export const studio = {
     "It works from the problem outward, not from a tool looking for a use case. Each project starts with the challenge and the current process, agrees scope and success measures, shows a prototype of the proposed workflow early, and then builds, integrates and validates the approved solution.",
     "Selected work includes seven live demos and two private projects. Demos and prototypes are labelled as demos and prototypes, and private work is listed without a public link to respect confidentiality.",
   ],
+  /** The one-line statement of purpose and where it is headed. Draft wording: the owner should confirm it. */
+  mission: "To help businesses operate smarter by building practical AI and software that fit how they already work.",
+  vision: "Businesses of every size using intelligent systems to spend less time on repetitive work and more on what they do best.",
+  philosophy: [
+    { title: "Problem first", text: "Each project starts with the challenge and the current process, not with a tool looking for a use case." },
+    { title: "Show the work early", text: "We demonstrate the proposed workflow with a prototype before the full build, so decisions are made on something real." },
+    { title: "People stay in the loop", text: "Where a mistake would matter, the system drafts and a person approves." },
+    { title: "You keep what you pay for", text: "Work lives in your repository and your cloud accounts from the first day." },
+  ],
+  /** The five things clients can rely on, each already stated elsewhere on the site. */
+  differentiators: [
+    { title: "Repository ownership", text: "You own the code, the repositories and the accounts from the first day." },
+    { title: "Direct developer communication", text: "You talk to the people doing the work, with no account manager in between." },
+    { title: "Working software demonstrations", text: "You see working software every two weeks, and the work page has live demos you can try." },
+    { title: "Milestone-based development", text: "Prices are written down per milestone before work begins." },
+    { title: "Transparent collaboration", text: "Scope, priorities and success measures are agreed before the build, and demonstrated early with a prototype." },
+  ],
   workingAgreements: [
     "You own the code, the repositories and the accounts from the first day.",
     "You see working software every two weeks, not at the end.",
@@ -926,23 +1035,23 @@ export const team: TeamMember[] = [];
 
 export const skills: { discipline: string; tools: string[] }[] = [
   {
-    discipline: "Design and front end",
+    discipline: "Frontend",
     tools: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Three.js", "WebSockets"],
   },
   {
-    discipline: "Back end and APIs",
+    discipline: "Backend",
     tools: ["Node.js", "NestJS", "Python", "FastAPI", "Go", "GraphQL", "REST", "Kafka"],
   },
   {
-    discipline: "Data",
+    discipline: "Databases",
     tools: ["PostgreSQL", "Redis", "pgvector", "TimescaleDB", "Prisma", "MongoDB"],
   },
   {
-    discipline: "AI",
+    discipline: "AI & Machine Learning",
     tools: ["OpenAI API", "Anthropic API", "LangChain", "LlamaIndex", "Hugging Face"],
   },
   {
-    discipline: "Cloud and DevOps",
+    discipline: "Cloud & DevOps",
     tools: ["AWS", "Google Cloud", "Vercel", "Docker", "Kubernetes", "Cloudflare", "GitHub Actions", "Terraform"],
   },
 ];

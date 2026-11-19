@@ -1,24 +1,21 @@
+import SectionHeading from "@/components/ui/SectionHeading";
 import { testimonials } from "@/content/site";
 
-/** Real testimonials only. With none provided, the whole section is left out. */
+/** Real, approved testimonials only. With none listed, nothing is rendered. */
 export default function TestimonialsSection() {
   if (testimonials.length === 0) return null;
-
   return (
     <section className="section" aria-labelledby="testimonials-title">
       <div className="wrap">
-        <h2 id="testimonials-title" className="h2 section-head">
-          What clients say
-        </h2>
-        <div className="quotes">
+        <SectionHeading eyebrow="Testimonials" title="What clients say" id="testimonials-title" />
+        <div className="grid grid--3">
           {testimonials.map((t) => (
-            <figure key={`${t.name}-${t.company}`} className="quote">
-              <blockquote className="quote__text">
-                <p>{t.quote}</p>
-              </blockquote>
-              <figcaption className="quote__by">
-                <span className="quote__name">{t.name}</span>
-                <span>
+            <figure key={`${t.name}-${t.company}`} className="card reveal">
+              <blockquote className="card__text">“{t.quote}”</blockquote>
+              <figcaption>
+                <strong>{t.name}</strong>
+                <span className="card__text">
+                  {" "}
                   {t.role}, {t.company}
                 </span>
               </figcaption>

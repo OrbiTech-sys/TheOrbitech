@@ -36,12 +36,14 @@ export default function PrivacyPage() {
 
       <PageIntro
         crumbs={crumbs}
+        eyebrow="Legal"
         title="Privacy policy"
         lede="This site collects very little. This page says exactly what, why, and how to have it removed."
       />
 
-      <section className="wrap" aria-label="Privacy policy">
-        <div className="prose prose--narrow">
+      <section className="section section--tight legal" aria-label="Privacy policy">
+        <div className="wrap wrap--narrow">
+          <div className="prose">
           <h2>Who we are</h2>
           <p>
             This website is run by {owner}
@@ -118,6 +120,7 @@ export default function PrivacyPage() {
             {privacy.updated && <>Last updated: {privacy.updated}. </>}
             If we change what the site collects, we change this page first.
           </p>
+          </div>
         </div>
       </section>
     </>

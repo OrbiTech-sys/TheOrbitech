@@ -1,3 +1,6 @@
+import { industryPages } from "@/content/industries";
+import { isPublishedInsight, insights } from "@/content/insights";
+import { servicePages } from "@/content/offerings";
 import { privacy, projects, site } from "@/content/site";
 import { isPublished, projectHref } from "@/lib/projects";
 
@@ -14,12 +17,19 @@ export interface PageEntry {
   indexable: boolean;
 }
 
-export const staticPages: Record<"home" | "services" | "work" | "studio" | "contact" | "privacy", PageEntry> = {
+export const staticPages: Record<
+  "home" | "services" | "industries" | "work" | "studio" | "insights" | "contact" | "privacy" | "terms",
+  PageEntry
+> = {
   home: { path: "/", updated: site.contentUpdated, indexable: true },
   services: { path: "/services", updated: site.contentUpdated, indexable: true },
+  industries: { path: "/industries", updated: site.contentUpdated, indexable: true },
   work: { path: "/work", updated: site.contentUpdated, indexable: true },
   studio: { path: "/studio", updated: site.contentUpdated, indexable: true },
+  insights: { path: "/insights", updated: site.contentUpdated, indexable: true },
   contact: { path: "/contact", updated: site.contentUpdated, indexable: true },
+  // Plain site terms: useful to link, not something to rank. Kept out of search results.
+  terms: { path: "/terms", updated: site.contentUpdated, indexable: false },
   // The privacy text is not complete until a retention period is supplied.
   privacy: { path: "/privacy", updated: site.contentUpdated, indexable: Boolean(privacy.retention) },
 };
@@ -27,6 +37,12 @@ export const staticPages: Record<"home" | "services" | "work" | "studio" | "cont
 export function allPages(): PageEntry[] {
   return [
     ...Object.values(staticPages),
+    ...servicePages.map((page) => ({ path: `/services/${page.slug}`, updated: page.updated, indexable: true })),
+    ...industryPages.map((page) => ({ path: `/industries/${page.slug}`, updated: page.updated, indexable: true })),
+    // Drafts are never listed: only an article with a real body and a real date reaches the sitemap.
+    ...insights
+      .filter(isPublishedInsight)
+      .map((article) => ({ path: `/insights/${article.slug}`, updated: article.published as string, indexable: true })),
     ...projects.filter(isPublished).map((project) => ({
       path: projectHref(project),
       updated: project.updated,

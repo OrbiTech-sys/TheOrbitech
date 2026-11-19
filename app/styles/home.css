@@ -1,0 +1,410 @@
+/* ─────────────────────────────────────────────────────────────
+ * Home page sections: hero, capability strip, services, projects,
+ * industries, why, technology, at a glance.
+ * ───────────────────────────────────────────────────────────── */
+
+/* ── Hero ────────────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  padding-block: clamp(40px, 6vw, 88px) clamp(56px, 7vw, 104px);
+  overflow: clip;
+}
+
+/* Faint grid that fades out toward the edges: engineering paper, not decoration for its own sake */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 20%, transparent 75%);
+}
+
+.hero__grid {
+  display: grid;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 960px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  }
+}
+
+.hero__copy {
+  display: grid;
+  gap: var(--s-5);
+  justify-items: start;
+}
+
+.hero__title {
+  font-size: clamp(2.5rem, 6.2vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  max-width: 14ch;
+}
+
+.hero__lede {
+  max-width: 34rem;
+  color: var(--text-2);
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-2);
+}
+
+@media (max-width: 479px) {
+  .hero__actions .btn {
+    width: 100%;
+  }
+}
+
+/* ── Hero visual ─────────────────────────────────────────── */
+
+.hero-visual {
+  position: relative;
+  width: min(100%, 540px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+.hero-visual__glow {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(128, 101, 255, 0.42), rgba(67, 139, 255, 0.12) 55%, transparent 72%);
+  filter: blur(38px);
+}
+
+.hero-visual__svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hv-spin {
+  transform-box: view-box;
+  transform-origin: 280px 280px;
+}
+
+@keyframes hv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hv-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+.hv-spin--a {
+  animation: hv-spin 110s linear infinite;
+}
+
+.hv-spin--b {
+  animation: hv-spin 85s linear infinite reverse;
+}
+
+.hv-spin--c {
+  animation: hv-spin 140s linear infinite;
+}
+
+.hv-chip,
+.hv-panel {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: rgba(18, 24, 38, 0.82);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.8);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  animation: hv-float 8s ease-in-out infinite;
+}
+
+.hv-chip {
+  padding: 7px 13px;
+}
+
+.hv-chip i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-text);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.hv-chip--1 {
+  top: 12%;
+  left: 2%;
+}
+
+.hv-chip--2 {
+  top: 24%;
+  right: -1%;
+  animation-delay: -2.5s;
+}
+
+.hv-chip--3 {
+  bottom: 30%;
+  left: -2%;
+  animation-delay: -4s;
+}
+
+.hv-chip--4 {
+  bottom: 9%;
+  right: 6%;
+  animation-delay: -1.4s;
+}
+
+.hv-panel {
+  bottom: 8%;
+  left: 4%;
+  display: grid;
+  gap: 3px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  color: var(--text-2);
+  animation-delay: -3s;
+}
+
+.hv-panel__title {
+  margin-bottom: 4px;
+  color: var(--accent-text);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.65rem;
+}
+
+.hv-panel b {
+  color: var(--accent-text);
+  font-weight: 500;
+}
+
+@media (max-width: 639px) {
+  .hv-panel,
+  .hv-chip--3 {
+    display: none;
+  }
+  .hv-chip {
+    font-size: 0.66rem;
+    padding: 5px 10px;
+  }
+}
+
+/* ── Capability strip ────────────────────────────────────── */
+
+.strip {
+  border-block: 1px solid var(--border);
+  background: rgba(13, 17, 27, 0.6);
+}
+
+.strip__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-3) 0;
+  padding-block: var(--s-5);
+}
+
+.strip__list li {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: clamp(14px, 3vw, 36px);
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.strip__list li + li {
+  border-left: 1px solid var(--border-strong);
+}
+
+@media (max-width: 639px) {
+  .strip__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-3);
+  }
+  .strip__list li {
+    justify-content: center;
+    padding-inline: 0;
+    border: 0 !important;
+    text-align: center;
+    font-size: 0.7rem;
+  }
+}
+
+/* ── Services ────────────────────────────────────────────── */
+
+.services-grid .card {
+  gap: var(--s-4);
+}
+
+.services-grid .mini-list {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-block: var(--s-1);
+}
+
+.section-more {
+  margin-top: var(--s-6);
+}
+
+/* ── Projects ────────────────────────────────────────────── */
+
+.project-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.project-card:hover,
+.project-card:focus-within {
+  border-color: rgba(128, 101, 255, 0.55);
+  transform: translateY(-3px);
+}
+
+.project-card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-2);
+}
+
+.project-card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.8s var(--ease);
+}
+
+.project-card:hover .project-card__media img {
+  transform: scale(1.035);
+}
+
+/* a soft fade where the screenshot meets the text */
+.project-card__media::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 40%;
+  background: linear-gradient(transparent, rgba(18, 24, 38, 0.6));
+  pointer-events: none;
+}
+
+.project-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: clamp(20px, 2.4vw, 28px);
+}
+
+.project-card__title {
+  font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+}
+
+.project-card .link-arrow {
+  margin-top: auto;
+  padding-top: var(--s-2);
+}
+
+/* ── Why, technology, glance ─────────────────────────────── */
+
+.why__index {
+  color: var(--accent-text);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.card--cta {
+  border-style: dashed;
+  border-color: var(--border-strong);
+  background: transparent;
+  box-shadow: none;
+  justify-content: center;
+}
+
+.tech-grid .card {
+  gap: var(--s-4);
+}
+
+.glance {
+  display: grid;
+  gap: var(--s-5);
+  padding: clamp(24px, 3.5vw, 40px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+}
+
+.glance h2 {
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+}
+
+.glance dl {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.glance dl > div {
+  display: grid;
+  gap: var(--s-1) var(--s-5);
+  padding-block: var(--s-4);
+  border-top: 1px solid var(--border);
+}
+
+@media (min-width: 760px) {
+  .glance dl > div {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+}
+
+.glance dt {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  padding-top: 3px;
+}
+
+.glance dd {
+  margin: 0;
+  color: var(--text-2);
+}

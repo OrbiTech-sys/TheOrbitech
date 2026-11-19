@@ -1,3 +1,4 @@
+import { servicePageById } from "@/content/offerings";
 import { projects, services, site, type Project } from "@/content/site";
 import { getService, isPublished, projectHref } from "@/lib/projects";
 import { absoluteUrl, siteUrl } from "@/lib/site-config";
@@ -118,16 +119,54 @@ export function webPageNode({ type = "WebPage", path, name, description, dateMod
 
 /** One Service per service area. No offers and no prices. */
 export function serviceNodes(): Node[] {
-  return services.map((service) => ({
-    "@type": "Service",
-    "@id": `${absoluteUrl("/services")}#${service.id}`,
-    name: service.heading,
-    serviceType: service.serviceType,
-    description: service.summary,
-    url: `${absoluteUrl("/services")}#${service.id}`,
-    provider: organizationRef,
-    areaServed: site.areaServed,
-  }));
+  return services.map((service) => {
+    const page = servicePageById(service.id);
+    const url = page ? absoluteUrl(`/services/${page.slug}`) : `${absoluteUrl("/services")}#${service.id}`;
+    return {
+      "@type": "Service",
+      "@id": `${url}#service`,
+      name: service.heading,
+      serviceType: service.serviceType,
+      description: service.summary,
+      url,
+      provider: organizationRef,
+      areaServed: site.areaServed,
+    };
+  });
+}
+
+/** The id of one service's node, for pages that point at it. */
+export function serviceNodeId(serviceId: string): string {
+  const page = servicePageById(serviceId);
+  return `${page ? absoluteUrl(`/services/${page.slug}`) : `${absoluteUrl("/services")}#${serviceId}`}#service`;
+}
+
+/** A page of questions and answers, for search and AI answers. */
+export function faqNode(path: string, items: { q: string; a: string }[]): Node | null {
+  if (items.length === 0) return null;
+  return {
+    "@type": "FAQPage",
+    "@id": `${absoluteUrl(path)}#faq`,
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+}
+
+/** The blog index as an ordered list of published articles. Empty while every article is a draft. */
+export function insightListNode(items: { slug: string; title: string }[]): Node {
+  return {
+    "@type": "ItemList",
+    "@id": `${absoluteUrl("/insights")}#articles`,
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: absoluteUrl(`/insights/${item.slug}`),
+      name: item.title,
+    })),
+  };
 }
 
 /** The projects as an ordered list, for the work index. */
@@ -216,3 +255,26 @@ export function projectNodes(project: Project): Node[] {
   return nodes;
 }
 
+
+/** A published article. A draft never gets one. The author is a real person if one is named, otherwise the studio. */
+export function articleNode(article: {
+  slug: string;
+  title: string;
+  seoDescription: string;
+  published: string | null;
+  author: string | null;
+}): Node {
+  const url = absoluteUrl(`/insights/${article.slug}`);
+  return {
+    "@type": "Article",
+    "@id": `${url}#article`,
+    headline: article.title,
+    description: article.seoDescription,
+    url,
+    mainEntityOfPage: { "@id": ids.webpage(`/insights/${article.slug}`) },
+    ...(article.published ? { datePublished: article.published, dateModified: article.published } : {}),
+    author: article.author ? { "@type": "Person", name: article.author } : organizationRef,
+    publisher: organizationRef,
+    inLanguage: "en",
+  };
+}

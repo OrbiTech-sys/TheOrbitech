@@ -142,3 +142,17 @@ curl -s https://theorbitechsolution.com/ | grep -c "orbitech\.dev"
 ```
 
 The last command should print `0`. Then paste a few URLs into <https://search.google.com/test/rich-results> and <https://validator.schema.org/>, and check the social previews with LinkedIn Post Inspector (<https://www.linkedin.com/post-inspector/>) and the Facebook Sharing Debugger (<https://developers.facebook.com/tools/debug/>).
+
+---
+
+## Redesign: what only you can supply (19 November 2026)
+
+The redesign is on branch `redesign/linear-dark`. It invents nothing, so these gaps are left empty or marked rather than filled. Work through them when you can; none blocks launch.
+
+1. **Confirm the mission and vision** (`studio.mission`, `studio.vision` in `content/site.ts`). They are draft wording built from what the site already says. Edit them or delete them.
+2. **Add the technology stack and architecture per project** (`stack` and `architecture` on each project). Case studies show these sections only when filled, so for now they are absent. Add only what is true.
+3. **Add approved testimonials** (`testimonials`). While there are none, the home page shows the technology section instead. As soon as one is added, the home page switches to testimonials.
+4. **Write the first Insights articles** (`content/insights.ts`). All six are drafts with an outline and no body, no author and no date. Publishing one means filling `sections`, `published` and `author` and setting `status: "published"`; the page, listing, sitemap and structured data then pick it up.
+5. **Have `/terms` reviewed.** It is plain site-use wording built from facts the site already states, and it is kept out of search results. Terms for project work are not set there: the site says they are agreed in a written proposal.
+6. **Check the industry pages.** They say what could be built and link only to real demos. Healthcare says plainly that there are no healthcare case studies. If you gain a real client in an industry and want to say so, add it deliberately.
+7. **Optional: a booking link** (`site.booking.url`). The contact page and the call-to-action show a "Book a 30-minute call" button as soon as one is set.

@@ -1,39 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import WorkCard from "@/components/WorkCard";
-import type { Project, ProjectType } from "@/content/site";
+import ProjectCard, { type ProjectCardData } from "@/components/ui/ProjectCard";
 
-type Filter = "all" | ProjectType;
+/** The portfolio grid with category filters. The filters are buttons that update the list in place. */
+export default function WorkIndex({ projects, categories }: { projects: ProjectCardData[]; categories: readonly string[] }) {
+  const [filter, setFilter] = useState<string>("all");
 
-/** The full work grid with a filter by type. */
-export default function WorkIndex({ projects, projectTypes }: { projects: Project[]; projectTypes: readonly ProjectType[] }) {
-  const [filter, setFilter] = useState<Filter>("all");
-
-  const count = (type: ProjectType) => projects.filter((p) => p.type === type).length;
-  const anyTyped = projects.some((p) => p.type);
-  const visible = filter === "all" ? projects : projects.filter((p) => p.type === filter);
-  // Only offer types that have projects. Until any project has a type, show them all dimmed.
-  const offered = anyTyped ? projectTypes.filter((t) => count(t) > 0) : projectTypes;
+  const count = (category: string) => projects.filter((p) => p.category === category).length;
+  const visible = filter === "all" ? projects : projects.filter((p) => p.category === filter);
+  const offered = categories.filter((c) => count(c) > 0);
 
   return (
     <>
-      <div className="filter" role="group" aria-label="Filter work by type">
+      <div className="filter" role="group" aria-label="Filter projects by category">
         <button type="button" className="chip" aria-pressed={filter === "all"} onClick={() => setFilter("all")}>
-          All
+          All Projects
           <span className="chip__count">{projects.length}</span>
         </button>
-        {offered.map((type) => (
+        {offered.map((category) => (
           <button
-            key={type}
+            key={category}
             type="button"
             className="chip"
-            aria-pressed={filter === type}
-            disabled={count(type) === 0}
-            onClick={() => setFilter(type)}
+            aria-pressed={filter === category}
+            onClick={() => setFilter(category)}
           >
-            {type}
-            <span className="chip__count">{count(type)}</span>
+            {category}
+            <span className="chip__count">{count(category)}</span>
           </button>
         ))}
       </div>
@@ -42,20 +36,12 @@ export default function WorkIndex({ projects, projectTypes }: { projects: Projec
         Showing {visible.length} {visible.length === 1 ? "project" : "projects"}
       </p>
 
-      {visible.length > 0 ? (
-        <ul className="work-grid">
-          {visible.map((project, index) => (
-            <WorkCard
-              key={project.slug}
-              project={project}
-              priority={index === 0}
-              sizes="(min-width: 48rem) 46vw, 100vw"
-            />
-          ))}
-        </ul>
-      ) : (
-        <p className="empty">No {filter} projects yet.</p>
-      )}
+      {/* The key restarts the fade each time the filter changes. */}
+      <div key={filter} className="grid grid--2 projects-grid filter-grid">
+        {visible.map((project, index) => (
+          <ProjectCard key={project.slug} project={project} priority={index < 2} />
+        ))}
+      </div>
     </>
   );
 }
