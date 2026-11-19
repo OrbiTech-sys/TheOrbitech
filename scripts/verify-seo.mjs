@@ -93,7 +93,11 @@ if (sitemap.status !== 200) fail("sitemap.xml", `status ${sitemap.status}`);
 sitemapUrls.every((u) => u.startsWith(origin)) ? ok("sitemap.xml", `${sitemapUrls.length} URLs, all on ${origin}`) : fail("sitemap.xml", "a URL is on another host");
 /changefreq|priority/.test(sitemap.text) ? fail("sitemap.xml", "contains changefreq or priority") : ok("sitemap.xml", "no changefreq or priority");
 const caseStudies = sitemapUrls.filter((u) => pathOf(u).startsWith("/work/"));
-caseStudies.length === 6 ? ok("sitemap.xml", "all six case studies listed") : fail("sitemap.xml", `${caseStudies.length} case studies listed, expected 6`);
+// One case study per published project in content/site.ts: nine today (seven live demos and two private projects).
+const EXPECTED_CASE_STUDIES = 9;
+caseStudies.length === EXPECTED_CASE_STUDIES
+  ? ok("sitemap.xml", `all ${EXPECTED_CASE_STUDIES} case studies listed`)
+  : fail("sitemap.xml", `${caseStudies.length} case studies listed, expected ${EXPECTED_CASE_STUDIES}`);
 sitemapUrls.some((u) => u.includes("/contact/thanks")) && fail("sitemap.xml", "lists /contact/thanks");
 
 // ── Pages ────────────────────────────────────────────────────
@@ -201,7 +205,10 @@ for (const hrefs of links.values())
   }
 for (const href of internal) {
   const res = await get(base + href);
-  if (res.status !== 200) fail(href, `internal link returns ${res.status}${res.location ? ` → ${res.location}` : ""}`);
+  // /demo/<id>/open redirects on purpose: to the email check, or to the demo once the visitor has confirmed their email.
+  if (/^\/demo\/[^/]+\/open$/.test(href)) {
+    res.status === 302 ? ok(href, "gated demo link redirects to the email check") : fail(href, `gated demo link returns ${res.status}, expected 302`);
+  } else if (res.status !== 200) fail(href, `internal link returns ${res.status}${res.location ? ` → ${res.location}` : ""}`);
 }
 ok("links", `${internal.size} distinct internal targets checked`);
 
