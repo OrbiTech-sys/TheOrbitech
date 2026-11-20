@@ -11,7 +11,7 @@ export default function ProjectsSection() {
     <section className="section section--work" aria-labelledby="featured-title">
       <div className="wrap section-head section-head--row">
         <h2 id="featured-title" className="h2">
-          Selected work
+          Live demos and projects
         </h2>
         <Link href="/work" className="ulink">
           All work

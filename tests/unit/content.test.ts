@@ -63,15 +63,17 @@ describe("content", () => {
 
 describe("projects", () => {
   it("treats empty slots as placeholders, not real projects", () => {
-    expect(projects.every((p) => !isRealProject(p) || (p.name && p.liveUrl))).toBe(true);
+    expect(projects.every((p) => !isRealProject(p) || (p.name && (p.liveUrl || p.demos.length > 0)))).toBe(true);
+    expect(projects.some((p) => !isRealProject(p))).toBe(true);
   });
 
   it("finds projects and the next one, wrapping around", () => {
-    const first = projects[0];
-    const last = projects[projects.length - 1];
+    const real = projects.filter(isRealProject);
+    const first = real[0];
+    const last = real[real.length - 1];
     expect(getProject(first.slug)).toBe(first);
     expect(getProject("does-not-exist")).toBeUndefined();
-    expect(getNextProject(first.slug)).toBe(projects[1]);
+    expect(getNextProject(first.slug)).toBe(real[1]);
     expect(getNextProject(last.slug)).toBe(first);
     expect(getNextProject("does-not-exist")).toBeUndefined();
   });
@@ -95,6 +97,7 @@ describe("search engine files", () => {
     const config = robots();
     expect(config.sitemap).toMatch(/\/sitemap\.xml$/);
     expect(JSON.stringify(config.rules)).toContain("/contact/thanks");
+    expect(JSON.stringify(config.rules)).toContain("/demo/");
   });
 
   it("marks placeholder pages noindex and gives real pages a canonical", () => {
@@ -107,9 +110,10 @@ describe("search engine files", () => {
     expect(org["@type"]).toBe("Organization");
     expect(org).not.toHaveProperty("email");
     expect(org).not.toHaveProperty("address");
-    expect(creativeWorkLd(projects[2], "/work/project-3")).toBeNull();
+    const empty = projects.find((p) => !isRealProject(p))!;
+    expect(creativeWorkLd(empty, "/work/project-3")).toBeNull();
 
-    const ld = creativeWorkLd({ ...projects[2], name: "Acme site", liveUrl: "https://acme.example" }, "/work/acme");
+    const ld = creativeWorkLd({ ...empty, name: "Acme site", liveUrl: "https://acme.example" }, "/work/acme");
     expect(ld).toMatchObject({ "@type": "CreativeWork", name: "Acme site", sameAs: "https://acme.example" });
     expect(ld).not.toHaveProperty("dateCreated");
   });

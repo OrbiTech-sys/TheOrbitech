@@ -1,0 +1,57 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import DemoGate from "@/components/DemoGate";
+import PageIntro from "@/components/PageIntro";
+import { projectHref } from "@/lib/projects";
+import { allDemos, demoOpenHref, findDemo } from "@/lib/demos";
+import { pageMetadata } from "@/lib/seo";
+
+type Props = { params: Promise<{ id: string }> };
+
+// Pages for every known slug are built ahead of time. They may block on a client navigation.
+export const instant = false;
+
+export function generateStaticParams() {
+  return allDemos().map(({ demo }) => ({ id: demo.id }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
+  const entry = findDemo(id);
+  if (!entry) return { title: "Demo not found", robots: { index: false } };
+  return pageMetadata({
+    title: `Open the ${entry.demo.name} demo`,
+    description: `Confirm your email with a 6-digit code to open the ${entry.demo.name} demo.`,
+    path: `/demo/${id}`,
+    noindex: true,
+  });
+}
+
+export default async function DemoGatePage({ params }: Props) {
+  const { id } = await params;
+  const entry = findDemo(id);
+  if (!entry) notFound();
+
+  return (
+    <>
+      <PageIntro
+        title={entry.demo.name}
+        lede={
+          <>
+            Part of{" "}
+            <Link href={projectHref(entry.project)} className="ulink">
+              {entry.project.shortName ?? entry.project.name}
+            </Link>
+            . Confirm your email and the live demo opens.
+          </>
+        }
+      />
+      <section className="section section--tight" aria-label="Confirm your email">
+        <div className="wrap">
+          <DemoGate demo={entry.demo} openHref={demoOpenHref(id)} />
+        </div>
+      </section>
+    </>
+  );
+}

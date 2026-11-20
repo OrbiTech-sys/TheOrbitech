@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const pages: [path: string, title: RegExp][] = [
   ["/", /^OrbiTech — Websites and software/],
-  ["/work", /^Work — OrbiTech$/],
+  ["/work", /^Work: Restaurant, Salon, AI and SaaS Demos — OrbiTech$/],
   ["/work/project-3", /^Case study — OrbiTech$/],
   ["/services", /^Services — OrbiTech$/],
   ["/studio", /^Studio — OrbiTech$/],

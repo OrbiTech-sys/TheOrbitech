@@ -62,6 +62,47 @@ export function organizationLd(): JsonLd {
   return ld;
 }
 
+/** A page that lists several samples. Demo addresses are gated, so only names, text and pictures go in. */
+export function demoCollectionLd(project: Project, path: string): JsonLd | null {
+  if (!project.name || project.demos.length < 2) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: project.name,
+    url: absoluteUrl(path),
+    description: project.summary ?? undefined,
+    isPartOf: { "@type": "WebSite", name: site.name, url: siteUrl },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: project.demos.length,
+      itemListElement: project.demos.map((demo, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "CreativeWork",
+          name: demo.name,
+          description: demo.summary,
+          image: absoluteUrl(demo.cover.src),
+          creator: { "@type": "Organization", name: site.name, url: siteUrl },
+        },
+      })),
+    },
+  };
+}
+
+export function faqLd(items: { q: string; a: string }[]): JsonLd | null {
+  if (items.length === 0) return null;
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+}
+
 export function creativeWorkLd(project: Project, path: string): JsonLd | null {
   if (!project.name) return null;
   const ld: JsonLd = {

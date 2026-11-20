@@ -43,7 +43,7 @@ export default function Footer() {
               {caseStudies.map((project) => (
                 <li key={project.slug}>
                   <Link href={projectHref(project)} className="ulink">
-                    {project.name}
+                    {project.shortName ?? project.name}
                   </Link>
                 </li>
               ))}

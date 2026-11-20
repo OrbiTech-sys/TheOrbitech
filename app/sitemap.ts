@@ -4,7 +4,7 @@ import { isRealProject, projectHref } from "@/lib/projects";
 import { absoluteUrl } from "@/lib/seo";
 
 // Pages are prerendered, so dates can't come from the clock. Update this when content changes.
-const LAST_CONTENT_CHANGE = "2026-10-07";
+const LAST_CONTENT_CHANGE = "2026-11-09";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages = ["/", "/work", "/services", "/studio", "/contact", "/privacy"];

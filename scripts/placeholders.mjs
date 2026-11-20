@@ -12,6 +12,8 @@ const OPTIONAL = [
   /^site\.booking\.embed$/,
   /^testimonials$/,
   /^projects\[\d+\]\.results$/,
+  /^projects\[\d+\]\.demos$/,
+  /^projects\[\d+\]\.faqs$/,
   /^privacy\.hosting$/,
 ];
 

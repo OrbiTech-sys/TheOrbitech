@@ -5,8 +5,9 @@ import WorkIndex from "@/components/WorkIndex";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Work",
-  description: "Websites, web apps and AI tools we have built, each with the brief, our approach and a link to the live site.",
+  title: "Work: Restaurant, Salon, AI and SaaS Demos",
+  description:
+    "Live demos of custom restaurant websites, a hair salon website, an AI voice receptionist and SaaS products by OrbiTech. Open any demo and read how it was built.",
   path: "/work",
 });
 
@@ -14,8 +15,8 @@ export default function WorkPage() {
   return (
     <>
       <PageIntro
-        title="Selected work"
-        lede="Each project links to the live site and to a short case study: the brief, what we did and what we used."
+        title="Live demos and projects"
+        lede="Restaurant and salon websites, an AI voice receptionist and SaaS products. Open a demo to try it, or read the case study for the brief and how we built it."
       />
       <section className="section section--tight" aria-label="Projects">
         <div className="wrap">

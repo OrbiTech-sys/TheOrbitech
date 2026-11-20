@@ -4,14 +4,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import ClosingCta from "@/components/ClosingCta";
+import DemoCard from "@/components/DemoCard";
+import FaqSection from "@/components/FaqSection";
 import JsonLd from "@/components/JsonLd";
 import { Pending } from "@/components/Pending";
 import ProjectFrame from "@/components/ProjectFrame";
 import { projects } from "@/content/site";
+import { demoOpenHref } from "@/lib/demos";
 import { displayHost, getNextProject, getProject, isRealProject, projectHref } from "@/lib/projects";
-import { creativeWorkLd, pageMetadata } from "@/lib/seo";
+import { creativeWorkLd, demoCollectionLd, faqLd, pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
+
+// Pages for every known slug are built ahead of time. They may block on a client navigation.
+export const instant = false;
 
 const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
@@ -45,10 +51,15 @@ export default async function CaseStudyPage({ params }: Props) {
 
   const next = getNextProject(slug);
   const heroImage = project.cover ?? project.desktop;
+  const hasDemos = project.demos.length > 0;
+  // Demo pages show their screenshots in the demo cards, so the hero picture and the screens row would only repeat them.
+  const showScreens = !hasDemos;
 
   return (
     <article>
       <JsonLd data={creativeWorkLd(project, projectHref(project))} />
+      <JsonLd data={demoCollectionLd(project, projectHref(project))} />
+      <JsonLd data={faqLd(project.faqs)} />
 
       <header className="wrap case-hero">
         <h1 className="case-hero__title reveal" style={step(0)}>
@@ -71,24 +82,38 @@ export default async function CaseStudyPage({ params }: Props) {
             <dt>Our role</dt>
             <dd>{project.role ?? <Pending>Role</Pending>}</dd>
           </div>
+          {(project.stack.length > 0 || !hasDemos) && (
+            <div>
+              <dt>Built with</dt>
+              <dd>
+                {project.stack.length > 0 ? (
+                  <ul className="tags">
+                    {project.stack.map((tool) => (
+                      <li key={tool}>{tool}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <Pending>Stack</Pending>
+                )}
+              </dd>
+            </div>
+          )}
           <div>
-            <dt>Built with</dt>
+            <dt>{hasDemos ? (project.demos.length > 1 ? "Live demos" : "Live demo") : "Live site"}</dt>
             <dd>
-              {project.stack.length > 0 ? (
-                <ul className="tags">
-                  {project.stack.map((tool) => (
-                    <li key={tool}>{tool}</li>
-                  ))}
-                </ul>
-              ) : (
-                <Pending>Stack</Pending>
-              )}
-            </dd>
-          </div>
-          <div>
-            <dt>Live site</dt>
-            <dd>
-              {project.liveUrl ? (
+              {hasDemos ? (
+                project.demos.length > 1 ? (
+                  <a href="#demos" className="ulink">
+                    {project.demos.length} samples below
+                  </a>
+                ) : (
+                  <a href={demoOpenHref(project.demos[0].id)} className="ulink" target="_blank" rel="noopener noreferrer">
+                    Open the demo
+                    <ArrowUpRight size={14} strokeWidth={1.75} aria-hidden="true" />
+                    <span className="sr-only"> (opens in a new tab after an email check)</span>
+                  </a>
+                )
+              ) : project.liveUrl ? (
                 <a href={project.liveUrl} className="ulink" target="_blank" rel="noopener noreferrer">
                   {displayHost(project.liveUrl)}
                   <ArrowUpRight size={14} strokeWidth={1.75} aria-hidden="true" />
@@ -102,15 +127,35 @@ export default async function CaseStudyPage({ params }: Props) {
         </dl>
       </header>
 
-      <div className="wrap case-image">
-        <ProjectFrame
-          image={heroImage}
-          label="Hero screenshot"
-          sizes="(min-width: 80rem) 76rem, 100vw"
-          priority
-          className="frame--hero"
-        />
-      </div>
+      {!hasDemos && (
+        <div className="wrap case-image">
+          <ProjectFrame
+            image={heroImage}
+            label="Hero screenshot"
+            sizes="(min-width: 80rem) 76rem, 100vw"
+            priority
+            className="frame--hero"
+          />
+        </div>
+      )}
+
+      {hasDemos && (
+        <section className="section section--tight" id="demos" aria-labelledby="demos-title">
+          <div className="wrap">
+            <h2 id="demos-title" className="h2 section-head">
+              {project.demos.length > 1 ? `Try all ${project.demos.length} live demos` : "Try the live demo"}
+            </h2>
+            <p className="demos__lede">
+              Each demo opens after a quick email check: we send a 6-digit code, you type it in, and the demo opens.
+            </p>
+            <ul className="demos" data-count={project.demos.length}>
+              {project.demos.map((demo, index) => (
+                <DemoCard key={demo.id} demo={demo} priority={index === 0} phone={project.demos.length === 1} />
+              ))}
+            </ul>
+          </div>
+        </section>
+      )}
 
       <section className="section" aria-labelledby="brief-title">
         <div className="wrap split">
@@ -150,6 +195,7 @@ export default async function CaseStudyPage({ params }: Props) {
         </div>
       </section>
 
+      {showScreens && (
       <section className="section" aria-labelledby="screens-title">
         <div className="wrap">
           <h2 id="screens-title" className="h2 section-head">
@@ -174,6 +220,7 @@ export default async function CaseStudyPage({ params }: Props) {
           </div>
         </div>
       </section>
+      )}
 
       {project.results.length > 0 && (
         <section className="section section--tight" aria-labelledby="results-title">
@@ -198,11 +245,18 @@ export default async function CaseStudyPage({ params }: Props) {
         </section>
       )}
 
+      {project.faqs.length > 0 && (
+        <FaqSection
+          title="Common questions"
+          items={project.faqs.map((faq) => ({ question: faq.q, answer: faq.a }))}
+        />
+      )}
+
       {next && next.slug !== project.slug && (
         <nav className="wrap next-project" aria-label="Next project">
           <Link href={projectHref(next)} className="next-project__link">
             <span className="next-project__label">Next project</span>
-            <span className="next-project__name">{next.name ?? <Pending>Project name</Pending>}</span>
+            <span className="next-project__name">{next.shortName ?? next.name ?? <Pending>Project name</Pending>}</span>
           </Link>
         </nav>
       )}

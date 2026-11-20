@@ -16,13 +16,34 @@ export interface Img {
   height: number;
 }
 
-export const projectTypes = ["Website", "Web app", "SaaS", "AI"] as const;
+export const projectTypes = ["Restaurant", "Salon", "AI", "SaaS", "Website", "Web app"] as const;
 export type ProjectType = (typeof projectTypes)[number];
+
+/** One live sample inside a project. Its real address lives in lib/demo-targets.ts, on the server only. */
+export interface Demo {
+  /** Used in /demo/<id>. Lowercase words and hyphens. */
+  id: string;
+  name: string;
+  /** Where the demo business is set */
+  place: string;
+  summary: string;
+  /** Short and factual: what a visitor can try in the demo */
+  highlights: string[];
+  cover: Img;
+  mobile: Img;
+}
+
+export interface Faq {
+  q: string;
+  a: string;
+}
 
 export interface Project {
   /** URL slug: /work/<slug>. Use lowercase words and hyphens. */
   slug: string;
   name: string | null;
+  /** Shorter name for the footer and "next project" links. Falls back to `name`. */
+  shortName?: string;
   client: string | null;
   type: ProjectType | null;
   year: string | null;
@@ -43,6 +64,10 @@ export interface Project {
   approach: string[];
   /** Only real, measured outcomes, each with where the number came from. */
   results: { label: string; value: string; source: string }[];
+  /** Gated live samples. Visitors confirm their email before one opens. */
+  demos: Demo[];
+  /** Plain questions and answers: shown on the page and in search results. */
+  faqs: Faq[];
 }
 
 export interface TeamMember {
@@ -296,9 +321,198 @@ const emptyProject = {
   brief: [] as string[],
   approach: [] as string[],
   results: [] as Project["results"],
+  demos: [] as Demo[],
+  faqs: [] as Faq[],
 };
 
+const DEMO_NOTE =
+  "Open any demo, confirm your email with a 6-digit code, and it opens. The code works for 10 minutes, and one confirmation opens every demo for 24 hours.";
+
 export const projects: Project[] = [
+  {
+    ...emptyProject,
+    slug: "restaurant-website-demos",
+    shortName: "Restaurant website demos",
+    name: "Restaurant Website Design: 3 Custom Food Ordering Demos",
+    client: "Self-initiated demos",
+    type: "Restaurant",
+    year: "2026",
+    role: "Design and build",
+    summary:
+      "Three custom restaurant website demos with menus, delivery-area checks and a cart: a smash-burger shop, a pizza and shawarma kitchen, and a three-branch burger brand.",
+    cover: {
+      src: "/work/curly-co-desktop.webp",
+      alt: "Curly Co. restaurant website demo with a smash burger, delivery and pickup choice",
+      width: 1440,
+      height: 900,
+    },
+    brief: [
+      "Restaurant owners tend to ask the same thing before they commit to a website: what would it look like for my menu, my area and the way my customers order? These three demos answer that with working examples instead of mock-ups.",
+      "They are demo businesses, not clients. Each is set in Lahore and has its own menu, brand and delivery rules, so you can compare three different directions side by side.",
+    ],
+    approach: [
+      "Every demo shares the same foundation: a menu you can browse by category, deals and combos, a choice between delivery and pickup, a check for the delivery area and a cart. Each is then styled for its own brand: light with a red accent for a smash-burger shop, dark with a red accent for a pizza and shawarma kitchen, and black with orange for a multi-branch burger brand.",
+      "Open each demo and try the ordering flow yourself. If one is close to what you need, we adapt it to your menu, prices, locations and delivery area.",
+    ],
+    demos: [
+      {
+        id: "curly-co",
+        name: "Curly Co.",
+        place: "Model Town, Lahore",
+        summary: "Smash burgers and curly fries, with best sellers, combos and a choice of delivery or pickup.",
+        highlights: ["Menu categories and best sellers", "Featured combos and deals", "Delivery within 5 km, or pickup"],
+        cover: {
+          src: "/work/curly-co-desktop.webp",
+          alt: "Curly Co. demo: a smash burger and curly fries with an order-method choice",
+          width: 1440,
+          height: 900,
+        },
+        mobile: { src: "/work/curly-co-mobile.webp", alt: "Curly Co. demo on a phone", width: 390, height: 844 },
+      },
+      {
+        id: "food-chain",
+        name: "Food Chain",
+        place: "Iqbal Park, Lahore",
+        summary: "Pizza, burgers and shawarma until 5:00 am, with an address check for delivery and a cart.",
+        highlights: ["Seven menu sections", "Delivery or pickup chosen up front", "Address check for the 5 km delivery area"],
+        cover: {
+          src: "/work/food-chains-desktop.webp",
+          alt: "Food Chain demo: pizza, burger and shawarma with a delivery or pickup choice",
+          width: 1440,
+          height: 900,
+        },
+        mobile: { src: "/work/food-chains-mobile.webp", alt: "Food Chain demo on a phone", width: 390, height: 844 },
+      },
+      {
+        id: "mad-mighty",
+        name: "MAD: Mighty & Delicious",
+        place: "Three branches, Lahore",
+        summary: "A bold burger, wrap and pizza brand with a filterable menu and a pick-your-branch flow.",
+        highlights: ["Menu filtered by category", "Deals and combos", "Three branches to collect from"],
+        cover: {
+          src: "/work/mad-mighty-desktop.webp",
+          alt: "MAD Mighty & Delicious demo: a large burger beside the headline Big Cravings, Bigger Bites",
+          width: 1440,
+          height: 900,
+        },
+        mobile: { src: "/work/mad-mighty-mobile.webp", alt: "MAD Mighty & Delicious demo on a phone", width: 390, height: 844 },
+      },
+    ],
+    faqs: [
+      {
+        q: "What are these restaurant website demos?",
+        a: "They are three sample websites OrbiTech built to show restaurant owners what a custom ordering site can look like: a smash-burger shop, a pizza and shawarma kitchen and a three-branch burger brand. The businesses shown are examples.",
+      },
+      {
+        q: "What can a restaurant website include?",
+        a: "In these demos: a menu you can browse by category, deals and combos, a choice between delivery and pickup, a delivery-area check and a cart. Each one is styled for its own brand.",
+      },
+      { q: "How do I open the live demos?", a: DEMO_NOTE },
+      {
+        q: "Can OrbiTech build a site like this for my restaurant?",
+        a: "Yes. Tell us about your menu, location and how customers order, and we reply by email with what is possible and a written proposal.",
+      },
+    ],
+  },
+  {
+    ...emptyProject,
+    slug: "salon-website-demo",
+    shortName: "Salon website demo",
+    name: "Hair Salon Website Design: Custom Booking Demo",
+    client: "Self-initiated demo",
+    type: "Salon",
+    year: "2026",
+    role: "Design and build",
+    summary:
+      "A custom hair salon website demo with a day-and-time request picker, a service price list, featured transformations and artist profiles.",
+    cover: {
+      src: "/work/salon-desktop.webp",
+      alt: "Maison Muse Hair Atelier demo: a salon interior with the headline Beautiful Hair, Unmistakably You",
+      width: 1440,
+      height: 900,
+    },
+    desktop: { src: "/work/salon-desktop.webp", alt: "Maison Muse Hair Atelier demo on desktop", width: 1440, height: 900 },
+    mobile: { src: "/work/salon-mobile.webp", alt: "Maison Muse Hair Atelier demo on a phone", width: 390, height: 844 },
+    brief: [
+      "A salon website has two jobs: show the quality of the work and make it easy to ask for a time. This demo, Maison Muse Hair Atelier, is a sample for a hair salon.",
+      "Names, prices and reviews in the demo are illustrative, and nothing a visitor requests is actually booked.",
+    ],
+    approach: [
+      "The page opens on the salon itself, then moves through a day-and-time picker, services with prices, featured transformations and artist profiles. The picker opens a request form, so a visitor asks for a time rather than reserving one.",
+      "If you run a salon, we adapt this to your services, prices, team and booking process.",
+    ],
+    demos: [
+      {
+        id: "maison-muse",
+        name: "Maison Muse Hair Atelier",
+        place: "Demo salon",
+        summary: "Cuts, colour, treatments, extensions and bridal styling, built around a private consultation at every visit.",
+        highlights: ["Day-and-time request picker", "Services and pricing", "Artist profiles and a gallery"],
+        cover: { src: "/work/salon-desktop.webp", alt: "Maison Muse Hair Atelier demo on desktop", width: 1440, height: 900 },
+        mobile: { src: "/work/salon-mobile.webp", alt: "Maison Muse Hair Atelier demo on a phone", width: 390, height: 844 },
+      },
+    ],
+    faqs: [
+      {
+        q: "What is this salon website demo?",
+        a: "A sample hair salon website made by OrbiTech. It shows a day-and-time request picker, a service price list, featured transformations and artist profiles. The salon, names, prices and reviews are illustrative.",
+      },
+      { q: "How do I open the live demo?", a: DEMO_NOTE },
+      {
+        q: "Can OrbiTech build a salon website like this?",
+        a: "Yes. Tell us about your services, team and how clients book, and we reply by email with what is possible and a written proposal.",
+      },
+    ],
+  },
+  {
+    ...emptyProject,
+    slug: "ai-voice-receptionist",
+    shortName: "AI voice receptionist",
+    name: "AI Voice Receptionist for Appointment-Based Businesses",
+    client: "OrbiTech product demo",
+    type: "AI",
+    year: "2026",
+    role: "Design and build",
+    summary:
+      "An AI receptionist that answers the phone, gives callers the hours and prices you set, books an appointment on your calendar and sends you a summary.",
+    cover: {
+      src: "/work/ai-voice-desktop.webp",
+      alt: "AI receptionist landing page with the headline Stop sending callers to voicemail and a service bell",
+      width: 1440,
+      height: 900,
+    },
+    desktop: { src: "/work/ai-voice-desktop.webp", alt: "AI receptionist landing page on desktop", width: 1440, height: 900 },
+    mobile: { src: "/work/ai-voice-mobile.webp", alt: "AI receptionist landing page on a phone", width: 390, height: 844 },
+    brief: [
+      "Appointment-based businesses lose bookings when the phone rings after hours. This demo is an AI receptionist for those businesses, with a landing page that explains how it works.",
+    ],
+    approach: [
+      "The page walks through one call from start to finish, using a made-up dental office as the example: the phone rings after closing, the receptionist answers from the facts the owner set, books a real slot and sends the owner a summary.",
+      "It also says plainly where the receptionist stops, what you pay for and what you don't, so an owner can judge it before trying a test call.",
+    ],
+    demos: [
+      {
+        id: "ai-voice",
+        name: "OrbiTech AI Receptionist",
+        place: "Product landing page",
+        summary: "Answers calls, gives hours and prices, books real appointment slots and sends the owner a summary.",
+        highlights: ["A walk-through of one example call", "Clear limits on what it does", "Pricing and common questions"],
+        cover: { src: "/work/ai-voice-desktop.webp", alt: "AI receptionist landing page on desktop", width: 1440, height: 900 },
+        mobile: { src: "/work/ai-voice-mobile.webp", alt: "AI receptionist landing page on a phone", width: 390, height: 844 },
+      },
+    ],
+    faqs: [
+      {
+        q: "What is an AI voice receptionist?",
+        a: "Software that answers your business phone, gives callers the hours, prices and other facts you set, books an appointment on your calendar and tells you what happened.",
+      },
+      {
+        q: "Who is it for?",
+        a: "Businesses that run on appointments. The example call on the demo page is a dental office. The demo page says it is in early access for US appointment-based businesses.",
+      },
+      { q: "How do I open the live demo?", a: DEMO_NOTE },
+    ],
+  },
   {
     ...emptyProject,
     slug: "orbit-operations",
@@ -319,12 +533,7 @@ export const projects: Project[] = [
       width: 1440,
       height: 900,
     },
-    mobile: {
-      src: "/work/orbit-operations-mobile.webp",
-      alt: "OrbitOS on a phone: headline and sign-up buttons",
-      width: 390,
-      height: 844,
-    },
+    mobile: { src: "/work/orbit-operations-mobile.webp", alt: "OrbitOS on a phone: headline and sign-up buttons", width: 390, height: 844 },
   },
   {
     ...emptyProject,
@@ -346,43 +555,9 @@ export const projects: Project[] = [
       width: 1440,
       height: 900,
     },
-    mobile: {
-      src: "/work/property-management-mobile.webp",
-      alt: "Property management workspace on a phone",
-      width: 390,
-      height: 844,
-    },
+    mobile: { src: "/work/property-management-mobile.webp", alt: "Property management workspace on a phone", width: 390, height: 844 },
   },
   { slug: "project-3", ...emptyProject },
-  {
-    ...emptyProject,
-    slug: "n8n-email-marketing-workflow",
-    name: "n8n Email Marketing Workflow",
-    type: "AI",
-    summary:
-      "An n8n workflow that connects campaign inputs, audience data and email delivery into one reviewable marketing flow.",
-    stack: ["n8n", "Email automation", "Webhooks"],
-    cover: {
-      src: "/work/n8n-logo-card.webp",
-      alt: "n8n logo centered on a warm neutral background",
-      width: 1597,
-      height: 897,
-    },
-    desktop: {
-      src: "/work/n8n-logo-card.webp",
-      alt: "n8n logo centered on a warm neutral background",
-      width: 1597,
-      height: 897,
-    },
-    brief: [
-      "Create a repeatable email-marketing workflow without moving campaign data manually between tools.",
-      "Keep each automation step visible so a person can review the message and audience before delivery.",
-    ],
-    approach: [
-      "We map the workflow as small, inspectable n8n nodes: input, audience preparation, message handling, approval and delivery.",
-      "The workflow is structured so integrations can be swapped or extended without hiding the decision points inside one large automation.",
-    ],
-  },
 ];
 
 /* ─────────────────────────────────────────────────────────────
