@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
@@ -67,7 +67,7 @@ export default async function CaseStudyPage({ params }: Props) {
   ];
 
   // Facts are listed only when they have a value. Nothing is shown as a blank or a stand-in.
-  const facts: { label: string; value: React.ReactNode }[] = [
+  const facts: { label: string; value: ReactNode }[] = [
     { label: "Status", value: project.kind },
     ...(project.type ? [{ label: "Type", value: project.type }] : []),
     ...(project.client ? [{ label: "Client", value: project.client }] : []),

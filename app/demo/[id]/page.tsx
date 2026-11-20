@@ -3,8 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import DemoGate from "@/components/DemoGate";
 import PageIntro from "@/components/PageIntro";
-import { site } from "@/content/site";
 import { allDemos, demoOpenHref, findDemo } from "@/lib/demos";
+import { site } from "@/content/site";
 import { projectHref } from "@/lib/projects";
 import { pageMetadata } from "@/lib/seo";
 

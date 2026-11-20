@@ -733,12 +733,7 @@ export const projects: Project[] = [
       width: 1200,
       height: 750,
     },
-    mobile: {
-      src: "/work/property-management-mobile.webp",
-      alt: "Property management workspace on a phone",
-      width: 390,
-      height: 844,
-    },
+    mobile: { src: "/work/property-management-mobile.webp", alt: "Property management workspace on a phone", width: 390, height: 844 },
   },
   {
     ...emptyProject,

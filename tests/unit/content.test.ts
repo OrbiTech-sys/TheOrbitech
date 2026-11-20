@@ -144,16 +144,17 @@ describe("answers and definitions", () => {
 });
 
 describe("projects", () => {
-  it("publishes all six case studies", () => {
+  it("publishes all nine case studies", () => {
     expect(projects.filter(isPublished)).toHaveLength(9);
   });
 
   it("finds projects and the next one, wrapping around", () => {
-    const first = projects[0];
-    const last = projects[projects.length - 1];
+    const published = projects.filter(isPublished);
+    const first = published[0];
+    const last = published[published.length - 1];
     expect(getProject(first.slug)).toBe(first);
     expect(getProject("does-not-exist")).toBeUndefined();
-    expect(getNextProject(first.slug)).toBe(projects[1]);
+    expect(getNextProject(first.slug)).toBe(published[1]);
     expect(getNextProject(last.slug)).toBe(first);
     expect(getNextProject("does-not-exist")).toBeUndefined();
   });
@@ -170,7 +171,7 @@ describe("site address", () => {
 describe("search engine files", () => {
   const paths = () => sitemap().map((entry) => new URL(entry.url).pathname);
 
-  it("lists the main pages and all six case studies in the sitemap", () => {
+  it("lists the main pages and every published case study in the sitemap", () => {
     expect(paths()).toEqual(expect.arrayContaining(["/", "/work", "/services", "/studio", "/contact"]));
     for (const project of projects) expect(paths()).toContain(projectHref(project));
   });
@@ -192,6 +193,7 @@ describe("search engine files", () => {
     const config = robots();
     expect(config.sitemap).toBe("https://theorbitechsolution.com/sitemap.xml");
     expect(JSON.stringify(config.rules)).toContain("/contact/thanks");
+    expect(JSON.stringify(config.rules)).toContain("/demo/");
     expect(JSON.stringify(config.rules)).not.toMatch(/GPTBot|CCBot|Google-Extended/);
   });
 

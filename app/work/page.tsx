@@ -19,7 +19,6 @@ const crumbs: Crumb[] = [
 
 export const metadata: Metadata = pageMetadata({ ...meta.work, path: page.path });
 
-
 export default function WorkPage() {
   return (
     <>
