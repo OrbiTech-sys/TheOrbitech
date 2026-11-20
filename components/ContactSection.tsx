@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ContactForm, { type ContactPrefill } from "@/components/ContactForm";
 import ProjectEstimator, { type EstimateSummary } from "@/components/ProjectEstimator";
 import { estimator } from "@/content/site";
@@ -9,6 +9,14 @@ import { estimator } from "@/content/site";
 export default function ContactSection() {
   const [prefill, setPrefill] = useState<ContactPrefill | undefined>();
   const disclosureRef = useRef<HTMLDetailsElement>(null);
+
+  // A problem typed into the home page box arrives as ?brief= and becomes the project description.
+  useEffect(() => {
+    const brief = new URLSearchParams(window.location.search).get("brief")?.trim();
+    if (!brief) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reads the URL once after hydration; the server render has no query
+    setPrefill({ key: "brief", message: brief.slice(0, 400) });
+  }, []);
 
   const applyEstimate = (summary: EstimateSummary) => {
     setPrefill({

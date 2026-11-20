@@ -1,7 +1,7 @@
 import {
   BriefcaseBusiness,
   Building2,
-  Bot,
+  BrainCircuit,
   CodeXml,
   Compass,
   Database,
@@ -15,7 +15,7 @@ import {
 import type { IconName } from "@/content/offerings";
 
 const icons: Record<IconName, LucideIcon> = {
-  bot: Bot,
+  bot: BrainCircuit, /* AI engineering: a brain circuit reads as AI better than a robot */
   code: CodeXml,
   workflow: Workflow,
   database: Database,

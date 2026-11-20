@@ -13,7 +13,7 @@ import SectionHeading from "@/components/ui/SectionHeading";
 import WorkflowCard from "@/components/ui/WorkflowCard";
 import { getIndustryPage, industryPages } from "@/content/industries";
 import { getServicePage } from "@/content/offerings";
-import { site } from "@/content/site";
+import { site, pageImages } from "@/content/site";
 import { getProject, toProjectCard } from "@/lib/projects";
 import { breadcrumbNode, faqNode, webPageNode, type Crumb } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
@@ -69,7 +69,7 @@ export default async function IndustryPage({ params }: Props) {
         ]}
       />
 
-      <PageIntro crumbs={crumbs} eyebrow={page.eyebrow} title={page.headline} lede={page.lede}>
+      <PageIntro image={pageImages.industries} crumbs={crumbs} eyebrow={page.eyebrow} title={page.headline} lede={page.lede}>
         <div className="page-hero__actions">
           <Link href="/contact" className="btn btn--primary btn--lg">
             Discuss your project <ArrowRight size={18} aria-hidden="true" />

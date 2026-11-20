@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -114,8 +115,9 @@ export default async function CaseStudyPage({ params }: Props) {
         ]}
       />
 
-      <header className="page-hero case-hero">
+      <header className={heroImage ? "page-hero page-hero--media case-hero" : "page-hero case-hero"}>
         <div className="wrap">
+          <div className="page-hero__copy">
           <Breadcrumbs crumbs={crumbs} />
           <div className="badge-row">
             <span className="badge badge--accent">{project.category}</span>
@@ -140,14 +142,15 @@ export default async function CaseStudyPage({ params }: Props) {
               Start a similar project
             </Link>
           </div>
+          </div>
+          {heroImage && (
+            <div className="page-hero__media">
+              <Image src={heroImage.src} alt={heroImage.alt} width={heroImage.width} height={heroImage.height} sizes="(min-width: 1000px) 40vw, 100vw" priority />
+            </div>
+          )}
         </div>
       </header>
 
-      {showHero && heroImage && (
-        <div className="wrap case-image reveal">
-          <ProjectFrame image={heroImage} sizes="(min-width: 80rem) 76rem, 100vw" priority className="frame--hero" />
-        </div>
-      )}
 
       {hasDemos && (
         <section className="section section--tight" id="demos" aria-labelledby="demos-title">

@@ -118,7 +118,7 @@
   border-radius: 50%;
   background: rgba(128, 101, 255, 0.18);
   color: var(--accent-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 0.65rem;
 }
 
@@ -235,8 +235,8 @@
 }
 
 .chip__count {
-  color: var(--muted);
-  font-family: var(--font-mono);
+  color: var(--text-2);
+  font-family: var(--font-display);
   font-size: 0.72rem;
 }
 
@@ -299,10 +299,10 @@
 
 .frame__shot {
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 2px solid var(--border-strong);
   border-radius: var(--radius-lg);
   background: var(--bg-2);
-  box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 1px 3px var(--shadow-faint), 0 24px 56px -24px var(--shadow-strong);
 }
 
 .frame__shot img {
@@ -494,7 +494,7 @@
   border: 1px solid var(--border-strong);
   border-radius: 14px;
   background: var(--bg-2);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 18px 40px var(--shadow);
 }
 
 .demo-card__phone img {
@@ -709,14 +709,14 @@
   top: 50%;
   transform: translateY(-50%);
   color: var(--accent-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 0.8rem;
 }
 
 .notice--draft {
   margin-bottom: var(--s-6);
-  border-color: rgba(255, 196, 120, 0.4);
-  background: rgba(255, 196, 120, 0.06);
+  border-color: color-mix(in srgb, var(--warn) 40%, transparent);
+  background: color-mix(in srgb, var(--warn) 6%, transparent);
   flex-direction: column;
   gap: var(--s-1);
 }
@@ -728,7 +728,191 @@
 
 /* ── Contact ─────────────────────────────────────────────── */
 
-.contact-hero {
+/* The contact page: a bold band with the heading, the form raised onto its lower edge, the details beside it. */
+
+.contact-band {
+  position: relative;
+  overflow: clip;
+  padding-block: clamp(32px, 5vw, 64px) clamp(112px, 14vw, 176px);
+  background: linear-gradient(120deg, var(--accent-solid) 0%, color-mix(in srgb, var(--accent-solid) 55%, var(--accent-2)) 100%);
+  color: var(--on-accent);
+}
+
+.contact-band__inner {
+  position: relative;
+  z-index: 1; /* the heading always sits above the art */
+  display: grid;
+  gap: var(--s-4);
+  justify-items: start;
+}
+
+.contact-band__title {
+  max-width: 16ch;
+  color: var(--on-accent);
+  font-size: clamp(2.4rem, 5.4vw, 4.2rem);
+}
+
+.contact-band__lede {
+  max-width: 34rem;
+  color: var(--on-accent);
+  font-size: clamp(1.02rem, 1.4vw, 1.2rem);
+}
+
+.contact-band .eyebrow,
+.contact-band .crumbs,
+.contact-band .crumbs a,
+.contact-band .crumbs li,
+.contact-band .crumbs span {
+  color: var(--on-accent);
+}
+
+.contact-band .eyebrow {
+  background: color-mix(in srgb, var(--on-accent) 18%, transparent);
+}
+
+/* Two slanted bars behind the form: the one decoration on the band. */
+.contact-band__stripe {
+  position: absolute;
+  top: -20%;
+  width: clamp(72px, 12vw, 180px);
+  height: 160%;
+  transform: skewX(-24deg);
+  pointer-events: none;
+}
+
+.contact-band__stripe--a {
+  right: 12%;
+  background: color-mix(in srgb, var(--accent-2) 55%, transparent);
+}
+
+.contact-band__stripe--b {
+  right: calc(12% - clamp(100px, 16vw, 240px));
+  background: color-mix(in srgb, var(--on-accent) 16%, transparent);
+}
+
+/* The art on the right of the band: a portrait and three glass marks. Sits behind the form card. */
+.contact-art {
+  display: none;
+}
+
+@media (min-width: 1000px) {
+  /* Leave the right of the band to the art: the heading and lede keep to the left. */
+  .contact-band__title {
+    max-width: 62%;
+    font-size: clamp(2.6rem, 4.3vw, 3.7rem);
+  }
+
+  /* A landscape portrait: wide, high in the band, its lower edge tucked behind the form card. */
+  .contact-art.contact-art--portrait {
+    top: auto;
+    bottom: calc(var(--s-9) * 1.4 - 24px); /* the desk meets the top of the form card */
+    right: max(0px, calc((100% - var(--maxw)) / 2 - var(--s-7)));
+    width: min(42%, 680px);
+    aspect-ratio: 800 / 445;
+  }
+
+  .contact-art--portrait .contact-art__portrait {
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .contact-band__lede {
+    max-width: min(34rem, 56%);
+  }
+
+  .contact-art {
+    position: absolute;
+    inset: 0 max(var(--gutter), calc((100% - var(--maxw)) / 2 + var(--gutter))) 0 auto;
+    display: block;
+    width: min(36%, 440px);
+    pointer-events: none;
+  }
+
+  .contact-art__portrait {
+    object-fit: contain;
+    object-position: right bottom;
+  }
+
+  .contact-art__card {
+    position: absolute;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border: 1px solid color-mix(in srgb, var(--on-accent) 32%, transparent);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--on-accent) 14%, transparent);
+    color: var(--on-accent);
+    backdrop-filter: blur(6px);
+  }
+
+  .contact-art__card--idea {
+    top: 14%;
+    left: 6%;
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius-pill);
+  }
+
+  .contact-art__card--code {
+    top: 12%;
+    right: 2%;
+  }
+
+  .contact-art__card--growth {
+    top: 38%;
+    right: -2%;
+    width: 72px;
+    height: 72px;
+  }
+}
+
+/* The portrait carries its own icons, so the glass marks step aside; its edges fade into the band. */
+.contact-art--portrait .contact-art__card {
+  display: none;
+}
+
+.contact-art--portrait .contact-art__portrait {
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 22%, #000 90%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 22%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to right, transparent 0, #000 22%, #000 90%, transparent 100%), linear-gradient(to bottom, transparent 0, #000 22%);
+  mask-composite: intersect;
+}
+
+/* Below 62.5rem: heading, portrait, form, stacked with no overlap. */
+@media (max-width: 999.98px) {
+  .contact-band {
+    padding-bottom: var(--s-7);
+  }
+
+  .contact-art--portrait {
+    position: relative;
+    display: block;
+    width: min(100% - 2 * var(--gutter), 460px);
+    height: clamp(260px, 72vw, 400px);
+    margin: var(--s-6) auto 0;
+  }
+
+  .contact-art--portrait .contact-art__card {
+    display: none;
+  }
+
+  .contact-art__portrait {
+    object-fit: contain;
+    object-position: center bottom;
+  }
+
+  .contact-body {
+    padding-top: var(--s-7);
+  }
+
+  .contact-grid__form {
+    margin-top: 0;
+  }
+}
+
+.contact-body {
   padding-bottom: var(--section);
 }
 
@@ -739,18 +923,29 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
+.contact-grid__form {
+  position: relative;
+  margin-top: calc(var(--s-8) * -1);
+}
+
 @media (min-width: 980px) {
   .contact-grid {
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
     gap: var(--s-8);
     align-items: start;
   }
-}
 
-.contact-grid__left {
-  display: grid;
-  gap: var(--s-5);
-  justify-items: start;
+  .contact-grid__form {
+    grid-column: 2;
+    grid-row: 1;
+    margin-top: calc(var(--s-9) * -1.4);
+  }
+
+  .contact-grid__info {
+    grid-column: 1;
+    grid-row: 1;
+    padding-top: var(--s-7);
+  }
 }
 
 .contact-card {
@@ -760,8 +955,8 @@
   padding: clamp(22px, 3vw, 36px);
   border: 1px solid var(--border);
   border-radius: calc(var(--radius-lg) + 4px);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 30%), var(--card);
-  box-shadow: var(--shadow-card);
+  background: linear-gradient(180deg, var(--tint), transparent 30%), var(--card);
+  box-shadow: 0 1px 3px var(--shadow-faint), 0 32px 64px -28px var(--shadow-strong);
 }
 
 .contact-card h2 {
@@ -772,55 +967,136 @@
   display: grid;
   gap: var(--s-6);
   width: 100%;
-  margin-top: var(--s-3);
 }
 
+/* Each detail: an icon tile, a small label, the value. */
 .contact-info__details {
   display: grid;
+  gap: var(--s-3);
   margin: 0;
-  border-top: 1px solid var(--border);
 }
 
 .contact-info__details > div {
   display: grid;
-  gap: 4px;
-  padding-block: var(--s-4);
-  border-bottom: 1px solid var(--border);
+  grid-template-columns: 44px minmax(0, 1fr);
+  column-gap: var(--s-4);
+  row-gap: 2px;
+  align-items: center;
+  padding: var(--s-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  transition: border-color var(--dur) var(--ease);
+}
+
+.contact-info__details > div:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.contact-info__icon {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent-text);
 }
 
 .contact-info__details dt {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
   color: var(--text-2);
+  font-size: 0.8125rem;
+  font-weight: 500;
 }
 
 .contact-info__details dd {
   margin: 0;
+  color: var(--text);
+  font-weight: 500;
 }
 
 .contact-info__social {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--s-2) var(--s-5);
+  gap: var(--s-2);
+  margin-top: var(--s-1);
 }
 
 .contact-info__social a {
   display: inline-flex;
   align-items: center;
   gap: var(--s-2);
+  min-height: 36px;
+  padding: 6px 14px 6px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
   color: var(--text-2);
-  transition: color var(--dur) var(--ease);
+  font-size: 0.875rem;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
 }
 
-.contact-info__social a:hover {
-  color: var(--text);
+.contact-info__social a:hover,
+.contact-info__social a:focus-visible {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent-text);
 }
 
 .contact-info h2 {
-  margin-bottom: var(--s-3);
+  margin-bottom: var(--s-4);
   font-size: 1.2rem;
+}
+
+/* What happens next: numbered steps joined by a line. */
+.contact-info__next {
+  padding: var(--s-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 8%, transparent), transparent 60%), var(--card);
+}
+
+.contact-info__next .steps {
+  gap: 0;
+}
+
+.contact-info__next .steps li {
+  padding: 0 0 var(--s-5) 48px;
+  color: var(--text);
+}
+
+.contact-info__next .steps li:last-child {
+  padding-bottom: 0;
+}
+
+.contact-info__next .steps li::after {
+  content: "";
+  position: absolute;
+  left: 15px;
+  top: 34px;
+  bottom: 2px;
+  width: 2px;
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.contact-info__next .steps li:last-child::after {
+  display: none;
+}
+
+.contact-info__next .steps li::before {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  background: var(--accent-solid);
+  color: var(--on-accent);
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-info__details > div,
+  .contact-info__social a {
+    transition: none;
+  }
 }
 
 .contact-info__book {
@@ -855,7 +1131,7 @@
   border-radius: 50%;
   background: var(--card);
   color: var(--accent-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-size: 0.75rem;
 }
 
@@ -903,4 +1179,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-3);
+}
+
+/* Section and page headings follow the home hero: bold, uppercase Montserrat. */
+.section-head h2,
+.page-hero__title {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+  min-width: 0;
 }

@@ -86,7 +86,7 @@ describe("content", () => {
 
   it("uses the confirmed brand, email and social profiles", () => {
     expect(site.name).toBe("The OrbiTech Solutions");
-    expect(site.email).toBe("nova@theorbitechsolution.com");
+    expect(site.email).toBe("info@theorbitechsolution.com");
     expect(site.social.map((p) => p.id)).toEqual(["linkedin", "instagram", "facebook"]);
     site.social.forEach((p) => expect(p.url).toMatch(/^https:\/\//));
   });
@@ -239,7 +239,7 @@ describe("structured data", () => {
     expect(org.name).toBe("The OrbiTech Solutions");
     expect(org.description).toBe(site.description);
     expect(org.sameAs).toEqual(site.social.map((p) => p.url));
-    expect(org.email).toBe("nova@theorbitechsolution.com");
+    expect(org.email).toBe("info@theorbitechsolution.com");
     expect(org).not.toHaveProperty("telephone");
     expect(website["@id"]).toBe("https://theorbitechsolution.com/#website");
   });

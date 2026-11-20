@@ -7,7 +7,7 @@ import JsonLd from "@/components/JsonLd";
 import LastUpdated from "@/components/LastUpdated";
 import PageIntro from "@/components/PageIntro";
 import { insightCategories, insights, isPublishedInsight } from "@/content/insights";
-import { meta } from "@/content/site";
+import { meta, pageImages } from "@/content/site";
 import { staticPages } from "@/lib/pages";
 import { breadcrumbNode, insightListNode, webPageNode, type Crumb } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
@@ -53,7 +53,7 @@ export default function InsightsPage() {
         ]}
       />
 
-      <PageIntro
+      <PageIntro image={pageImages.insights}
         crumbs={crumbs}
         eyebrow="Insights"
         title="Insights on AI engineering, automation and software"

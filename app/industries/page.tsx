@@ -8,7 +8,7 @@ import PageIntro from "@/components/PageIntro";
 import Icon from "@/components/ui/Icon";
 import { industryPages } from "@/content/industries";
 import { getServicePage } from "@/content/offerings";
-import { meta } from "@/content/site";
+import { meta, pageImages } from "@/content/site";
 import { staticPages } from "@/lib/pages";
 import { getProject, projectHref } from "@/lib/projects";
 import { breadcrumbNode, webPageNode, type Crumb } from "@/lib/schema";
@@ -51,7 +51,7 @@ export default function IndustriesPage() {
         ]}
       />
 
-      <PageIntro
+      <PageIntro image={pageImages.industries}
         crumbs={crumbs}
         eyebrow="Industries"
         title="AI and software solutions by industry"

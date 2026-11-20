@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import Footer from "@/components/layout/Footer";
 import Navbar, { type NavItem } from "@/components/layout/Navbar";
 import { industryPages } from "@/content/industries";
@@ -11,30 +11,40 @@ import "./styles/tokens.css";
 import "./styles/base.css";
 import "./styles/layout.css";
 import "./styles/components.css";
+import "./styles/form.css";
 import "./styles/home.css";
+import "./styles/hero-text.css";
+import "./styles/pin.css";
 import "./styles/pages.css";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
+// Self-hosted variable fonts (Latin subset, files and licences in ./fonts), so neither
+// `next dev` nor `next build` has to reach Google Fonts. Downloading them at compile time
+// timed out on slow connections and broke the dev server.
+const montserrat = localFont({
+  src: "./fonts/montserrat-latin.woff2",
+  weight: "100 900",
+  variable: "--font-montserrat",
   display: "swap",
 });
 
-const inter = Inter({
+const inter = localFont({
+  src: "./fonts/inter-latin.woff2",
+  weight: "100 900",
   variable: "--font-inter",
-  subsets: ["latin"],
   display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const jetbrainsMono = localFont({
+  src: "./fonts/jetbrains-mono-latin.woff2",
+  weight: "100 800",
   variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
   display: "swap",
+  fallback: ["ui-monospace", "Menlo", "Consolas", "monospace"],
 });
 
 export const viewport: Viewport = {
-  themeColor: "#080b12",
-  colorScheme: "dark",
+  themeColor: "#ffffff",
+  colorScheme: "light dark",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -81,7 +91,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${montserrat.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+      <head>
+        {/* Sets the saved theme before the first paint, so a visitor who chose dark never sees a white flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: 'try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}',
+          }}
+        />
+      </head>
       <body>
         <a href="#main" className="skip-link">
           Skip to content

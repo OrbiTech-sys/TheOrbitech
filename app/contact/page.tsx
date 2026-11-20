@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import ContactBandArt from "@/components/ContactBandArt";
 import ContactInfo from "@/components/ContactInfo";
 import ContactSection from "@/components/ContactSection";
 import JsonLd from "@/components/JsonLd";
@@ -33,21 +34,29 @@ export default function ContactPage() {
         ]}
       />
 
-      <section className="page-hero contact-hero" aria-labelledby="contact-title">
-        <div className="wrap">
+      <section className="contact-band" aria-labelledby="contact-title">
+        <span className="contact-band__stripe contact-band__stripe--a" aria-hidden="true" />
+        <span className="contact-band__stripe contact-band__stripe--b" aria-hidden="true" />
+        <div className="wrap contact-band__inner">
           <Breadcrumbs crumbs={crumbs} />
-          <div className="contact-grid">
-            <div className="contact-grid__left">
-              <span className="eyebrow">Contact</span>
-              <h1 id="contact-title" className="page-hero__title">
-                Have an Ambitious Idea? Let’s Engineer It.
-              </h1>
-              <p className="page-hero__lede">
-                Tell us about your goals and challenges. We’ll help you identify the right technical solution.
-              </p>
-              <ContactInfo />
-            </div>
+          <span className="eyebrow">Contact</span>
+          <h1 id="contact-title" className="contact-band__title">
+            Have an Ambitious Idea? Let’s Engineer It.
+          </h1>
+          <p className="contact-band__lede">
+            Tell us about your goals and challenges. We’ll help you identify the right technical solution.
+          </p>
+        </div>
+        <ContactBandArt />
+      </section>
+
+      <section className="contact-body">
+        <div className="wrap contact-grid">
+          <div className="contact-grid__form" data-theme="dark">
             <ContactSection />
+          </div>
+          <div className="contact-grid__info">
+            <ContactInfo />
           </div>
         </div>
       </section>

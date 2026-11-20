@@ -150,7 +150,7 @@ export const site = {
    * environment variable overrides it (see lib/site-config.ts).
    */
   url: "https://theorbitechsolution.com",
-  email: "nova@theorbitechsolution.com" as string | null,
+  email: "info@theorbitechsolution.com" as string | null,
   /** City and country, as supplied by the owner. */
   location: "New York, US" as string | null,
   /** Where the studio works. The studio works remotely. Used in structured data and the footer. */
@@ -219,7 +219,7 @@ export const meta = {
   contact: {
     title: "Contact The OrbiTech Solutions | Start a Project",
     description:
-      "Contact The OrbiTech Solutions to start an AI automation, chatbot or web project. Send a message or email nova@theorbitechsolution.com and we reply by email.",
+      "Contact The OrbiTech Solutions to start an AI automation, chatbot or web project. Send a message or email info@theorbitechsolution.com and we reply by email.",
   },
   industries: {
     title: "AI & Software Solutions by Industry | The OrbiTech Solutions",
@@ -249,10 +249,12 @@ export const meta = {
 
 export const home = {
   /** Small line above the H1 */
-  eyebrow: "AI ENGINEERING · SOFTWARE · AUTOMATION",
+  eyebrow: "AI engineering, software and automation",
   /** The H1 */
-  headline: "Engineering Intelligent Systems for a Smarter Business.",
-  lede: "We build AI-powered products, intelligent automation, and scalable digital solutions that help businesses operate smarter and grow faster.",
+  headline: "Your Partner for Comprehensive IT Solutions",
+  /** Words in the headline set in the accent colour. */
+  headlineAccents: ["Partner", "IT"],
+  lede: "We offer services such as custom software development, cloud computing strategies, cybersecurity solutions, and digital transformation consultancy. We empower businesses with technology to enhance productivity, security, and overall operational excellence.",
   /** Supporting line used in structured data and the footer */
   slogan: "Make work smarter. Make growth real.",
   /** The capability strip under the hero. Capabilities only: no figures and no client names. */
@@ -1033,6 +1035,17 @@ export const studio = {
  */
 export const team: TeamMember[] = [];
 
+/**
+ * Automation and business platforms, shown in "The tools we reach for" (home and studio).
+ * Separate from `skills` below, which is the engineering stack the service pages draw on.
+ */
+export const automationTools: { discipline: string; tools: string[] }[] = [
+  { discipline: "Workflow Automation", tools: ["n8n", "Make.com", "Zapier"] },
+  { discipline: "CRM & Marketing", tools: ["GoHighLevel", "HubSpot"] },
+  { discipline: "Data & Productivity", tools: ["Airtable", "Google Sheets", "Notion"] },
+  { discipline: "Communication", tools: ["Slack", "Twilio", "WhatsApp Business"] },
+];
+
 export const skills: { discipline: string; tools: string[] }[] = [
   {
     discipline: "Frontend",
@@ -1122,7 +1135,7 @@ export const privacy = {
    */
   retention: null as string | null,
   /** Who handles privacy questions: an email address. */
-  contactEmail: "nova@theorbitechsolution.com" as string | null,
+  contactEmail: "info@theorbitechsolution.com" as string | null,
   /** When this page's text was last reviewed. */
   updated: "27 October 2026" as string | null,
   /** Who delivers the contact-form email. Matches the code; change both if you switch provider. */
@@ -1130,3 +1143,14 @@ export const privacy = {
   /** Where the site is hosted. */
   hosting: "Vercel" as string | null,
 };
+
+
+/** The picture on the right of each inner page's opening panel. Real screenshots of the studio's own work. */
+export const pageImages = {
+  services: { src: "/projects/neural-agents.jpg", alt: "An AI agent workflow builder with connected processing steps", width: 1376, height: 768 },
+  industries: { src: "/work/orbit-operations-desktop.webp", alt: "The OrbitOS operations workspace showing modules for a business", width: 1440, height: 900 },
+  work: { src: "/projects/nexus-saas.jpg", alt: "A SaaS analytics dashboard with revenue and engagement charts", width: 1376, height: 768 },
+  studio: { src: "/home/hero-developer.webp", alt: "A developer working on a laptop", width: 752, height: 666 },
+  insights: { src: "/work/aidochat-landing.webp", alt: "The AiDocChat landing page for AI document intelligence", width: 1200, height: 750 },
+  legal: { src: "/hero/layers-poster.webp", alt: "Layered panes of an interface on a glowing base", width: 1800, height: 1500 },
+} satisfies Record<string, Img>;

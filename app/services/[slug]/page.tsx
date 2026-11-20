@@ -12,7 +12,7 @@ import ProjectCard from "@/components/ui/ProjectCard";
 import SectionHeading from "@/components/ui/SectionHeading";
 import Timeline from "@/components/ui/Timeline";
 import { getServicePage, servicePages } from "@/content/offerings";
-import { services, site } from "@/content/site";
+import { services, site, pageImages } from "@/content/site";
 import { projectsForService, toProjectCard } from "@/lib/projects";
 import { breadcrumbNode, faqNode, serviceNodeId, serviceNodes, webPageNode, type Crumb } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
@@ -72,7 +72,7 @@ export default async function ServicePage({ params }: Props) {
         ]}
       />
 
-      <PageIntro crumbs={crumbs} eyebrow={page.eyebrow} title={page.headline} lede={page.lede}>
+      <PageIntro image={pageImages.services} crumbs={crumbs} eyebrow={page.eyebrow} title={page.headline} lede={page.lede}>
         <div className="page-hero__actions">
           <Link href="/contact" className="btn btn--primary btn--lg">
             Discuss your project <ArrowRight size={18} aria-hidden="true" />

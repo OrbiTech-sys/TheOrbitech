@@ -4,7 +4,7 @@ import JsonLd from "@/components/JsonLd";
 import LastUpdated from "@/components/LastUpdated";
 import PageIntro from "@/components/PageIntro";
 import WorkIndex from "@/components/WorkIndex";
-import { meta, projectCategories } from "@/content/site";
+import { meta, projectCategories, pageImages } from "@/content/site";
 import { staticPages } from "@/lib/pages";
 import { showcaseProjects, toProjectCard } from "@/lib/projects";
 import { breadcrumbNode, projectListNode, webPageNode, type Crumb } from "@/lib/schema";
@@ -38,7 +38,7 @@ export default function WorkPage() {
         ]}
       />
 
-      <PageIntro
+      <PageIntro image={pageImages.work}
         crumbs={crumbs}
         eyebrow="Work"
         title="AI and web projects with live demos"

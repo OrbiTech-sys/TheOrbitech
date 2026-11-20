@@ -6,7 +6,7 @@ import ProcessSection from "@/components/ProcessSection";
 import TeamSection from "@/components/TeamSection";
 import TechStackSection from "@/components/TechStackSection";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { meta, site, studio } from "@/content/site";
+import { meta, site, studio, pageImages } from "@/content/site";
 import { staticPages } from "@/lib/pages";
 import { breadcrumbNode, webPageNode, type Crumb } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
@@ -36,7 +36,7 @@ export default function StudioPage() {
         ]}
       />
 
-      <PageIntro
+      <PageIntro image={pageImages.studio}
         crumbs={crumbs}
         eyebrow="Studio"
         title="Engineering With Purpose. Building With Intelligence."

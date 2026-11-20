@@ -1,3 +1,4 @@
+import { Globe, Mail, MapPin, Share2 } from "lucide-react";
 import SocialIcon from "@/components/SocialIcon";
 import { nextSteps, privacy, site } from "@/content/site";
 
@@ -9,6 +10,9 @@ export default function ContactInfo() {
       <dl className="contact-info__details">
         {email && (
           <div>
+            <span className="contact-info__icon" aria-hidden="true">
+              <Mail size={18} strokeWidth={1.75} />
+            </span>
             <dt>Email</dt>
             <dd>
               <a className="text-link" href={`mailto:${email}`}>
@@ -19,16 +23,25 @@ export default function ContactInfo() {
         )}
         {site.location && (
           <div>
+            <span className="contact-info__icon" aria-hidden="true">
+              <MapPin size={18} strokeWidth={1.75} />
+            </span>
             <dt>Based in</dt>
             <dd>{site.location}</dd>
           </div>
         )}
         <div>
-          <dt>Working remotely</dt>
+          <span className="contact-info__icon" aria-hidden="true">
+              <Globe size={18} strokeWidth={1.75} />
+            </span>
+            <dt>Working remotely</dt>
           <dd>We collaborate with businesses {site.areaServed.toLowerCase()}, by email and video call.</dd>
         </div>
         {site.social.length > 0 && (
           <div>
+            <span className="contact-info__icon" aria-hidden="true">
+              <Share2 size={18} strokeWidth={1.75} />
+            </span>
             <dt>Find us on</dt>
             <dd>
               <ul className="contact-info__social">

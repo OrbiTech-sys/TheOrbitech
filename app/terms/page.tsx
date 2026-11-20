@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import PageIntro from "@/components/PageIntro";
-import { meta, privacy, site } from "@/content/site";
+import { meta, privacy, site, pageImages } from "@/content/site";
 import { staticPages } from "@/lib/pages";
 import { breadcrumbNode, webPageNode, type Crumb } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
@@ -38,7 +38,7 @@ export default function TermsPage() {
         ]}
       />
 
-      <PageIntro
+      <PageIntro image={pageImages.legal}
         crumbs={crumbs}
         eyebrow="Legal"
         title="Terms of use for this website"

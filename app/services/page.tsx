@@ -15,7 +15,7 @@ import ProjectCard from "@/components/ui/ProjectCard";
 import SectionHeading from "@/components/ui/SectionHeading";
 import ServiceCard from "@/components/ui/ServiceCard";
 import { coreCategories, servicePageById } from "@/content/offerings";
-import { meta, services } from "@/content/site";
+import { meta, services, skills, pageImages } from "@/content/site";
 import { glanceRows } from "@/lib/glance";
 import { staticPages } from "@/lib/pages";
 import { getProject, toProjectCard } from "@/lib/projects";
@@ -51,7 +51,7 @@ export default function ServicesPage() {
         ]}
       />
 
-      <PageIntro
+      <PageIntro image={pageImages.services}
         crumbs={crumbs}
         eyebrow="Services"
         title="AI engineering, software and automation services"
@@ -108,7 +108,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <TechStackSection eyebrow="Technologies and integrations" title="Technologies we build with" />
+      <TechStackSection eyebrow="Technologies and integrations" title="Technologies we build with" groups={skills} />
 
       <section className="section" aria-labelledby="related-title">
         <div className="wrap">

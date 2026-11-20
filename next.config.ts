@@ -47,6 +47,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   experimental: {
     agentFeedback: true,
+    // Upgrade reminders in `next dev` / `next build` follow npm's latest stable release.
+    agentUpgrade: "latest",
     // The contact form sends a few kilobytes of text. Anything larger is refused.
     serverActions: { bodySizeLimit: "100kb" },
   },

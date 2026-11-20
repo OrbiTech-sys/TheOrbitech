@@ -26,6 +26,7 @@ export default function Footer() {
   return (
     <footer className="site-footer">
       <div className="wrap">
+        <div className="tab-panel site-footer__panel">
         <div className="site-footer__grid">
           <div className="site-footer__about">
             <Link className="brand" href="/" aria-label={`${site.name} home`}>
@@ -97,6 +98,7 @@ export default function Footer() {
               ))}
             </ul>
           </nav>
+        </div>
         </div>
 
         <div className="site-footer__bar">

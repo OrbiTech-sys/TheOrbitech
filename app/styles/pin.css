@@ -1,0 +1,510 @@
+/* ─────────────────────────────────────────────────────────────
+ * The reference design's language: cream pill labels, violet-to-peach
+ * "folder tab" panels, dark cards with violet pill buttons, a two-column
+ * FAQ and a footer set inside a panel. Colours come from tokens.css.
+ * ───────────────────────────────────────────────────────────── */
+
+/* Cream pill labels */
+.eyebrow {
+  background: var(--peach);
+  color: var(--on-peach);
+}
+
+/* ── The tab panel ───────────────────────────────────────── */
+
+.tab-panel {
+  --tab: clamp(28px, 4vw, 48px); /* how far the left shoulder sits below the tab */
+  position: relative;
+  padding: calc(var(--tab) + clamp(16px, 2.4vw, 32px)) clamp(22px, 4vw, 56px) clamp(24px, 3.4vw, 44px);
+  border-radius: calc(var(--radius-lg) + 10px);
+  background: var(--gradient-panel);
+  color: var(--on-accent);
+  /* the folder-tab outline: lower on the left, a slanted step up to the right */
+  clip-path: polygon(
+    0 calc(var(--tab) + 24px),
+    0.8% var(--tab),
+    3% var(--tab),
+    30% var(--tab),
+    34% 6px,
+    36% 0,
+    100% 0,
+    100% 100%,
+    0 100%
+  );
+}
+
+.tab-panel h2,
+.tab-panel h3,
+.tab-panel p {
+  color: var(--on-accent);
+}
+
+/* Pill buttons */
+.pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: var(--s-2);
+  min-height: 40px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: transform var(--dur) var(--ease), background-color var(--dur) var(--ease);
+}
+
+.pill-btn:hover {
+  transform: translateY(-1px);
+}
+
+.pill-btn:focus-visible {
+  outline: 2px solid var(--on-accent);
+  outline-offset: 3px;
+}
+
+.pill-btn--peach {
+  background: var(--peach);
+  color: var(--on-peach);
+}
+
+.pill-btn--violet {
+  background: var(--accent-solid);
+  color: var(--on-accent);
+}
+
+.pill-btn--violet:hover {
+  background: var(--accent-solid-hover);
+}
+
+/* ── Home: services ──────────────────────────────────────── */
+
+.services-pin .wrap {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.services-pin__panel {
+  display: grid;
+  gap: var(--s-5);
+  padding-bottom: clamp(120px, 14vw, 190px);
+}
+
+@media (min-width: 900px) {
+  .services-pin__panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.services-pin__title {
+  max-width: 16ch;
+  font-size: clamp(1.8rem, 3.4vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.services-pin__intro {
+  display: grid;
+  gap: var(--s-4);
+  justify-items: start;
+}
+
+.services-pin__cards {
+  position: relative;
+  display: grid;
+  gap: var(--s-4);
+  margin-top: calc(clamp(96px, 12vw, 160px) * -1);
+  padding-inline: clamp(12px, 3vw, 40px);
+  background: transparent;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 640px) {
+  .services-pin__cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .services-pin__cards {
+    grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.pin-card {
+  display: grid;
+  gap: var(--s-4);
+  justify-items: center;
+  align-content: space-between;
+  min-height: 220px;
+  padding: var(--s-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--panel-ink);
+  box-shadow: 0 24px 48px -24px var(--shadow-strong);
+  text-align: center;
+}
+
+.pin-card--lead {
+  justify-items: start;
+  text-align: left;
+}
+
+@media (min-width: 1100px) {
+  .pin-card--lead {
+    grid-row: span 2;
+  }
+}
+
+.pin-card__icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius);
+  background: var(--elevated);
+  color: var(--text);
+}
+
+.pin-card__title {
+  margin: 0;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.pin-card__text {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 0.9375rem;
+}
+
+.pin-card__subhead {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.pin-card__list {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--text-2);
+}
+
+.pin-card__list li {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+}
+
+.pin-card__list svg {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 4px;
+  border-radius: 50%;
+  background: var(--peach);
+  color: var(--on-peach);
+}
+
+/* ── Home: work ──────────────────────────────────────────── */
+
+#projects .wrap {
+  display: grid;
+  gap: var(--s-4);
+}
+
+.work-pin {
+  display: grid;
+  gap: var(--s-6);
+}
+
+.work-pin__head {
+  display: grid;
+  gap: var(--s-4);
+}
+
+@media (min-width: 900px) {
+  .work-pin__head {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+.work-pin__title {
+  max-width: 18ch;
+  font-size: clamp(1.8rem, 3.4vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.work-pin__collage {
+  display: grid;
+  gap: var(--s-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 900px) {
+  .work-pin__collage {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.6fr);
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    height: clamp(240px, 26vw, 340px);
+  }
+
+  .work-pin__collage img:nth-child(1) {
+    grid-row: span 2;
+  }
+
+  .work-pin__collage img:nth-child(4) {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .work-pin__collage img:nth-child(3) {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+  }
+}
+
+.work-pin__collage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 110px;
+  border-radius: var(--radius);
+  object-fit: cover;
+  object-position: top;
+  box-shadow: 0 16px 32px -20px var(--shadow-strong);
+}
+
+/* ── FAQ: two columns of rounded cards ───────────────────── */
+
+.faq {
+  display: grid;
+  gap: var(--s-3);
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 900px) {
+  .faq {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.faq details {
+  padding: 0 var(--s-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  transition: background-color var(--dur) var(--ease);
+}
+
+.faq details[open] {
+  background: var(--elevated);
+  box-shadow: 0 18px 36px -24px var(--shadow-strong);
+}
+
+/* ── Footer inside a panel ───────────────────────────────── */
+
+.site-footer__panel {
+  --tab: clamp(24px, 3vw, 40px);
+  margin-bottom: var(--s-6);
+  padding-top: calc(var(--tab) + clamp(28px, 3vw, 44px));
+  background: var(--gradient-panel-deep);
+}
+
+/* The footer runs a little wider than the page, so the violet panel spreads out. */
+.site-footer {
+  --maxw: 1440px;
+}
+
+/* Inside the panel the grid needs no padding of its own. */
+.site-footer__panel .site-footer__grid {
+  padding-block: 0;
+}
+
+.site-footer__panel {
+  margin-top: var(--s-7);
+}
+
+.site-footer__panel,
+.site-footer__panel a,
+.site-footer__panel .site-footer__heading,
+.site-footer__panel .site-footer__about p {
+  color: var(--on-accent);
+}
+
+.site-footer__panel .site-footer__list a {
+  opacity: 0.9;
+}
+
+.site-footer__panel .site-footer__list a:hover {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.site-footer__panel .social a {
+  border-color: color-mix(in srgb, var(--on-accent) 40%, transparent);
+  color: var(--on-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill-btn,
+  .faq details {
+    transition: none;
+  }
+}
+
+/* ── Inner pages: the opening block sits in a violet tab panel, like the home sections ── */
+
+.page-hero {
+  padding-block: clamp(16px, 2.4vw, 32px) clamp(8px, 1.6vw, 20px);
+}
+
+.page-hero > .wrap {
+  --tab: clamp(28px, 4vw, 48px);
+  width: min(calc(100% - 2 * var(--gutter)), var(--maxw));
+  max-width: none;
+  margin-inline: auto;
+  padding: calc(var(--tab) + clamp(18px, 2.6vw, 34px)) clamp(22px, 4vw, 56px) clamp(28px, 4vw, 52px);
+  border-radius: calc(var(--radius-lg) + 10px);
+  background: var(--gradient-panel);
+  color: var(--on-accent);
+  clip-path: polygon(0 calc(var(--tab) + 24px), 0.8% var(--tab), 3% var(--tab), 30% var(--tab), 34% 6px, 36% 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.page-hero .page-hero__title,
+.page-hero .page-hero__lede,
+.page-hero .page-meta,
+.page-hero .page-hero__note,
+.page-hero .crumbs,
+.page-hero .crumbs a,
+.page-hero .crumbs li,
+.page-hero .crumbs span {
+  color: var(--on-accent);
+}
+
+.page-hero .page-hero__lede {
+  opacity: 0.95;
+}
+
+.page-hero .page-meta {
+  opacity: 0.85;
+}
+
+.page-hero .page-hero__note {
+  border-left-color: var(--peach);
+  background: color-mix(in srgb, var(--on-accent) 14%, transparent);
+}
+
+/* On the violet panel: peach badges and primary button, white outline secondary */
+.page-hero .badge {
+  border-color: transparent;
+  background: var(--peach);
+  color: var(--on-peach);
+}
+
+.page-hero .btn--primary {
+  background: var(--peach);
+  color: var(--on-peach);
+  box-shadow: 0 10px 24px -12px var(--shadow-strong);
+}
+
+.page-hero .btn--primary:hover {
+  background: color-mix(in srgb, var(--peach) 85%, var(--on-accent));
+}
+
+.page-hero .btn--secondary {
+  border-color: color-mix(in srgb, var(--on-accent) 70%, transparent);
+  background: transparent;
+  color: var(--on-accent);
+}
+
+.page-hero .btn--secondary:hover {
+  background: color-mix(in srgb, var(--on-accent) 14%, transparent);
+}
+
+.page-hero .btn:focus-visible {
+  outline: 2px solid var(--on-accent);
+  outline-offset: 3px;
+}
+
+/* ── Inner page hero: tighter, with a picture on the right ── */
+
+header.page-hero {
+  padding-block: clamp(10px, 1.4vw, 20px) 0;
+}
+
+header.page-hero > .wrap {
+  --tab: clamp(22px, 3vw, 36px);
+  padding: calc(var(--tab) + clamp(12px, 1.8vw, 24px)) clamp(22px, 3.4vw, 48px) clamp(22px, 3vw, 40px);
+}
+
+.page-hero .page-hero__copy {
+  display: grid;
+  gap: var(--s-4);
+  justify-items: start;
+  min-width: 0;
+}
+
+.page-hero .page-hero__title {
+  max-width: 22ch;
+  font-size: clamp(2rem, 3.6vw, 3.4rem);
+  line-height: 1.04;
+}
+
+.page-hero--media > .wrap {
+  display: grid;
+  gap: var(--s-6);
+  align-items: center;
+}
+
+@media (min-width: 1000px) {
+  .page-hero--media > .wrap {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+}
+
+.page-hero__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 380px;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  object-position: top;
+  box-shadow: 0 30px 60px -28px var(--shadow-strong);
+  outline: 1px solid color-mix(in srgb, var(--on-accent) 30%, transparent);
+}
+
+/* On phones the picture is a short banner under the copy */
+@media (max-width: 999.98px) {
+  .page-hero__media img {
+    max-height: 220px;
+  }
+}
+
+/* The inner page panel runs as wide as the footer panel. */
+header.page-hero {
+  --maxw: 1440px;
+}
+
+/* No divider line straight under the opening panel (the first industry block had one). */
+header.page-hero + .industry-block,
+header.page-hero + .section {
+  border-top: 0;
+}

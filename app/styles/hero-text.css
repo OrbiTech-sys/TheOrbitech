@@ -1,0 +1,40 @@
+/* Hallmark · component: hero text · genre: modern-minimal · theme: existing tokens (by request) · states: n/a (no controls) · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H5 E4 S3 R5 V4 · weakest: S, the headline is the studio's own line; the accent underline under "Intelligent Systems" is the one mark it keeps, the dots, pill and gradient were cut to earn R5 */
+
+/* The home hero's words: a plain label, one headline in one colour and weight with a single
+ * underline mark, then the sentence. Colours and faces come from tokens.css. */
+
+.hero__label {
+  margin: 0;
+  color: var(--text-2);
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.hero__title {
+  min-width: 0;
+  max-width: none;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 3.6vw, 3.9rem);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+/* The phrase is set in the accent text colour, no underline. */
+.hero__mark {
+  color: var(--accent-text);
+}
+
+.hero__lede {
+  max-width: 42rem;
+  color: var(--text-2);
+  font-size: clamp(1.0625rem, 1.2vw, 1.15rem);
+  line-height: 1.6;
+  text-wrap: pretty;
+}

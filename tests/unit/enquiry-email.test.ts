@@ -36,9 +36,9 @@ describe("enquiryEmail", () => {
 describe("mailtoHref", () => {
   it("addresses the studio and keeps the subject and body intact", () => {
     const email = enquiryEmail(enquiry, "The OrbiTech Solutions");
-    const url = new URL(mailtoHref("nova@theorbitechsolution.com", email));
+    const url = new URL(mailtoHref("info@theorbitechsolution.com", email));
     expect(url.protocol).toBe("mailto:");
-    expect(url.pathname).toBe("nova@theorbitechsolution.com");
+    expect(url.pathname).toBe("info@theorbitechsolution.com");
     expect(url.searchParams.get("subject")).toBe(email.subject);
     expect(url.searchParams.get("body")).toBe(email.body.replace(/\n/g, "\r\n"));
   });

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { pageImages } from "@/content/site";
 import PageIntro from "@/components/PageIntro";
 
 // The thank-you page is a dead end for search: no canonical, no social tags, not indexed.
@@ -11,7 +12,7 @@ export const metadata: Metadata = {
 export default function ThanksPage() {
   return (
     <>
-      <PageIntro eyebrow="Inquiry received" title="Message sent" lede="Thank you. We’ll reply by email to the address you gave." />
+      <PageIntro image={pageImages.legal} eyebrow="Inquiry received" title="Message sent" lede="Thank you. We’ll reply by email to the address you gave." />
       <section className="section section--tight" aria-label="Next steps">
         <div className="wrap wrap--narrow">
           <div className="prose">

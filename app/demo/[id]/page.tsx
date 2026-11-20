@@ -37,6 +37,7 @@ export default async function DemoGatePage({ params }: Props) {
   return (
     <>
       <PageIntro
+        image={entry.demo.cover}
         title={entry.demo.name}
         lede={
           <>

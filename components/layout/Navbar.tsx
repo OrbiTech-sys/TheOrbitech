@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 import LogoMark from "@/components/ui/LogoMark";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 
 interface MenuLink {
   label: string;
@@ -145,6 +146,8 @@ export default function Navbar({
               ),
             )}
           </nav>
+
+          <ThemeToggle />
 
           <Link href="/contact" className="btn btn--primary site-header__cta">
             Let’s Talk

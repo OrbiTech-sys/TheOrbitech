@@ -7,7 +7,7 @@ import JsonLd from "@/components/JsonLd";
 import PageIntro from "@/components/PageIntro";
 import SectionHeading from "@/components/ui/SectionHeading";
 import { getInsight, insights, isPublishedInsight } from "@/content/insights";
-import { site } from "@/content/site";
+import { site, pageImages } from "@/content/site";
 import { formatDate } from "@/lib/pages";
 import { articleNode, breadcrumbNode, webPageNode, type Crumb } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
@@ -66,7 +66,7 @@ export default async function InsightPage({ params }: Props) {
         ]}
       />
 
-      <PageIntro crumbs={crumbs} eyebrow={article.category} title={article.title} lede={article.summary}>
+      <PageIntro image={pageImages.insights} crumbs={crumbs} eyebrow={article.category} title={article.title} lede={article.summary}>
         <div className="badge-row">
           {published ? (
             <>

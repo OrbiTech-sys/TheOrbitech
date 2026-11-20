@@ -12,7 +12,7 @@ test.describe("contact page", () => {
     await page.goto("/contact");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Have an Ambitious Idea? Let’s Engineer It.");
     await expect(page.getByText("We’ll help you identify the right technical solution.")).toBeVisible();
-    await expect(page.getByRole("link", { name: "nova@theorbitechsolution.com" }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "info@theorbitechsolution.com" }).first()).toBeVisible();
     await expect(page.getByText("New York, US", { exact: true })).toBeVisible();
     await expect(page.getByText(/collaborate with businesses worldwide/i)).toBeVisible();
     await expect(page.getByRole("heading", { name: "What happens next" })).toBeVisible();
