@@ -1,14 +1,20 @@
-import { projects, type Project } from "@/content/site";
+import { projects, services, type Project, type Service } from "@/content/site";
 
-/** A project counts as real once it has a name and something to open: a live address or gated demos. */
+export { demoOpenHref, displayHost, projectHref, serviceHref } from "@/lib/paths";
+
+/** A project is published once it has a name and a summary. A live address is optional: private projects have none. */
+export function isPublished(project: Project): boolean {
+  return Boolean(project.name && project.summary);
+}
+
+/** A project has something visitors can open: a public URL or gated demos. */
 export function isRealProject(project: Project): boolean {
   return Boolean(project.name && (project.liveUrl || project.demos.length > 0));
 }
 
-/** Named projects are shown in the work index; live projects are still the only ones indexed as published work. */
-export function showcaseProjects(all: Project[]): Project[] {
-  const named = all.filter((project) => Boolean(project.name));
-  return named.length > 0 ? named : all;
+/** Projects shown in the work index and listed in the sitemap. */
+export function showcaseProjects(all: Project[] = projects): Project[] {
+  return all.filter(isPublished);
 }
 
 export function getProject(slug: string): Project | undefined {
@@ -23,13 +29,8 @@ export function getNextProject(slug: string): Project | undefined {
   return list[(index + 1) % list.length];
 }
 
-export const projectHref = (project: Project) => `/work/${project.slug}`;
+export const getService = (id: string): Service | undefined => services.find((s) => s.id === id);
 
-/** Host part of the live address, for captions: "https://www.acme.com/x" → "acme.com" */
-export function displayHost(url: string): string {
-  try {
-    return new URL(url).host.replace(/^www\./, "");
-  } catch {
-    return url;
-  }
-}
+/** Projects that belong to a service area, for "related work" links. */
+export const projectsForService = (serviceId: string): Project[] =>
+  projects.filter((p) => isPublished(p) && p.serviceId === serviceId);

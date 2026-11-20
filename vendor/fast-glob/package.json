@@ -1,0 +1,10 @@
+{
+  "name": "fast-glob",
+  "version": "3.3.1-tinyglobby",
+  "private": true,
+  "description": "Local fast-glob stand-in backed by tinyglobby; see index.js.",
+  "main": "index.js",
+  "dependencies": {
+    "tinyglobby": "^0.2.17"
+  }
+}

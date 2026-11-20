@@ -2,15 +2,13 @@
 
 import { useState } from "react";
 import WorkCard from "@/components/WorkCard";
-import { projectTypes, projects as allProjects, type ProjectType } from "@/content/site";
-import { showcaseProjects } from "@/lib/projects";
+import type { Project, ProjectType } from "@/content/site";
 
 type Filter = "all" | ProjectType;
 
 /** The full work grid with a filter by type. */
-export default function WorkIndex() {
+export default function WorkIndex({ projects, projectTypes }: { projects: Project[]; projectTypes: readonly ProjectType[] }) {
   const [filter, setFilter] = useState<Filter>("all");
-  const projects = showcaseProjects(allProjects);
 
   const count = (type: ProjectType) => projects.filter((p) => p.type === type).length;
   const anyTyped = projects.some((p) => p.type);
@@ -39,7 +37,6 @@ export default function WorkIndex() {
           </button>
         ))}
       </div>
-      {!anyTyped && <p className="filter__note">Filters switch on once each project has a type.</p>}
 
       <p className="sr-only" aria-live="polite">
         Showing {visible.length} {visible.length === 1 ? "project" : "projects"}
@@ -51,7 +48,7 @@ export default function WorkIndex() {
             <WorkCard
               key={project.slug}
               project={project}
-              priority={index < 2}
+              priority={index === 0}
               sizes="(min-width: 48rem) 46vw, 100vw"
             />
           ))}

@@ -4,14 +4,14 @@
  * are used only if a browser can't.
  */
 const FALLBACK = {
-  "--color-ink": "#1b1612",
-  "--color-night": "#0e1818",
-  "--color-on-night-2": "#9db4b3",
-  "--color-night-rule": "#2f4140",
-  "--color-kiln": "#d2511a",
-  "--color-kiln-bright": "#ff7a3d",
-  "--color-iris": "#6e5bdd",
-  "--color-iris-bright": "#a9a5ff",
+  "--color-ink": "#0e1624",
+  "--color-night": "#0e1625",
+  "--color-on-night-2": "#a3acb8",
+  "--color-night-rule": "#343e4d",
+  "--color-accent": "#2c6be7",
+  "--color-accent-bright": "#65a7fa",
+  "--color-rose": "#e0456a",
+  "--color-rose-bright": "#f08aa0",
   "--color-lagoon": "#0099a0",
   "--color-lagoon-bright": "#5ddae0",
   "--color-leaf": "#36a558",

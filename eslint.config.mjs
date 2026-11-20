@@ -9,11 +9,17 @@ const eslintConfig = defineConfig([
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
+    // Other build folders: tests, the dev server and the committed audit build.
+    ".next-*/**",
+    // Local agent worktrees (gitignored) are separate checkouts, not this project's code.
+    ".claude/**",
     "out/**",
     "build/**",
     "next-env.d.ts",
     // Unused components kept for reference (see components/_legacy/README.md).
     "components/_legacy/**",
+    // CommonJS dependency shims (see vendor/fast-glob/index.js).
+    "vendor/**",
     // Test output
     "playwright-report/**",
     "test-results/**",

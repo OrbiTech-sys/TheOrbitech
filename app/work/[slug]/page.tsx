@@ -1,18 +1,19 @@
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 import ClosingCta from "@/components/ClosingCta";
 import DemoCard from "@/components/DemoCard";
-import FaqSection from "@/components/FaqSection";
 import JsonLd from "@/components/JsonLd";
-import { Pending } from "@/components/Pending";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import ProjectFrame from "@/components/ProjectFrame";
-import { projects } from "@/content/site";
-import { demoOpenHref } from "@/lib/demos";
-import { displayHost, getNextProject, getProject, isRealProject, projectHref } from "@/lib/projects";
-import { creativeWorkLd, demoCollectionLd, faqLd, pageMetadata } from "@/lib/seo";
+import { projects, site } from "@/content/site";
+import { formatDate } from "@/lib/pages";
+import { demoOpenHref, displayHost, getNextProject, getProject, getService, isPublished, projectHref, serviceHref } from "@/lib/projects";
+import { breadcrumbNode, projectNodes, webPageNode, type Crumb } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site-config";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -22,247 +23,254 @@ export const instant = false;
 const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
 export function generateStaticParams() {
-  return projects.map((project) => ({ slug: project.slug }));
+  return projects.filter(isPublished).map((project) => ({ slug: project.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const project = getProject(slug);
-  if (!project) return { title: "Project not found", robots: { index: false } };
+  if (!project || !isPublished(project)) return { title: "Project not found", robots: { index: false } };
 
+  // A 1200×630 JPEG made from the cover screenshot by scripts/make-og.mjs.
   const image = project.cover
-    ? { url: project.cover.src, width: project.cover.width, height: project.cover.height, alt: project.cover.alt }
+    ? { url: `/og/work/${project.slug}.jpg`, width: 1200, height: 630, alt: project.cover.alt }
     : undefined;
 
   return pageMetadata({
-    title: project.name ?? "Case study",
-    description: project.summary ?? `A project by OrbiTech${project.client ? ` for ${project.client}` : ""}.`,
+    title: `${project.seoTitle} | ${site.name}`,
+    description: project.seoDescription,
     path: projectHref(project),
     image,
-    // Slots that are still empty stay out of search results.
-    noindex: !isRealProject(project),
   });
 }
 
 export default async function CaseStudyPage({ params }: Props) {
   const { slug } = await params;
   const project = getProject(slug);
-  if (!project) notFound();
+  if (!project || !isPublished(project)) notFound();
 
+  const path = projectHref(project);
   const next = getNextProject(slug);
+  const service = getService(project.serviceId);
   const heroImage = project.cover ?? project.desktop;
+  // The phone screenshot is shown only when it is a different picture from the hero.
   const hasDemos = project.demos.length > 0;
-  // Demo pages show their screenshots in the demo cards, so the hero picture and the screens row would only repeat them.
-  const showScreens = !hasDemos;
+  // A project with demos shows its phone screenshot inside the demo card, and a single demo shows its own picture there too.
+  const phoneImage = !hasDemos && project.mobile && project.mobile.src !== heroImage?.src ? project.mobile : null;
+  const showHero = project.demos.length !== 1;
+  const isPrivate = project.kind === "Private project";
+
+  const crumbs: Crumb[] = [
+    { name: "Home", path: "/" },
+    { name: "Work", path: "/work" },
+    { name: project.name ?? "Case study", path },
+  ];
+
+  // Facts are listed only when they have a value. Nothing is shown as a blank or a stand-in.
+  const facts: { label: string; value: ReactNode }[] = [
+    { label: "Status", value: project.kind },
+    ...(project.type ? [{ label: "Type", value: project.type }] : []),
+    ...(project.client ? [{ label: "Client", value: project.client }] : []),
+    ...(project.year ? [{ label: "Year", value: project.year }] : []),
+    ...(project.role ? [{ label: "Our role", value: project.role }] : []),
+    ...(project.stack.length > 0
+      ? [
+          {
+            label: "Built with",
+            value: (
+              <ul className="tags">
+                {project.stack.map((tool) => (
+                  <li key={tool}>{tool}</li>
+                ))}
+              </ul>
+            ),
+          },
+        ]
+      : []),
+    ...(hasDemos
+      ? [
+          {
+            label: project.demos.length > 1 ? "Live demos" : "Live demo",
+            value:
+              project.demos.length > 1 ? (
+                <a href="#demos">{project.demos.length} samples below</a>
+              ) : (
+                <a href={demoOpenHref(project.demos[0].id)} target="_blank" rel="noopener noreferrer">
+                  Open the demo
+                  <ArrowUpRight size={14} strokeWidth={1.75} aria-hidden="true" />
+                  <span className="sr-only"> (opens in a new tab after an email check)</span>
+                </a>
+              ),
+          },
+        ]
+      : []),
+    ...(project.liveUrl
+      ? [
+          {
+            label: "Live demo",
+            value: (
+              <a href={project.liveUrl} target="_blank" rel="noopener" title={displayHost(project.liveUrl)}>
+                Open {project.name}
+                <ArrowUpRight size={14} strokeWidth={1.75} aria-hidden="true" />
+                <span className="sr-only"> live demo (opens in a new tab)</span>
+              </a>
+            ),
+          },
+        ]
+      : []),
+  ];
 
   return (
     <article>
-      <JsonLd data={creativeWorkLd(project, projectHref(project))} />
-      <JsonLd data={demoCollectionLd(project, projectHref(project))} />
-      <JsonLd data={faqLd(project.faqs)} />
+      <JsonLd
+        nodes={[
+          webPageNode({
+            path,
+            name: project.seoTitle,
+            description: project.seoDescription,
+            dateModified: project.updated,
+            breadcrumbs: crumbs,
+            mainEntity: { "@id": `${absoluteUrl(path)}#project` },
+          }),
+          breadcrumbNode(path, crumbs),
+          ...projectNodes(project),
+        ]}
+      />
 
       <header className="wrap case-hero">
-        <h1 className="case-hero__title reveal" style={step(0)}>
-          {project.name ?? <Pending>Project name</Pending>}
+        <Breadcrumbs crumbs={crumbs} />
+        <h1 className="case-hero__title" style={step(0)}>
+          {project.name}
         </h1>
-        <p className="case-hero__lede reveal" style={step(1)}>
-          {project.summary ?? <Pending>One-line summary of the project</Pending>}
-        </p>
+        <p className="case-hero__lede">{project.summary}</p>
+        {project.demoNote && <p className="demo-note">{project.demoNote}</p>}
 
-        <dl className="facts reveal" style={step(2)}>
-          <div>
-            <dt>Client</dt>
-            <dd>{project.client ?? <Pending>Client</Pending>}</dd>
-          </div>
-          <div>
-            <dt>Year</dt>
-            <dd>{project.year ?? <Pending>Year</Pending>}</dd>
-          </div>
-          <div>
-            <dt>Our role</dt>
-            <dd>{project.role ?? <Pending>Role</Pending>}</dd>
-          </div>
-          {(project.stack.length > 0 || !hasDemos) && (
-            <div>
-              <dt>Built with</dt>
-              <dd>
-                {project.stack.length > 0 ? (
-                  <ul className="tags">
-                    {project.stack.map((tool) => (
-                      <li key={tool}>{tool}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <Pending>Stack</Pending>
-                )}
-              </dd>
+        <dl className="facts">
+          {facts.map((fact) => (
+            <div key={fact.label}>
+              <dt>{fact.label}</dt>
+              <dd>{fact.value}</dd>
             </div>
-          )}
-          <div>
-            <dt>{hasDemos ? (project.demos.length > 1 ? "Live demos" : "Live demo") : "Live site"}</dt>
-            <dd>
-              {hasDemos ? (
-                project.demos.length > 1 ? (
-                  <a href="#demos" className="ulink">
-                    {project.demos.length} samples below
-                  </a>
-                ) : (
-                  <a href={demoOpenHref(project.demos[0].id)} className="ulink" target="_blank" rel="noopener noreferrer">
-                    Open the demo
-                    <ArrowUpRight size={14} strokeWidth={1.75} aria-hidden="true" />
-                    <span className="sr-only"> (opens in a new tab after an email check)</span>
-                  </a>
-                )
-              ) : project.liveUrl ? (
-                <a href={project.liveUrl} className="ulink" target="_blank" rel="noopener noreferrer">
-                  {displayHost(project.liveUrl)}
-                  <ArrowUpRight size={14} strokeWidth={1.75} aria-hidden="true" />
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              ) : (
-                <Pending>Live URL</Pending>
-              )}
-            </dd>
-          </div>
+          ))}
         </dl>
       </header>
 
-      {!hasDemos && (
+      {showHero && (
         <div className="wrap case-image">
-          <ProjectFrame
-            image={heroImage}
-            label="Hero screenshot"
-            sizes="(min-width: 80rem) 76rem, 100vw"
-            priority
-            className="frame--hero"
-          />
+          <ProjectFrame image={heroImage} sizes="(min-width: 80rem) 76rem, 100vw" priority className="frame--hero" />
         </div>
       )}
 
       {hasDemos && (
-        <section className="section section--tight" id="demos" aria-labelledby="demos-title">
-          <div className="wrap">
-            <h2 id="demos-title" className="h2 section-head">
-              {project.demos.length > 1 ? `Try all ${project.demos.length} live demos` : "Try the live demo"}
-            </h2>
-            <p className="demos__lede">
-              Each demo opens after a quick email check: we send a 6-digit code, you type it in, and the demo opens.
-            </p>
-            <ul className="demos" data-count={project.demos.length}>
-              {project.demos.map((demo, index) => (
-                <DemoCard key={demo.id} demo={demo} priority={index === 0} phone={project.demos.length === 1} />
-              ))}
-            </ul>
-          </div>
+        <section className="wrap case-section" id="demos" aria-labelledby="demos-title">
+          <h2 id="demos-title">{project.demos.length > 1 ? `Try all ${project.demos.length} live demos` : "Try the live demo"}</h2>
+          <p className="demos__lede">
+            Each demo opens after a quick email check: we send a 6-digit code, you type it in, and the demo opens.
+          </p>
+          <ul className="demos" data-count={project.demos.length}>
+            {project.demos.map((demo, index) => (
+              <DemoCard key={demo.id} demo={demo} priority={index === 0 && !showHero} phone={project.demos.length === 1} />
+            ))}
+          </ul>
         </section>
       )}
 
-      <section className="section" aria-labelledby="brief-title">
-        <div className="wrap split">
-          <div className="split__head">
-            <h2 id="brief-title" className="h2">
-              The brief
-            </h2>
-          </div>
-          <div className="prose">
-            {project.brief.length > 0 ? (
-              project.brief.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
-            ) : (
-              <p>
-                <Pending>What the client needed, and why. Two or three short paragraphs.</Pending>
-              </p>
-            )}
-          </div>
-        </div>
+      <section className="wrap case-section" aria-labelledby="shows-title">
+        <h2 id="shows-title">{isPrivate ? "What the concept covers" : "What this demo shows"}</h2>
+        <ul className="checks">
+          {project.features.map((feature) => (
+            <li key={feature}>{feature}</li>
+          ))}
+        </ul>
+        <p className="case-status">
+          {isPrivate
+            ? "This is a private project, so there is no public link. Screenshots or a controlled demo are available on request where authorized."
+            : "This is a live demo of the project. Open it to try it yourself."}
+        </p>
       </section>
 
-      <section className="section section--tight" aria-labelledby="approach-title">
-        <div className="wrap split">
-          <div className="split__head">
-            <h2 id="approach-title" className="h2">
-              Our approach
-            </h2>
-          </div>
-          <div className="prose">
-            {project.approach.length > 0 ? (
-              project.approach.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
-            ) : (
-              <p>
-                <Pending>What we did and why we chose it. Two or three short paragraphs.</Pending>
-              </p>
-            )}
-          </div>
-        </div>
-      </section>
+      {project.brief.length > 0 && (
+        <section className="wrap case-section prose" aria-labelledby="brief-title">
+          <h2 id="brief-title">The brief</h2>
+          {project.brief.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </section>
+      )}
 
-      {showScreens && (
-      <section className="section" aria-labelledby="screens-title">
-        <div className="wrap">
-          <h2 id="screens-title" className="h2 section-head">
-            On desktop and on a phone
-          </h2>
-          <div className="screens">
-            <ProjectFrame
-              image={project.desktop}
-              label="Desktop screenshot"
-              sizes="(min-width: 60rem) 60vw, 100vw"
-              caption
-              url={project.liveUrl}
-              className="screens__desktop"
-            />
-            <ProjectFrame
-              image={project.mobile}
-              label="Mobile screenshot"
-              device="mobile"
-              sizes="(min-width: 60rem) 24vw, 70vw"
-              className="screens__mobile"
-            />
-          </div>
-        </div>
-      </section>
+      {project.approach.length > 0 && (
+        <section className="wrap case-section prose" aria-labelledby="approach-title">
+          <h2 id="approach-title">Our approach</h2>
+          {project.approach.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </section>
+      )}
+
+      {phoneImage && (
+        <section className="wrap case-section" aria-labelledby="phone-title">
+          <h2 id="phone-title">On a phone</h2>
+          <ProjectFrame image={phoneImage} device="mobile" sizes="(min-width: 60rem) 24vw, 70vw" className="screens__mobile" />
+        </section>
       )}
 
       {project.results.length > 0 && (
-        <section className="section section--tight" aria-labelledby="results-title">
-          <div className="wrap split">
-            <div className="split__head">
-              <h2 id="results-title" className="h2">
-                Results
-              </h2>
-            </div>
-            <dl className="results">
-              {project.results.map((result) => (
-                <div key={result.label}>
-                  <dt>{result.label}</dt>
-                  <dd>
-                    <span className="results__value">{result.value}</span>
-                    <span className="results__source">{result.source}</span>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
+        <section className="wrap case-section" aria-labelledby="results-title">
+          <h2 id="results-title">Results</h2>
+          <dl className="results">
+            {project.results.map((result) => (
+              <div key={result.label}>
+                <dt>{result.label}</dt>
+                <dd>
+                  <span className="results__value">{result.value}</span>
+                  <span className="results__source">{result.source}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
         </section>
       )}
 
       {project.faqs.length > 0 && (
-        <FaqSection
-          title="Common questions"
-          items={project.faqs.map((faq) => ({ question: faq.q, answer: faq.a }))}
-        />
+        <section className="wrap case-section" aria-labelledby="faq-title">
+          <h2 id="faq-title">Common questions</h2>
+          <div className="qa">
+            {project.faqs.map((faq) => (
+              <div key={faq.q} className="qa__item">
+                <h3>{faq.q}</h3>
+                <p>{faq.a}</p>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
 
-      {next && next.slug !== project.slug && (
-        <nav className="wrap next-project" aria-label="Next project">
-          <Link href={projectHref(next)} className="next-project__link">
-            <span className="next-project__label">Next project</span>
-            <span className="next-project__name">{next.shortName ?? next.name ?? <Pending>Project name</Pending>}</span>
-          </Link>
-        </nav>
-      )}
+      <section className="wrap case-section" aria-labelledby="more-title">
+        <h2 id="more-title">Keep exploring</h2>
+        <ul className="case-links">
+          <li>
+            <Link href="/work">All projects and live demos</Link>
+          </li>
+          {service && (
+            <li>
+              <Link href={serviceHref(service)}>{service.heading}: what is included</Link>
+            </li>
+          )}
+          <li>
+            <Link href="/contact">Talk to us about a similar project</Link>
+          </li>
+          {next && next.slug !== project.slug && (
+            <li>
+              <Link href={projectHref(next)}>Next project: {next.shortName ?? next.name}</Link>
+            </li>
+          )}
+        </ul>
+        <p className="page-meta">
+          Last updated <time dateTime={project.updated}>{formatDate(project.updated)}</time>
+        </p>
+      </section>
 
       <ClosingCta />
     </article>
   );
 }
-

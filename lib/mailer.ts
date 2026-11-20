@@ -120,3 +120,33 @@ export async function sendOwnerNote(visitor: string, demoName: string): Promise<
     console.error("Owner note failed:", error instanceof Error ? error.message : "unknown error");
   }
 }
+
+/* ── Contact form ─────────────────────────────────────────────────────────── */
+
+const CONTACT_DEFAULT = "subhan.orbitech@gmail.com";
+
+/** The inbox that receives contact-form messages. */
+export function contactRecipient(): string {
+  return process.env.CONTACT_TO_EMAIL || CONTACT_DEFAULT;
+}
+
+/**
+ * Sends one contact-form message from the SMTP mailbox to the contact inbox.
+ * Reply-To is the visitor, so answering the email goes straight to them.
+ */
+export async function sendEnquiryEmail({ subject, text, replyTo }: { subject: string; text: string; replyTo: string }): Promise<SendResult> {
+  if (!mailConfigured()) return { ok: false };
+  try {
+    await transport().sendMail({
+      from: from(),
+      to: contactRecipient(),
+      replyTo,
+      subject,
+      text,
+    });
+    return { ok: true };
+  } catch (error) {
+    console.error("Enquiry email failed:", error instanceof Error ? error.message : "unknown error");
+    return { ok: false };
+  }
+}

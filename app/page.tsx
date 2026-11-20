@@ -1,29 +1,41 @@
-import ClosingCta from "@/components/ClosingCta";
-import Hero from "@/components/Hero";
-import ProcessSection from "@/components/ProcessSection";
-import ProjectsSection from "@/components/ProjectsSection";
-import ServicesSection from "@/components/ServicesSection";
-import TeamSection from "@/components/TeamSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import { home } from "@/content/site";
+import type { Metadata } from "next";
+import JsonLd from "@/components/JsonLd";
+import PortfolioHome from "@/components/PortfolioHome";
+import { home, meta, process as processSteps, projects, services, site } from "@/content/site";
+import { glanceRows } from "@/lib/glance";
+import { staticPages } from "@/lib/pages";
+import { showcaseProjects } from "@/lib/projects";
+import { webPageNode } from "@/lib/schema";
+import { pageMetadata } from "@/lib/seo";
+
+const page = staticPages.home;
+
+export const metadata: Metadata = pageMetadata({ ...meta.home, path: page.path });
 
 export default function Home() {
   return (
     <>
-      <Hero />
-
-      <section className="section section--statement" aria-label="What we believe">
-        <div className="wrap statement">
-          <p className="statement__text">{home.statement}</p>
-        </div>
-      </section>
-
-      <ServicesSection />
-      <ProjectsSection />
-      <ProcessSection />
-      <TeamSection variant="preview" />
-      <TestimonialsSection />
-      <ClosingCta />
+      <JsonLd
+        nodes={[
+          webPageNode({
+            path: page.path,
+            name: meta.home.title,
+            description: meta.home.description,
+            dateModified: page.updated,
+          }),
+        ]}
+      />
+      <PortfolioHome
+        siteName={site.name}
+        description={site.description}
+        slogan={home.slogan}
+        closingText={home.closing.text}
+        email={site.email}
+        glanceRows={glanceRows}
+        services={services}
+        processSteps={processSteps}
+        projects={showcaseProjects(projects)}
+      />
     </>
   );
 }

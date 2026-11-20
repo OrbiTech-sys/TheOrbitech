@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   CODE_TTL_MS,
   checkAccess,
@@ -123,5 +123,43 @@ describe("code email as sent", () => {
     expect(raw).toMatch(/^From: OrbiTech <sender@example.com>/m);
     expect(raw).toMatch(/^Auto-Submitted: auto-generated/m);
     expect(raw).not.toMatch(/List-Unsubscribe/i);
+  });
+});
+
+describe("contact form mail", () => {
+  it("goes to the contact inbox from the SMTP mailbox, with the visitor as Reply-To", async () => {
+    const sendMail = vi.fn().mockResolvedValue({});
+    vi.resetModules();
+    vi.doMock("nodemailer", () => ({ default: { createTransport: () => ({ sendMail }) } }));
+    vi.stubEnv("SMTP_HOST", "smtp.example.test");
+    vi.stubEnv("SMTP_USER", "sender@example.test");
+    vi.stubEnv("SMTP_PASS", "secret");
+    vi.stubEnv("SMTP_FROM", "The OrbiTech Solutions <sender@example.test>");
+    vi.stubEnv("CONTACT_TO_EMAIL", "");
+
+    const { sendEnquiryEmail, contactRecipient } = await import("@/lib/mailer");
+    expect(contactRecipient()).toBe("subhan.orbitech@gmail.com");
+    const result = await sendEnquiryEmail({ subject: "Project enquiry from Sam", text: "Name: Sam", replyTo: "sam@example.com" });
+
+    expect(result).toEqual({ ok: true });
+    expect(sendMail).toHaveBeenCalledWith({
+      from: { name: "The OrbiTech Solutions", address: "sender@example.test" },
+      to: "subhan.orbitech@gmail.com",
+      replyTo: "sam@example.com",
+      subject: "Project enquiry from Sam",
+      text: "Name: Sam",
+    });
+    vi.unstubAllEnvs();
+    vi.doUnmock("nodemailer");
+  });
+
+  it("sends nothing when SMTP is not set up", async () => {
+    vi.resetModules();
+    vi.stubEnv("SMTP_HOST", "");
+    vi.stubEnv("SMTP_USER", "");
+    vi.stubEnv("SMTP_PASS", "");
+    const { sendEnquiryEmail } = await import("@/lib/mailer");
+    expect(await sendEnquiryEmail({ subject: "x", text: "y", replyTo: "a@b.co" })).toEqual({ ok: false });
+    vi.unstubAllEnvs();
   });
 });

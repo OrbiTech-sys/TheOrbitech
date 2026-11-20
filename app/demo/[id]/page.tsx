@@ -3,13 +3,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import DemoGate from "@/components/DemoGate";
 import PageIntro from "@/components/PageIntro";
-import { projectHref } from "@/lib/projects";
 import { allDemos, demoOpenHref, findDemo } from "@/lib/demos";
+import { site } from "@/content/site";
+import { projectHref } from "@/lib/projects";
 import { pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ id: string }> };
 
-// Pages for every known slug are built ahead of time. They may block on a client navigation.
+// Pages for every known id are built ahead of time. They may block on a client navigation.
 export const instant = false;
 
 export function generateStaticParams() {
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const entry = findDemo(id);
   if (!entry) return { title: "Demo not found", robots: { index: false } };
   return pageMetadata({
-    title: `Open the ${entry.demo.name} demo`,
+    title: `Open the ${entry.demo.name} demo | ${site.name}`,
     description: `Confirm your email with a 6-digit code to open the ${entry.demo.name} demo.`,
     path: `/demo/${id}`,
     noindex: true,
@@ -40,17 +41,15 @@ export default async function DemoGatePage({ params }: Props) {
         lede={
           <>
             Part of{" "}
-            <Link href={projectHref(entry.project)} className="ulink">
+            <Link href={projectHref(entry.project)} className="gate__anchor">
               {entry.project.shortName ?? entry.project.name}
             </Link>
             . Confirm your email and the live demo opens.
           </>
         }
       />
-      <section className="section section--tight" aria-label="Confirm your email">
-        <div className="wrap">
-          <DemoGate demo={entry.demo} openHref={demoOpenHref(id)} />
-        </div>
+      <section className="wrap case-section" aria-label="Confirm your email">
+        <DemoGate demo={entry.demo} openHref={demoOpenHref(id)} />
       </section>
     </>
   );

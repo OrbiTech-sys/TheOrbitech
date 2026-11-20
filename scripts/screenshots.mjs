@@ -20,7 +20,7 @@ const live = args.includes("--live");
 const pages = [
   ["home", "/"],
   ["work", "/work"],
-  ["case-study", "/work/orbit-operations"],
+  ["case-study", "/work/orbitos"],
   ["services", "/services"],
   ["studio", "/studio"],
   ["contact", "/contact"],

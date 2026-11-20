@@ -47,6 +47,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   experimental: {
     agentFeedback: true,
+    // Upgrade reminders in `next dev` / `next build` follow npm's latest stable release.
+    agentUpgrade: "latest",
     // The contact form sends a few kilobytes of text. Anything larger is refused.
     serverActions: { bodySizeLimit: "100kb" },
   },
@@ -62,6 +64,10 @@ const nextConfig: NextConfig = {
         as: "*.css",
       },
     },
+  },
+  async redirects() {
+    // The CRM demo was replaced by OrbitOS; keep old links and search results working.
+    return [{ source: "/work/orbit-operations", destination: "/work/orbitos", permanent: true }];
   },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];

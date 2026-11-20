@@ -1,0 +1,41 @@
+1:"$Sreact.fragment"
+2:"/_next/static/chunks/21-ql8otn_e82.js"
+3:I[62319,["$2"],"default"]
+4:I[39756,["$2"],"default"]
+5:I[37457,["$2"],"default"]
+6:"/_next/static/chunks/0q017l2vdf4x3.js"
+7:I[22016,["$2","$6"],""]
+:HL["/_next/static/chunks/1p4q44f78gkr0.css","style"]
+a:X
+b:X
+b:300
+f:X
+f:C
+16:X
+13:[["children",{"s":"__PAGE__","h":49314,"d":{"r":"$L14","p":"$@15","v":"$16","s":"$b"}}]]
+10:[["children",{"s":{"n":"slug","t":"d","k":null,"s":[]},"h":49250,"d":{"r":"$L11","p":"$@12","v":"$f","s":"$b"},"c":"$Q13"}]]
+c:[["children",{"s":"work","h":49250,"d":{"r":"$Ld","p":"$@e","v":"$f","s":"$b"},"c":"$Q10"}]]
+19:X
+1c:X
+0:{"t":{"t":{"s":"","h":49234,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/_next/static/chunks/1p4q44f78gkr0.css","precedence":"next"}],["$","script","script-0",{"src":"/_next/static/chunks/21-ql8otn_e82.js","async":true}]],["$","html",null,{"lang":"en","className":"Sms4YG_variable FlyLvG_variable","children":["$","body",null,{"children":[["$","a",null,{"href":"#main","className":"skip-link","children":"Skip to content"}],["$","$L3",null,{}],["$","main",null,{"id":"main","tabIndex":-1,"children":["$","$L4",null,{"parallelRouterKey":"children","template":["$","$L5",null,{}],"notFound":[["$","section",null,{"className":"wrap lost","aria-labelledby":"lost-title","children":[["$","div",null,{"className":"lost__copy","children":[["$","h1",null,{"id":"lost-title","className":"lost__title","children":"This page isn’t here."}],["$","p",null,{"className":"lost__text","children":"The address may have changed, or it may never have existed. Here are the places that do."}],["$","ul",null,{"className":"lost__links","children":[["$","li",null,{"children":["$","$L7",null,{"href":"/","className":"btn btn--ink","children":"Home"}]}],["$","li",null,{"children":["$","$L7",null,{"href":"/work","className":"btn btn--outline","children":"Work"}]}],["$","li",null,{"children":["$","$L7",null,{"href":"/contact","className":"btn btn--outline","children":"Contact"}]}]]}]]}],["$","svg",null,{"className":"lost__art","viewBox":"0 0 320 260","role":"img","aria-label":"Four stacked outlines of a page, with the fifth missing","children":[["$","g",null,{"fill":"none","stroke":"currentColor","strokeWidth":"1.5","strokeLinejoin":"round","children":[["$","rect",null,{"x":"40","y":"150","width":"190","height":"104","rx":"6","opacity":"0.35"}],["$","rect",null,{"x":"52","y":"124","width":"190","height":"104","rx":"6","opacity":"0.5"}],["$","rect",null,{"x":"64","y":"98","width":"190","height":"104","rx":"6","opacity":"0.7"}],["$","rect",null,{"x":"76","y":"72","width":"190","height":"104","rx":"6"}],["$","rect",null,{"x":"88","y":"46","width":"190","height":"104","rx":"6","strokeDasharray":"5 6","opacity":"0.55"}]]}],["$","circle",null,{"cx":"266","cy":"72","r":"7","className":"lost__dot"}]]}]]}],[]]}]}],["$","footer",null,{"className":"footer","children":[["$","div",null,{"className":"wrap footer__grid","children":[["$","div",null,{"className":"footer__mast","children":[["$","$L7",null,{"href":"/","className":"wordmark wordmark--large","aria-label":"OrbiTech, home","children":[["$","svg",null,{"className":"wordmark__mark","viewBox":"0 0 48 48","aria-hidden":"true","children":[["$","rect",null,{"width":"48","height":"48","rx":"10","fill":"var(--color-kiln)"}],["$","g",null,{"fill":"none","stroke":"var(--color-paper)","strokeLinecap":"round","strokeLinejoin":"round","strokeWidth":"2.35","children":[["$","path",null,{"d":"m13 19 11-6 11 6-11 6-11-6Z"}],["$","path",null,{"d":"m13 26 11 6 11-6"}],["$","path",null,{"d":"m13 32 11 6 11-6"}]]}]]}],["$","span",null,{"children":"OrbiTech"}]]}],["$","p",null,{"className":"footer__line","children":"OrbiTech designs, builds and looks after websites, web apps and AI automations."}]]}],["$","nav",null,{"className":"footer__col","aria-label":"Pages","children":[["$","h2",null,{"className":"footer__head","children":"Pages"}],["$","ul",null,{"children":[[["$","li","/work",{"children":["$","$L7",null,{"href":"/work","className":"ulink","children":"Work"}]}],["$","li","/services",{"children":["$","$L7",null,{"href":"/services","className":"ulink","children":"Services"}]}],["$","li","/studio",{"children":["$","$L7",null,{"href":"/studio","className":"ulink","children":"Studio"}]}],["$","li","/contact",{"children":["$","$L7",null,{"href":"/contact","className":"ulink","children":"Contact"}]}]],["$","li",null,{"children":["$","$L7",null,{"href":"/privacy","className":"ulink","children":"Privacy"}]}]]}]]}],["$","nav",null,{"className":"footer__col","aria-label":"Case studies","children":[["$","h2",null,{"className":"footer__head","children":"Case studies"}],["$","ul",null,{"children":[["$","li","orbit-operations",{"children":["$","$L7",null,{"href":"/work/orbit-operations","className":"ulink","children":"OrbitOS"}]}],["$","li","property-management",{"children":["$","$L7",null,{"href":"/work/property-management","className":"ulink","children":"Orbitech Property Management"}]}]]}]]}],["$","div",null,{"className":"footer__col","children":[["$","h2",null,{"className":"footer__head","children":"Contact"}],["$","ul",null,{"children":[["$","li",null,{"children":["$","span",null,{"className":"ph","data-placeholder":"","children":["[","Email address","]"]}]}],["$","li",null,{"children":["$","span",null,{"className":"ph","data-placeholder":"","children":["[","City, country","]"]}]}],["$","li",null,{"children":["$","$L7",null,{"href":"/contact#book","className":"ulink","children":"Book a 30-minute call"}]}]]}]]}]]}],["$","div",null,{"className":"wrap footer__end","children":["$","div",null,{"className":"footer__legal","children":[["$","p",null,{"children":["© ",2026," ","OrbiTech"]}],["$","$L7",null,{"href":"#top","className":"ulink","children":"Back to top"}]]}]}]]}],"$L8"]}]}]]}],"p":"$@9","v":"$a","s":"$b"},"c":"$Qc"},"h":{"r":"$L17","p":"$@18","v":"$19","s":"$b"}},"a":"$@1a","u":"$@1b","b":"6qty4lVGwCn9qzSMo9bA0","r":"$1c","f":true}
+1e:I[97367,["$2"],"OutletBoundary"]
+1f:"$Sreact.suspense"
+21:"ViewportBoundary"
+22:I[97367,["$2"],"$21"]
+23:"MetadataBoundary"
+24:I[97367,["$2"],"$23"]
+8:["$","script",null,{"type":"application/ld+json","dangerouslySetInnerHTML":{"__html":"{\"@context\":\"https://schema.org\",\"@type\":\"Organization\",\"name\":\"OrbiTech\",\"url\":\"https://orbitech.dev\",\"description\":\"OrbiTech designs, builds and looks after websites, web apps and AI automations.\"}"}}]
+d:["$","$1","c",{"children":[null,["$","$L4",null,{"parallelRouterKey":"children","template":["$","$L5",null,{}]}]]}]
+11:["$","$1","c",{"children":[null,["$","$L4",null,{"parallelRouterKey":"children","template":["$","$L5",null,{}]}]]}]
+14:["$","$1","c",{"children":["$L1d",[["$","script","script-0",{"src":"/_next/static/chunks/0q017l2vdf4x3.js","async":true}]],["$","$L1e",null,{"children":["$","$1f",null,{"name":"Next.MetadataOutlet","children":"$@20"}]}]]}]
+17:["$","$1","h",{"children":[null,["$","$L22",null,{"children":[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1, viewport-fit=cover"}],["$","meta","2",{"name":"theme-color","content":"#f6f3ed"}]]}],["$","$L24",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$1f",null,{"name":"Next.Metadata","children":"$L25"}]}],null]}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}]
+b:C
+19:C
+1c:C
+16:C
+a:C
+1b:true
+1a:7376
+12:"$undefined"
+e:"$undefined"
+9:"$undefined"

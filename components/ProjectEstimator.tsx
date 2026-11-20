@@ -107,7 +107,7 @@ export default function ProjectEstimator({ onApply }: { onApply: (summary: Estim
         </dl>
         <button
           type="button"
-          className="btn btn--ink est-result__cta"
+          className="btn est-result__cta"
           onClick={() =>
             onApply({
               projectType: currentType.enquiry,

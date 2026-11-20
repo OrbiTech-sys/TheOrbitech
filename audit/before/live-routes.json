@@ -1,0 +1,112 @@
+[
+  {
+    "path": "/",
+    "status": 200,
+    "title": "OrbiTech — Websites and software, built layer by layer",
+    "canonical": "https://orbitech.dev",
+    "placeholderCount": 30,
+    "bytes": 50747
+  },
+  {
+    "path": "/work",
+    "status": 200,
+    "title": "Work — OrbiTech",
+    "canonical": "https://orbitech.dev/work",
+    "placeholderCount": 9,
+    "bytes": 29862
+  },
+  {
+    "path": "/services",
+    "status": 200,
+    "title": "Services — OrbiTech",
+    "canonical": "https://orbitech.dev/services",
+    "placeholderCount": 6,
+    "bytes": 49958
+  },
+  {
+    "path": "/studio",
+    "status": 200,
+    "title": "Studio — OrbiTech",
+    "canonical": "https://orbitech.dev/studio",
+    "placeholderCount": 38,
+    "bytes": 36275
+  },
+  {
+    "path": "/contact",
+    "status": 200,
+    "title": "Contact — OrbiTech",
+    "canonical": "https://orbitech.dev/contact",
+    "placeholderCount": 7,
+    "bytes": 28862
+  },
+  {
+    "path": "/contact/thanks",
+    "status": 200,
+    "title": "Message sent — OrbiTech",
+    "canonical": "https://orbitech.dev/contact/thanks",
+    "placeholderCount": 4,
+    "bytes": 20908
+  },
+  {
+    "path": "/privacy",
+    "status": 200,
+    "title": "Privacy — OrbiTech",
+    "canonical": "https://orbitech.dev/privacy",
+    "placeholderCount": 12,
+    "bytes": 25211
+  },
+  {
+    "path": "/work/orbit-operations",
+    "status": 200,
+    "title": "OrbitOS — OrbiTech",
+    "canonical": "https://orbitech.dev/work/orbit-operations",
+    "placeholderCount": 18,
+    "bytes": 36377
+  },
+  {
+    "path": "/work/property-management",
+    "status": 200,
+    "title": "Orbitech Property Management — OrbiTech",
+    "canonical": "https://orbitech.dev/work/property-management",
+    "placeholderCount": 20,
+    "bytes": 36956
+  },
+  {
+    "path": "/work/project-3",
+    "status": 200,
+    "title": "Case study — OrbiTech",
+    "canonical": "https://orbitech.dev/work/project-3",
+    "placeholderCount": 32,
+    "bytes": 30744
+  },
+  {
+    "path": "/work/n8n-email-marketing-workflow",
+    "status": 200,
+    "title": "n8n Email Marketing Workflow — OrbiTech",
+    "canonical": "https://orbitech.dev/work/n8n-email-marketing-workflow",
+    "placeholderCount": 18,
+    "bytes": 35240
+  },
+  {
+    "path": "/sitemap.xml",
+    "status": 200,
+    "placeholderCount": 0,
+    "bytes": 1255
+  },
+  {
+    "path": "/robots.txt",
+    "status": 200,
+    "placeholderCount": 0,
+    "bytes": 92
+  },
+  {
+    "external": "https://orbit-operations.vercel.app/",
+    "status": 200,
+    "finalUrl": "https://orbit-operations.vercel.app/"
+  },
+  {
+    "external": "https://propertymanagementsystem-six.vercel.app/",
+    "status": 200,
+    "finalUrl": "https://propertymanagementsystem-six.vercel.app/"
+  }
+]

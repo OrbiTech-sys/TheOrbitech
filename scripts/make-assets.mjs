@@ -62,11 +62,11 @@ try {
     <body style="margin:0;overflow:hidden">
       <div style="position:relative;width:1200px;height:630px;overflow:hidden;background:var(--color-paper);color:var(--color-ink);font-family:var(--font-body)">
         <img src="${base}/hero/layers-poster.webp" alt="" style="position:absolute;right:0;top:0;height:630px;width:756px;object-fit:cover" />
-        <div style="position:absolute;left:64px;top:56px;display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-stretch:90%;font-size:34px;letter-spacing:-0.02em">
-          <svg viewBox="0 0 20 20" width="30" height="30"><circle cx="10" cy="10" r="6.75" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="14.8" cy="5.2" r="3.1" fill="var(--color-kiln)" stroke="var(--color-paper)" stroke-width="1.6"/></svg>
+        <div style="position:absolute;left:64px;top:56px;display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:34px;letter-spacing:var(--tracking-title)">
+          <svg viewBox="0 0 20 20" width="30" height="30"><circle cx="10" cy="10" r="6.75" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="14.8" cy="5.2" r="3.1" fill="var(--color-accent)" stroke="var(--color-paper)" stroke-width="1.6"/></svg>
           OrbiTech
         </div>
-        <div style="position:absolute;left:64px;top:170px;width:520px;font-family:var(--font-display);font-weight:700;font-stretch:88%;font-size:78px;line-height:1;letter-spacing:-0.035em">
+        <div style="position:absolute;left:64px;top:170px;width:520px;font-family:var(--font-display);font-weight:var(--weight-heading);font-size:78px;line-height:var(--leading-display);letter-spacing:var(--tracking-display)">
           Websites and software, built layer by layer.
         </div>
         <div style="position:absolute;left:64px;bottom:56px;font-size:24px;color:var(--color-ink-2)">Design · build · care</div>

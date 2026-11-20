@@ -1,16 +1,16 @@
 "use client";
 
 import { useRef, useState } from "react";
-import BookingLink from "@/components/BookingLink";
 import ContactForm, { type ContactPrefill } from "@/components/ContactForm";
-import { Pending } from "@/components/Pending";
 import ProjectEstimator, { type EstimateSummary } from "@/components/ProjectEstimator";
-import { nextSteps, site } from "@/content/site";
+import SocialIcon from "@/components/SocialIcon";
+import { estimator, nextSteps, privacy, site } from "@/content/site";
 
-/** The whole contact page body: details, booking, the form, and an optional estimator. */
+/** The whole contact page body: details, booking (once there is one), the form, and an optional estimator. */
 export default function ContactSection() {
   const [prefill, setPrefill] = useState<ContactPrefill | undefined>();
   const disclosureRef = useRef<HTMLDetailsElement>(null);
+  const email = site.email ?? privacy.contactEmail;
 
   const applyEstimate = (summary: EstimateSummary) => {
     setPrefill({
@@ -26,54 +26,75 @@ export default function ContactSection() {
   };
 
   return (
-    <section className="section section--tight" aria-label="Contact">
-      <div className="wrap contact">
+    <section className="wrap contact-wrap" aria-label="Contact">
+      <div className="contact">
         <div className="contact__side">
           <dl className="contact__details">
-            <div>
-              <dt>Email</dt>
-              <dd>
-                {site.email ? (
-                  <a href={`mailto:${site.email}`} className="ulink">
-                    {site.email}
-                  </a>
-                ) : (
-                  <Pending>Email address</Pending>
-                )}
-              </dd>
-            </div>
-            <div>
-              <dt>Based in</dt>
-              <dd>{site.location ?? <Pending>City, country</Pending>}</dd>
-            </div>
+            {email && (
+              <div>
+                <dt>Email</dt>
+                <dd>
+                  <a href={`mailto:${email}`}>{email}</a>
+                </dd>
+              </div>
+            )}
+            {site.location && (
+              <div>
+                <dt>Based in</dt>
+                <dd>
+                  {site.location}. Works remotely, {site.areaServed.toLowerCase()}.
+                </dd>
+              </div>
+            )}
+            {site.social.length > 0 && (
+              <div>
+                <dt>Find us on</dt>
+                <dd>
+                  <ul className="contact__social">
+                    {site.social.map((profile) => (
+                      <li key={profile.id}>
+                        <a
+                          href={profile.url}
+                          target="_blank"
+                          rel="noopener noreferrer me"
+                          aria-label={`${site.name} on ${profile.label}`}
+                        >
+                          <SocialIcon id={profile.id} />
+                          <span>{profile.label}</span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            )}
           </dl>
 
-          <div id="book" className="book">
-            <h2 className="h3">Prefer to talk?</h2>
-            {site.booking.url && site.booking.embed ? (
-              <iframe
-                className="book__embed"
-                src={site.booking.url}
-                title="Book a 30-minute call"
-                loading="lazy"
-                referrerPolicy="strict-origin-when-cross-origin"
-              />
-            ) : (
-              <>
-                <p>Thirty minutes to talk through the project. No preparation needed.</p>
-                {site.booking.url ? (
-                  <BookingLink className="btn btn--ink">Book a 30-minute call</BookingLink>
-                ) : (
-                  <p>
-                    <Pending>Booking link (Cal.com or Calendly)</Pending>
-                  </p>
-                )}
-              </>
-            )}
-          </div>
+          {site.booking.url && (
+            <div id="book" className="book">
+              <h2>Prefer to talk?</h2>
+              {site.booking.embed ? (
+                <iframe
+                  className="book__embed"
+                  src={site.booking.url}
+                  title="Book a 30-minute call"
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+              ) : (
+                <>
+                  <p>Thirty minutes to talk through the project. No preparation needed.</p>
+                  <a href={site.booking.url} className="btn" target="_blank" rel="noopener noreferrer">
+                    Book a 30-minute call
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                </>
+              )}
+            </div>
+          )}
 
           <div className="next">
-            <h2 className="h3">What happens next</h2>
+            <h2>What happens next</h2>
             <ol className="next__list">
               {nextSteps.map((step) => (
                 <li key={step}>{step}</li>
@@ -83,19 +104,19 @@ export default function ContactSection() {
         </div>
 
         <div id="contact-form" className="contact__form">
-          <h2 className="h3">Tell us about the project</h2>
+          <h2>Tell us about the project</h2>
           <ContactForm prefill={prefill} />
         </div>
       </div>
 
-      <div className="wrap">
+      {estimator.confirmed && (
         <details ref={disclosureRef} className="disclosure">
           <summary>
             <span>Not sure about budget? Get a rough range first</span>
           </summary>
           <ProjectEstimator onApply={applyEstimate} />
         </details>
-      </div>
+      )}
     </section>
   );
 }

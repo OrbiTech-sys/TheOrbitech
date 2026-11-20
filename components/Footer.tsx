@@ -1,86 +1,62 @@
 import Link from "next/link";
-import Wordmark from "@/components/Wordmark";
-import { Pending } from "@/components/Pending";
-import { nav, projects, site } from "@/content/site";
-import { isRealProject, projectHref } from "@/lib/projects";
-import BookingLink from "@/components/BookingLink";
+import SocialIcon from "@/components/SocialIcon";
+import { nav, privacy, site } from "@/content/site";
+
+const footerLinks = [...nav, { label: "Privacy", href: "/privacy" }];
+
+/** Where the studio is based and where it works, from the details the owner supplied. */
+const placeLine = [
+  site.location ? `Based in ${site.location}.` : null,
+  site.areaServed ? `Works remotely, ${site.areaServed.toLowerCase()}.` : null,
+]
+  .filter(Boolean)
+  .join(" ");
 
 export default function Footer() {
-  const caseStudies = projects.filter(isRealProject);
+  const email = privacy.contactEmail ?? site.email;
 
   return (
-    <footer className="footer">
-      <div className="wrap footer__grid">
-        <div className="footer__mast">
-          <Link href="/" className="wordmark wordmark--large" aria-label="OrbiTech, home">
-            <Wordmark />
-          </Link>
-          <p className="footer__line">{site.description}</p>
-        </div>
-
-        <nav className="footer__col" aria-label="Pages">
-          <h2 className="footer__head">Pages</h2>
-          <ul>
-            {nav.map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="ulink">
-                  {item.label}
-                </Link>
+    <footer className="wrap site-footer">
+      <div className="footer-about">
+        <strong style={{ color: "var(--text)" }}>{site.name.toUpperCase()}</strong>
+        <p>{site.description}</p>
+        {placeLine && <p>{placeLine}</p>}
+        {email && (
+          <p>
+            <a href={`mailto:${email}`}>{email}</a>
+          </p>
+        )}
+        {site.social.length > 0 && (
+          <ul className="footer-social" aria-label="Social profiles">
+            {site.social.map((profile) => (
+              <li key={profile.id}>
+                <a
+                  href={profile.url}
+                  target="_blank"
+                  rel="noopener noreferrer me"
+                  aria-label={`${site.name} on ${profile.label}`}
+                >
+                  <SocialIcon id={profile.id} />
+                </a>
               </li>
             ))}
-            <li>
-              <Link href="/privacy" className="ulink">
-                Privacy
-              </Link>
-            </li>
           </ul>
-        </nav>
-
-        {caseStudies.length > 0 && (
-          <nav className="footer__col" aria-label="Case studies">
-            <h2 className="footer__head">Case studies</h2>
-            <ul>
-              {caseStudies.map((project) => (
-                <li key={project.slug}>
-                  <Link href={projectHref(project)} className="ulink">
-                    {project.shortName ?? project.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
         )}
-
-        <div className="footer__col">
-          <h2 className="footer__head">Contact</h2>
-          <ul>
-            <li>
-              {site.email ? (
-                <a href={`mailto:${site.email}`} className="ulink">
-                  {site.email}
-                </a>
-              ) : (
-                <Pending>Email address</Pending>
-              )}
-            </li>
-            <li>{site.location ?? <Pending>City, country</Pending>}</li>
-            <li>
-              <BookingLink className="ulink">Book a 30-minute call</BookingLink>
-            </li>
-          </ul>
-        </div>
       </div>
 
-      <div className="wrap footer__end">
-        <div className="footer__legal">
-          <p>
-            © {site.copyrightYear} {site.legalName ?? site.name}
-          </p>
-          <Link href="#top" className="ulink">
-            Back to top
-          </Link>
-        </div>
-      </div>
+      <nav className="footer-nav" aria-label="Footer">
+        <ul>
+          {footerLinks.map((link) => (
+            <li key={link.href}>
+              <Link href={link.href}>{link.label}</Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <span className="footer-legal">
+        © {site.copyrightYear} {site.name} · Capability examples may include demos, POCs, and MVPs.
+      </span>
     </footer>
   );
 }

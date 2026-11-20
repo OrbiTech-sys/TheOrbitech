@@ -61,7 +61,11 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
               Confirmed. Opening the demo.
             </h2>
             <p className="gate__text">
-              If nothing happens, <a href={openHref} className="ulink">open the demo here</a>.
+              If nothing happens,{" "}
+              <a href={openHref} className="gate__anchor">
+                open the demo here
+              </a>
+              .
             </p>
           </div>
         ) : codeStep ? (
@@ -99,7 +103,7 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
               </p>
             </div>
             <div className="form__submit">
-              <button type="submit" className="btn btn--kiln" disabled={checking} aria-busy={checking}>
+              <button type="submit" className="btn btn-primary" disabled={checking} aria-busy={checking}>
                 {checking ? (
                   <>
                     <span className="spinner" aria-hidden="true" />
@@ -149,7 +153,7 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
               </p>
             </div>
             <div className="form__submit">
-              <button type="submit" className="btn btn--kiln" disabled={requesting} aria-busy={requesting}>
+              <button type="submit" className="btn btn-primary" disabled={requesting} aria-busy={requesting}>
                 {requesting ? (
                   <>
                     <span className="spinner" aria-hidden="true" />
@@ -170,10 +174,10 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
           <form action={requestAction} className="gate__again">
             <input type="hidden" name="demo" value={demo.id} />
             <input type="hidden" name="email" value={sentTo ?? ""} />
-            <button type="submit" className="ulink gate__link" disabled={requesting}>
+            <button type="submit" className="gate__link" disabled={requesting}>
               {requesting ? "Sending a new code" : "Send a new code"}
             </button>
-            <button type="button" className="ulink gate__link" onClick={() => setSentTo(null)}>
+            <button type="button" className="gate__link" onClick={() => setSentTo(null)}>
               Use a different email
             </button>
             {requestError && <span className="field__msg field__msg--error">{requestError}</span>}
@@ -182,12 +186,15 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
 
         <p className="gate__privacy">
           We use your email to send the code, and to let the OrbiTech team know who opened this demo. We don’t sell
-          it or add it to a mailing list. <Link href="/privacy" className="ulink">Privacy</Link>
+          it or add it to a mailing list.{" "}
+          <Link href="/privacy" className="gate__anchor">
+            Privacy
+          </Link>
         </p>
       </section>
 
       <aside className="gate__preview" aria-label="About this demo">
-        <ProjectFrame image={demo.cover} label="Demo screenshot" sizes="(min-width: 60rem) 40vw, 100vw" priority />
+        <ProjectFrame image={demo.cover} sizes="(min-width: 60rem) 40vw, 100vw" priority />
         <h2 className="gate__demo-name">{demo.name}</h2>
         <p className="gate__demo-place">{demo.place}</p>
         <p className="gate__text">{demo.summary}</p>

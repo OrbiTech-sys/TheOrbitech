@@ -1,28 +1,25 @@
-import SceneCanvas from "@/components/scenes/SceneCanvas";
-import { process } from "@/content/site";
+import { process as steps } from "@/content/site";
 
-/** The one dark section: how a project runs. The steps are genuinely sequential, so they are numbered. */
+/** How a project runs: the same five steps as the home page. They are sequential, so they are numbered. */
 export default function ProcessSection() {
   return (
-    <section className="section section--night" aria-labelledby="process-title">
-      <div className="wrap split">
-        <div className="split__head">
-          <h2 id="process-title" className="h2">
-            How a project runs
-          </h2>
-          <p className="split__text">Four steps, in this order, on every engagement.</p>
-          <SceneCanvas scene="orbit" />
+    <section id="process" className="wrap" aria-labelledby="process-title">
+      <div className="section-head">
+        <div>
+          <div className="eyebrow">Delivery approach</div>
+          <h2 id="process-title">How a project runs, from discovery to launch</h2>
         </div>
-
-        <ol className="steps">
-          {process.map((step) => (
-            <li key={step.title} className="step">
-              <h3 className="step__title">{step.title}</h3>
-              <p className="step__text">{step.text}</p>
-            </li>
-          ))}
-        </ol>
+        <p>Five steps, in this order. Scope decides how long each one takes.</p>
       </div>
+      <ol className="process">
+        {steps.map((step, index) => (
+          <li key={step.title} className="step">
+            <span>STEP {String(index + 1).padStart(2, "0")}</span>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </li>
+        ))}
+      </ol>
     </section>
   );
 }

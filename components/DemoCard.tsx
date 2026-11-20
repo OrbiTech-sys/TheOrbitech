@@ -23,7 +23,6 @@ export default function DemoCard({
       <div className={phone ? "demo-card__media demo-card__media--phone" : "demo-card__media"}>
         <ProjectFrame
           image={demo.cover}
-          label="Demo screenshot"
           sizes={phone ? "(min-width: 48rem) 56vw, 100vw" : "(min-width: 64rem) 30vw, (min-width: 40rem) 46vw, 100vw"}
           priority={priority}
         />
@@ -43,7 +42,7 @@ export default function DemoCard({
           ))}
         </ul>
         {/* A plain link on purpose: next/link would prefetch the redirect. */}
-        <a href={demoOpenHref(demo.id)} className="btn btn--kiln demo-card__open" target="_blank" rel="noopener noreferrer">
+        <a href={demoOpenHref(demo.id)} className="btn btn-primary demo-card__open" target="_blank" rel="noopener noreferrer">
           Open live demo
           <ArrowUpRight size={16} strokeWidth={2} aria-hidden="true" />
           <span className="sr-only"> of {demo.name} (opens in a new tab after an email check)</span>

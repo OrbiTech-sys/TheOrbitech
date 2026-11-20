@@ -4,6 +4,7 @@ import BookingLink from "@/components/BookingLink";
 import HeroScene from "@/components/hero/HeroScene";
 import { home, projects } from "@/content/site";
 import { projectHref, showcaseProjects } from "@/lib/projects";
+import { site } from "@/content/site";
 
 const step = (i: number) => ({ "--i": i }) as CSSProperties;
 
@@ -11,7 +12,7 @@ const poster = {
   src: "/hero/layers-poster.webp",
   width: 1800,
   height: 1500,
-  alt: "Five sheets standing in steel clips on a concrete slab. The back sheet is a finished web page; each glass sheet in front shows one layer of how it was made: a column grid, spacing measurements, keyboard focus rings and print marks.",
+  alt: "Five sheets standing in steel clips on a dark slab. The back sheet is a finished web page; each glass sheet in front shows one layer of how it was made: a column grid, spacing measurements, keyboard focus rings and print marks.",
 };
 
 /** The hero offers a way in for each kind of business we have a live demo for. */
@@ -19,7 +20,7 @@ const niches = [
   { label: "Restaurants", slug: "restaurant-website-demos" },
   { label: "Salons", slug: "salon-website-demo" },
   { label: "AI voice", slug: "ai-voice-receptionist" },
-  { label: "SaaS", slug: "orbit-operations" },
+  { label: "SaaS", slug: "orbitos" },
 ];
 
 export default function Hero() {
@@ -37,10 +38,10 @@ export default function Hero() {
             {home.headline}
           </h1>
           <p className="hero__lede reveal" style={step(1)}>
-            {home.lede}
+            {site.description}
           </p>
           <div className="hero__actions reveal" style={step(2)}>
-            <Link href="/contact" className="btn btn--kiln">
+            <Link href="/contact" className="btn btn--accent">
               Start a project
             </Link>
             <BookingLink className="btn btn--outline">Book a 30-minute call</BookingLink>
