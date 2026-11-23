@@ -79,3 +79,7 @@ next-env.d.ts
 
 # Next.js dev build output (alternate dist dir)
 /.next-flow/
+
+# Build output of audit/test builds: never commit compiled code
+/.next-audit/
+/.next-audit2/

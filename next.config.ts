@@ -45,6 +45,8 @@ const nextConfig: NextConfig = {
   // Automated browser tests build into their own folder so a running dev server is left alone.
   distDir: process.env.NEXT_DIST_DIR || ".next",
   poweredByHeader: false,
+  // Never publish source maps: they would let anyone read the original source from the browser.
+  productionBrowserSourceMaps: false,
   experimental: {
     agentFeedback: true,
     // Upgrade reminders in `next dev` / `next build` follow npm's latest stable release.
