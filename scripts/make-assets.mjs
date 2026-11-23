@@ -6,6 +6,10 @@
  *
  * Re-run it whenever the 3D scene, the colours or the headline change.
  * Output: public/hero/layers-poster.webp and public/og/default.png
+ *
+ * NOTE: since the 19 November redesign the home hero is an SVG and public/og/default.png is built by
+ * scripts/make-og-default.mjs. This script renders the old 3D poster and the old social image, so do not
+ * run it to refresh either one.
  */
 import { chromium } from "@playwright/test";
 import sharp from "sharp";

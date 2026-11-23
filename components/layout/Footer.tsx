@@ -1,6 +1,6 @@
 import Link from "next/link";
 import SocialIcon from "@/components/SocialIcon";
-import LogoMark from "@/components/ui/LogoMark";
+import BrandLockup from "@/components/ui/BrandLockup";
 import { industryPages } from "@/content/industries";
 import { servicePages } from "@/content/offerings";
 import { privacy, site } from "@/content/site";
@@ -29,9 +29,8 @@ export default function Footer() {
         <div className="tab-panel site-footer__panel">
         <div className="site-footer__grid">
           <div className="site-footer__about">
-            <Link className="brand" href="/" aria-label={`${site.name} home`}>
-              <LogoMark />
-              <span>{site.name}</span>
+            <Link className="brand brand--full" href="/" aria-label={`${site.name} home`}>
+              <BrandLockup name={site.name} />
             </Link>
             <p>{site.description}</p>
             {placeLine && <p>{placeLine}</p>}

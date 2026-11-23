@@ -104,7 +104,7 @@ export default function RootLayout({
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        <Navbar items={navItems} siteName={site.name} shortName={site.shortName} />
+        <Navbar items={navItems} siteName={site.name} />
         <main id="main" tabIndex={-1}>
           {children}
         </main>
