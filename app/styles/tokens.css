@@ -1,0 +1,124 @@
+/* ─────────────────────────────────────────────────────────────
+ * The OrbiTech Solutions: design tokens
+ *
+ * Every colour, font, radius, space and timing on the site comes from here.
+ * Need a new value? Add a named token first, then use it.
+ *
+ * Light theme. Contrast (WCAG): text on bg 18.4:1, secondary text on cards 7.2:1, accent
+ * text on cards 6.4:1, white on the solid button 5.3:1. --muted is for borders, icons and decoration
+ * only: it is under 4.5:1 and is never used for reading text.
+ * ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Surfaces */
+  --bg: #ffffff;
+  --bg-2: #f6f7fb;
+  --card: #f8f9fc;
+  --elevated: #ffffff;
+  --border: #d0d6e3;
+  --border-strong: #aeb7ca;
+
+  /* Brand */
+  --accent: #8065ff; /* the brand purple: glows, borders, icons, gradients */
+  --accent-2: #438bff; /* blue: gradients and highlights only */
+  --accent-text: #5a3fd6; /* the purple as small text on light surfaces */
+  --accent-solid: #6b4ef0; /* the purple under white text (buttons) */
+  --accent-solid-hover: #5b3fe0;
+
+  /* Text */
+  --text: #0f1420;
+  --text-2: #4a5468;
+  --muted: #8791a5;
+
+  /* Effects that change with the theme */
+  --tint: rgba(16, 24, 40, 0.03); /* a faint wash over a surface */
+  --shadow-faint: rgba(16, 24, 40, 0.1);
+  --shadow: rgba(16, 24, 40, 0.18);
+  --shadow-strong: rgba(16, 24, 40, 0.3);
+  --on-accent: #ffffff; /* text and marks on the solid purple */
+  --peach: #f5dcc6; /* the cream pill behind section labels */
+  --on-peach: #3b2a1e;
+  --gradient-panel: linear-gradient(115deg, #7c4dff 0%, #a77cf3 52%, #efcdbf 100%); /* the violet-to-peach tab panels */
+  --gradient-panel-deep: linear-gradient(115deg, #6a3df0 0%, #7046ef 55%, #7549ef 100%); /* a panel that carries small white text */
+  --panel-ink: #17181f; /* the dark cards that sit on a panel */
+  color-scheme: light;
+
+  /* Status */
+  --danger: #c62828;
+  --success: #1b7f4b;
+  --warn: #9a5b00;
+
+  /* Type */
+  --font-display: var(--font-montserrat), "Segoe UI", system-ui, sans-serif;
+  --font-body: var(--font-inter), "Segoe UI", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Shape */
+  --radius-sm: 10px;
+  --radius: 14px;
+  --radius-lg: 18px;
+  --radius-pill: 999px;
+
+  /* Layout */
+  --maxw: 1280px; /* one width for every section, the hero included */
+  --maxw-narrow: 760px;
+  --gutter: clamp(20px, 4.5vw, 40px);
+  --header-h: 68px;
+
+  /* Space (4px base) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+  --section: clamp(36px, 3.8vw, 56px); /* each side, so two sections meet about 112px apart */
+
+  /* Light and motion */
+  --gradient-accent: linear-gradient(120deg, #5b3fe0 0%, #8065ff 50%, #2f6fe8 100%);
+  --ring: 0 0 0 1px var(--border);
+  --shadow-card: 0 1px 3px rgba(16, 24, 40, 0.08), 0 14px 32px -14px rgba(16, 24, 40, 0.22);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.28s;
+  --dur-long: 0.6s;
+
+  /* Stacking */
+  --z-header: 50;
+  --z-drawer: 60;
+}
+
+/* Dark theme: set on <html data-theme="dark"> by the toggle in the header, or on one element
+ * (the contact form card) to keep that part dark in both themes. */
+:root[data-theme="dark"],
+[data-theme="dark"] {
+  --bg: #080b12;
+  --bg-2: #0d111b;
+  --card: #121826;
+  --elevated: #171e2d;
+  --border: #252c3a;
+  --border-strong: #343d50;
+
+  --accent-text: #a99bff;
+  --accent-solid-hover: #7658f6;
+
+  --text: #f5f6fa;
+  --text-2: #929bad;
+  --muted: #687386;
+
+  --danger: #ff8d8d;
+  --success: #6fdc9d;
+  --warn: #ffc478;
+
+  --tint: rgba(255, 255, 255, 0.03);
+  --shadow-faint: rgba(0, 0, 0, 0.4);
+  --shadow: rgba(0, 0, 0, 0.6);
+  --shadow-strong: rgba(0, 0, 0, 0.8);
+
+  --gradient-accent: linear-gradient(120deg, #b2a6ff 0%, #8065ff 45%, #438bff 100%);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 24px 48px -24px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
+  color: var(--text);
+}

@@ -1,0 +1,210 @@
+/* Hallmark · component: form · genre: modern-minimal · theme: existing tokens (by request) · states: 8 · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S3 R4 V3 · weakest: S, underlined fields are common; the ruled textarea and the field that lights up on focus carry the idea */
+
+/* The contact and demo-gate forms. Underline fields: one rule under each, a violet rule
+ * and a faint tint when a field is focused, a ruled sheet for the long message. Colours
+ * come from tokens.css only. */
+
+.form {
+  display: grid;
+  gap: var(--s-6);
+}
+
+.form__row {
+  display: grid;
+  align-items: end; /* a label that wraps never pushes its field out of line with its neighbour */
+  gap: var(--s-6) var(--s-7);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 640px) {
+  .form__row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.field {
+  display: grid;
+  gap: var(--s-1);
+  min-width: 0;
+}
+
+.field__label {
+  color: var(--text-2);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: color var(--dur) var(--ease);
+}
+
+.field:focus-within .field__label,
+.field.is-focus .field__label {
+  color: var(--accent-text);
+}
+
+.field__optional {
+  color: var(--text-2);
+  font-weight: 400;
+}
+
+.field__msg {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: 1.3em;
+  margin: 0;
+  color: var(--text-2);
+  font-size: 0.8125rem;
+}
+
+.field__msg--error {
+  color: var(--danger);
+}
+
+/* ── The field ────────────────────────────────────────────── */
+
+.input {
+  --line: var(--border-strong);
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 4px;
+  border: 0;
+  border-bottom: 2px solid transparent; /* the rule is painted as a background, so it can change colour without moving the text */
+  border-radius: 0;
+  background-color: transparent;
+  background-image: linear-gradient(var(--line), var(--line));
+  background-position: left bottom;
+  background-repeat: no-repeat;
+  background-size: 100% 2px;
+  background-origin: border-box;
+  color: var(--text);
+  font: inherit;
+  font-size: 1.0625rem; /* 17px: above the 16px that stops iOS zooming into the field */
+  transition: background-color var(--dur) var(--ease);
+}
+
+.input::placeholder {
+  color: var(--text-2);
+}
+
+.input:hover,
+.input.is-hover {
+  --line: var(--text-2);
+}
+
+.input:focus-visible,
+.input.is-focus {
+  --line: var(--accent);
+  background-color: color-mix(in srgb, var(--accent) 7%, transparent);
+  outline: none;
+}
+
+.input:active,
+.input.is-active {
+  background-color: color-mix(in srgb, var(--accent) 11%, transparent);
+}
+
+.input[aria-invalid="true"],
+.input.is-invalid {
+  --line: var(--danger);
+}
+
+.input:disabled,
+.input.is-disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ── The message: a ruled sheet ───────────────────────────── */
+
+textarea.input {
+  --rule: 2rem;
+  min-height: calc(var(--rule) * 5 + 2px);
+  padding: 0 2px;
+  line-height: var(--rule);
+  resize: vertical;
+  background-image:
+    linear-gradient(var(--line), var(--line)),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent calc(var(--rule) - 1px),
+      var(--border) calc(var(--rule) - 1px),
+      var(--border) var(--rule)
+    );
+  background-position: left bottom, left top;
+  background-repeat: no-repeat, repeat;
+  background-size: 100% 2px, 100% var(--rule);
+  background-attachment: scroll, local;
+}
+
+/* ── Select ───────────────────────────────────────────────── */
+
+select.input {
+  appearance: none;
+  padding-right: 28px;
+  cursor: pointer;
+}
+
+.select {
+  position: relative;
+}
+
+.select::after {
+  content: "";
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--text-2);
+  border-bottom: 2px solid var(--text-2);
+  transform: translateY(-75%) rotate(45deg);
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  pointer-events: none;
+}
+
+.select:focus-within::after {
+  border-color: var(--accent);
+  transform: translateY(-25%) rotate(225deg);
+}
+
+.input--code {
+  max-width: 14rem;
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  letter-spacing: 0.3em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Submit ───────────────────────────────────────────────── */
+
+.form__submit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4) var(--s-5);
+  margin-top: var(--s-2);
+  padding-top: var(--s-5);
+  border-top: 1px solid var(--border);
+}
+
+.form__privacy,
+.form__attached {
+  margin: 0;
+  color: var(--text-2);
+  font-size: 0.8125rem;
+}
+
+.form__privacy a {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .input,
+  .field__label,
+  .select::after {
+    transition: none;
+  }
+}

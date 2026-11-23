@@ -1,11 +1,30 @@
 import { expect, test, type Page } from "@playwright/test";
 
-// This file runs against the server where email delivery is NOT configured.
+// This file runs against the server where email delivery is NOT configured (SMTP variables emptied).
 
-const name = (page: Page) => page.getByLabel("Your name");
-const email = (page: Page) => page.getByLabel("Email", { exact: true });
-const message = (page: Page) => page.getByLabel("About the project");
-const send = (page: Page) => page.getByRole("button", { name: "Send message" });
+const name = (page: Page) => page.getByLabel("Full name");
+const email = (page: Page) => page.getByLabel("Business email");
+const message = (page: Page) => page.getByLabel("Project description");
+const send = (page: Page) => page.getByRole("button", { name: "Send Project Inquiry" });
+
+test.describe("contact page", () => {
+  test("leads with the headline, the verified details and the three-step process", async ({ page }) => {
+    await page.goto("/contact");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Have an Ambitious Idea? Let’s Engineer It.");
+    await expect(page.getByText("We’ll help you identify the right technical solution.")).toBeVisible();
+    await expect(page.getByRole("link", { name: "info@theorbitechsolution.com" }).first()).toBeVisible();
+    await expect(page.getByText("New York, US", { exact: true })).toBeVisible();
+    await expect(page.getByText(/collaborate with businesses worldwide/i)).toBeVisible();
+    await expect(page.getByRole("heading", { name: "What happens next" })).toBeVisible();
+    await expect(page.locator("ol.steps li")).toHaveCount(3);
+  });
+
+  test("the thank-you page confirms and offers a way on", async ({ page }) => {
+    await page.goto("/contact/thanks");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Message sent");
+    await expect(page.getByRole("link", { name: "See our work" })).toBeVisible();
+  });
+});
 
 test.describe("contact form validation", () => {
   test("empty submit shows a clear message for each required field and focuses the first", async ({ page }) => {
@@ -49,7 +68,7 @@ test.describe("contact form validation", () => {
 
   test("fields are labelled and the spam trap is hidden from everyone", async ({ page }) => {
     await page.goto("/contact");
-    for (const label of ["Your name", "Email", "Company", "Project type", "Budget", "Timing", "About the project"]) {
+    for (const label of ["Full name", "Business email", "Company name", "Project type", "Estimated budget", "Project timeline", "Project description"]) {
       await expect(page.getByLabel(label, { exact: false }).first()).toBeVisible();
     }
     const trap = page.locator("#contact-website");
@@ -67,7 +86,7 @@ test.describe("when email delivery is not configured", () => {
     await message(page).fill("We need a new marketing site.");
     await send(page).click();
 
-    const alert = page.getByRole("alert");
+    const alert = page.locator(".notice--error");
     await expect(alert).toContainText(/switched on yet/);
     await expect(alert).toContainText(/wasn.t sent/);
     await expect(page).toHaveURL(/\/contact$/);
@@ -85,40 +104,5 @@ test.describe("when email delivery is not configured", () => {
     });
     await send(page).click();
     await expect(page).toHaveURL(/\/contact\/thanks$/);
-  });
-});
-
-test.describe("estimator", () => {
-  test("pre-fills the form with the chosen range and features", async ({ page }) => {
-    await page.goto("/contact");
-    await page.getByText("Not sure about budget?").click();
-    await page.getByLabel("Website", { exact: true }).check();
-    await page.getByRole("button", { name: "Use this estimate in the form" }).click();
-
-    await expect(page.getByText(/Attached estimate:/)).toBeVisible();
-    await expect(page.getByLabel("Project type")).toHaveValue("Website");
-    await expect(message(page)).toHaveValue(/Features from the estimator/);
-    await expect(name(page)).toBeFocused();
-  });
-});
-
-test.describe("contact page content", () => {
-  test("shows what happens next and a booking slot marked as missing", async ({ page }) => {
-    await page.goto("/contact");
-    await expect(page.getByRole("heading", { name: "What happens next" })).toBeVisible();
-    await expect(page.locator("ol.next__list li")).toHaveCount(3);
-    await expect(page.getByText("[Booking link (Cal.com or Calendly)]")).toBeVisible();
-  });
-
-  test("missing details are bracketed, never invented", async ({ page }) => {
-    await page.goto("/contact");
-    await expect(page.getByText("[Email address]").first()).toBeVisible();
-    await expect(page.getByText("[City, country]").first()).toBeVisible();
-  });
-
-  test("the thank-you page confirms and offers a way on", async ({ page }) => {
-    await page.goto("/contact/thanks");
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText("Message sent");
-    await expect(page.getByRole("link", { name: "See our work" })).toBeVisible();
   });
 });

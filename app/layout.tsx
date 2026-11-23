@@ -1,28 +1,50 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { homeAnchors, nav, site } from "@/content/site";
+import localFont from "next/font/local";
+import Footer from "@/components/layout/Footer";
+import Navbar, { type NavItem } from "@/components/layout/Navbar";
+import { industryPages } from "@/content/industries";
+import { servicePages } from "@/content/offerings";
+import { nav, site } from "@/content/site";
 import { siteUrl } from "@/lib/site-config";
-import "../tokens.css";
 import "./globals.css";
-import "./portfolio.css";
-import "./inner.css";
+import "./styles/tokens.css";
+import "./styles/base.css";
+import "./styles/layout.css";
+import "./styles/components.css";
+import "./styles/form.css";
+import "./styles/home.css";
+import "./styles/hero-text.css";
+import "./styles/pin.css";
+import "./styles/pages.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+// Self-hosted variable fonts (Latin subset, files and licences in ./fonts), so neither
+// `next dev` nor `next build` has to reach Google Fonts. Downloading them at compile time
+// timed out on slow connections and broke the dev server.
+const montserrat = localFont({
+  src: "./fonts/montserrat-latin.woff2",
+  weight: "100 900",
+  variable: "--font-montserrat",
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const inter = localFont({
+  src: "./fonts/inter-latin.woff2",
+  weight: "100 900",
+  variable: "--font-inter",
   display: "swap",
+});
+
+const jetbrainsMono = localFont({
+  src: "./fonts/jetbrains-mono-latin.woff2",
+  weight: "100 800",
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+  fallback: ["ui-monospace", "Menlo", "Consolas", "monospace"],
 });
 
 export const viewport: Viewport = {
-  themeColor: "#090d1b",
+  themeColor: "#ffffff",
+  colorScheme: "light dark",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -40,18 +62,49 @@ export const metadata: Metadata = {
   authors: [{ name: site.name }],
 };
 
+/** The primary navigation: the links from content, with a menu under Services and Industries. */
+const navItems: NavItem[] = nav.map((item) => {
+  if (item.href === "/services") {
+    return {
+      ...item,
+      menu: {
+        allLabel: "All services",
+        links: servicePages.map((page) => ({ label: page.navLabel, href: `/services/${page.slug}`, text: page.navText })),
+      },
+    };
+  }
+  if (item.href === "/industries") {
+    return {
+      ...item,
+      menu: {
+        allLabel: "All industries",
+        links: industryPages.map((page) => ({ label: page.name, href: `/industries/${page.slug}`, text: page.summary })),
+      },
+    };
+  }
+  return item;
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${montserrat.variable} ${inter.variable} ${jetbrainsMono.variable}`}>
+      <head>
+        {/* Sets the saved theme before the first paint, so a visitor who chose dark never sees a white flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: 'try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")document.documentElement.dataset.theme=t}catch(e){}',
+          }}
+        />
+      </head>
       <body>
         <a href="#main" className="skip-link">
           Skip to content
         </a>
-        <Navbar links={[...nav, ...homeAnchors]} siteName={site.name} />
+        <Navbar items={navItems} siteName={site.name} shortName={site.shortName} />
         <main id="main" tabIndex={-1}>
           {children}
         </main>

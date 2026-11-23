@@ -1,0 +1,627 @@
+/* ─────────────────────────────────────────────────────────────
+ * Components: buttons, badges, cards, forms, lists, FAQ, timeline, CTA, prose.
+ * ───────────────────────────────────────────────────────────── */
+
+/* ── Buttons ─────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 44px;
+  padding: 0 var(--s-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease), color var(--dur) var(--ease),
+    transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.btn svg {
+  transition: transform var(--dur) var(--ease);
+}
+
+.btn:hover svg {
+  transform: translateX(2px);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.btn--primary {
+  background: var(--accent-solid);
+  color: #fff;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 10px 30px -10px rgba(128, 101, 255, 0.7);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--accent-solid-hover);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14) inset, 0 14px 36px -10px rgba(128, 101, 255, 0.85);
+}
+
+.btn--secondary {
+  border-color: var(--border-strong);
+  background: var(--tint);
+  color: var(--text);
+}
+
+.btn--secondary:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: rgba(128, 101, 255, 0.08);
+}
+
+.btn--ghost {
+  padding-inline: var(--s-3);
+  color: var(--text-2);
+}
+
+.btn--ghost:hover {
+  color: var(--text);
+}
+
+.btn--lg {
+  min-height: 52px;
+  padding-inline: var(--s-6);
+  font-size: 1rem;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+/* Text link with an arrow */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--accent-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.link-arrow svg {
+  transition: transform var(--dur) var(--ease);
+}
+
+.link-arrow:hover svg {
+  transform: translateX(3px);
+}
+
+/* Inline text link inside prose */
+.text-link {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent-text) 40%, transparent);
+  text-underline-offset: 3px;
+  transition: text-decoration-color var(--dur) var(--ease);
+}
+
+.text-link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ── Badges and tags ─────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--tint);
+  color: var(--text-2);
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.badge--accent {
+  border-color: rgba(128, 101, 255, 0.45);
+  background: rgba(128, 101, 255, 0.1);
+  color: var(--accent-text);
+}
+
+.badge--draft {
+  border-color: color-mix(in srgb, var(--warn) 40%, transparent);
+  background: color-mix(in srgb, var(--warn) 8%, transparent);
+  color: var(--warn);
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+/* ── Cards ───────────────────────────────────────────────── */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: clamp(20px, 2.4vw, 28px);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, var(--tint), rgba(255, 255, 255, 0) 40%), var(--card);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+/* A hairline of purple light along the top edge appears on hover */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: -1px -1px auto -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(128, 101, 255, 0.9), transparent);
+  opacity: 0;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.card--link:hover,
+.card--link:focus-within {
+  border-color: rgba(128, 101, 255, 0.5);
+  transform: translateY(-3px);
+}
+
+.card--link:hover::before,
+.card--link:focus-within::before {
+  opacity: 1;
+}
+
+.card__title {
+  font-size: 1.2rem;
+}
+
+.card__text {
+  color: var(--text-2);
+  font-size: 0.95rem;
+}
+
+.card__foot {
+  margin-top: auto;
+  padding-top: var(--s-2);
+}
+
+/* A card that is one big link: the title's link covers the whole card */
+.card__stretch::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.icon-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(145deg, rgba(128, 101, 255, 0.18), rgba(67, 139, 255, 0.06));
+  color: var(--accent-text);
+}
+
+.mini-list {
+  display: grid;
+  gap: var(--s-2);
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+
+.mini-list li {
+  position: relative;
+  padding-left: 18px;
+}
+
+.mini-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* ── Lists ───────────────────────────────────────────────── */
+
+.checks {
+  display: grid;
+  gap: var(--s-3);
+}
+
+.checks li {
+  position: relative;
+  padding-left: 30px;
+  color: var(--text-2);
+}
+
+.checks li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.35em;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(128, 101, 255, 0.15)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a99bff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E")
+    center / 12px no-repeat;
+}
+
+.checks--cols {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 720px) {
+  .checks--cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--s-6);
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--card);
+  color: var(--text-2);
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+}
+
+/* Definition list of facts */
+.facts {
+  display: grid;
+  gap: var(--s-5) var(--s-6);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  padding-block: var(--s-5);
+  border-block: 1px solid var(--border);
+}
+
+.facts dt {
+  margin-bottom: 4px;
+  font-family: var(--font-display);
+  font-size: 0.6875rem;
+  letter-spacing: 0.01em;
+  color: var(--text-2);
+}
+
+.facts dd {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ── Breadcrumbs ─────────────────────────────────────────── */
+
+.crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+  color: var(--text-2);
+  font-size: 0.8125rem;
+}
+
+.crumbs li + li::before {
+  content: "/";
+  margin-right: var(--s-2);
+  color: var(--muted);
+}
+
+.crumbs a:hover {
+  color: var(--text);
+}
+
+.crumbs [aria-current="page"] {
+  color: var(--text);
+}
+
+/* ── Prose (legal pages, articles) ───────────────────────── */
+
+.prose {
+  display: grid;
+  gap: var(--s-4);
+  color: var(--text-2);
+}
+
+.prose h2 {
+  margin-top: var(--s-6);
+  color: var(--text);
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+}
+
+.prose h3 {
+  margin-top: var(--s-4);
+  color: var(--text);
+}
+
+.prose strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.prose a {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.prose ul {
+  display: grid;
+  gap: var(--s-2);
+  padding-left: var(--s-5);
+  list-style: disc;
+}
+
+.prose ul li::marker {
+  color: var(--accent);
+}
+
+/* ── FAQ accordion (plain <details>: works without script) ── */
+
+.faq {
+  display: grid;
+  border-top: 1px solid var(--border);
+}
+
+.faq details {
+  border-bottom: 1px solid var(--border);
+}
+
+.faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  padding-block: var(--s-5);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq summary::after {
+  content: "";
+  flex: none;
+  width: 20px;
+  height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23929bad' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E")
+    center / 20px no-repeat;
+  transition: transform var(--dur) var(--ease);
+}
+
+.faq details[open] summary::after {
+  transform: rotate(45deg);
+}
+
+.faq__answer {
+  max-width: 46rem;
+  padding-bottom: var(--s-5);
+  color: var(--text-2);
+}
+
+/* ── Timeline (horizontal on desktop, vertical on phones) ── */
+
+/* Ordered steps as cards: a filled number, a connector across each gap, the last number in peach. */
+.timeline {
+  --dot: 44px;
+  --pad: var(--s-5);
+  --gap: var(--s-5);
+  position: relative;
+  display: grid;
+  gap: var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.timeline__step {
+  position: relative;
+  display: grid;
+  gap: var(--s-2);
+  align-content: start; /* short text sits at the top, level with its neighbours */
+  padding: calc(var(--pad) + var(--dot) + var(--s-4)) var(--pad) var(--pad);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.timeline__step:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.timeline__step::before {
+  counter-increment: step;
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: var(--pad);
+  top: var(--pad);
+  display: grid;
+  place-items: center;
+  width: var(--dot);
+  height: var(--dot);
+  border-radius: 50%;
+  background: var(--accent-solid);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--on-accent);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  z-index: 1;
+}
+
+.timeline__step:last-child::before {
+  background: var(--peach);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--peach) 45%, transparent);
+  color: var(--on-peach);
+}
+
+/* the connector, drawn across the gap to the next card (vertical on phones) */
+.timeline__step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--pad) + var(--dot) / 2 - 1px);
+  top: 100%;
+  width: 2px;
+  height: var(--gap);
+  background: linear-gradient(var(--accent), var(--peach));
+}
+
+.timeline__title {
+  font-size: 1.15rem;
+}
+
+.timeline__text {
+  color: var(--text-2);
+  font-size: 0.95rem;
+}
+
+@media (min-width: 900px) {
+  .timeline {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .timeline__step:not(:last-child)::after {
+    left: 100%;
+    top: calc(var(--pad) + var(--dot) / 2 - 1px);
+    width: var(--gap);
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--peach));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline__step {
+    transition: none;
+  }
+}
+
+/* ── Call to action band ─────────────────────────────────── */
+
+.cta-band {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: var(--s-5);
+  justify-items: center;
+  padding: clamp(40px, 7vw, 88px) clamp(20px, 5vw, 64px);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius-lg) + 6px);
+  background:
+    radial-gradient(40rem 18rem at 50% 0%, rgba(128, 101, 255, 0.28), transparent 70%),
+    radial-gradient(28rem 14rem at 85% 100%, rgba(67, 139, 255, 0.14), transparent 70%), var(--card);
+  text-align: center;
+}
+
+.cta-band h2 {
+  max-width: 18ch;
+}
+
+.cta-band p {
+  max-width: 34rem;
+  color: var(--text-2);
+  font-size: 1.05rem;
+}
+
+.cta-band__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-3);
+}
+
+/* Form fields, selects and the submit row live in form.css. */
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.notice {
+  display: flex;
+  gap: var(--s-3);
+  padding: var(--s-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--elevated);
+  font-size: 0.9rem;
+}
+
+.notice p {
+  margin: 0;
+}
+
+.notice__title {
+  font-weight: 600;
+}
+
+.notice__icon {
+  flex: none;
+  margin-top: 2px;
+}
+
+.notice--error {
+  border-color: color-mix(in srgb, var(--danger) 50%, transparent);
+  background: color-mix(in srgb, var(--danger) 6%, transparent);
+}
+
+.notice--error .notice__icon {
+  color: var(--danger);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

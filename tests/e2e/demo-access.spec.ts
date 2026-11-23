@@ -4,16 +4,17 @@ import { expect, test } from "@playwright/test";
 // honestly and never let anyone through. (The full code-by-email flow is covered by the
 // unit tests in tests/unit/demo-access.test.ts and was walked through by hand with a real browser.)
 
-const HOSTS = /vercel\.app|theorbitechsolution/;
+// Only the gated demos are hidden. OrbitOS and the property demo link straight to their public sites.
+const HOSTS = /curlyco2026|foodchains\.vercel|madmighty|salon2026|voice\.theorbitechsolution/;
 
 test.describe("demo access", () => {
   test("one food card opens a page with all three restaurant demos", async ({ page }) => {
     await page.goto("/work");
-    const cards = page.locator(".work-card", { hasText: "Restaurant Website Design" });
+    const cards = page.locator(".project-card", { hasText: "Restaurant Website Design" });
     await expect(cards).toHaveCount(1);
-    await expect(cards.getByText("3 live demos")).toBeVisible();
+    await expect(cards.locator(".badge", { hasText: "3 demos" })).toBeVisible();
 
-    await cards.click();
+    await cards.getByRole("link", { name: "Restaurant Website Design: 3 Custom Food Ordering Demos", exact: true }).click();
     await expect(page).toHaveURL(/\/work\/restaurant-website-demos$/);
     await expect(page.locator(".demo-card")).toHaveCount(3);
     for (const name of ["Curly Co.", "Food Chain", "MAD: Mighty & Delicious"]) {
@@ -27,7 +28,7 @@ test.describe("demo access", () => {
       expect(await page.content(), path).not.toMatch(HOSTS);
     }
     await page.goto("/work/salon-website-demo");
-    await expect(page.getByRole("link", { name: /Open live demo/ })).toHaveAttribute("href", "/demo/maison-muse/open");
+    await expect(page.getByRole("link", { name: /Open live demo/ }).first()).toHaveAttribute("href", "/demo/maison-muse/open");
   });
 
   test("opening a demo without confirming an email lands on the email check", async ({ page }) => {

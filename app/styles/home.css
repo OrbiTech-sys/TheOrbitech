@@ -1,0 +1,632 @@
+/* ─────────────────────────────────────────────────────────────
+ * Home page sections: hero, capability strip, services, projects,
+ * industries, why, technology, at a glance.
+ * ───────────────────────────────────────────────────────────── */
+
+/* ── Hero ────────────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  padding-block: clamp(20px, 2.6vw, 44px) clamp(48px, 6vw, 88px);
+  overflow: clip;
+}
+
+/* Faint grid that fades out toward the edges: engineering paper, not decoration for its own sake */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(var(--tint) 1px, transparent 1px),
+    linear-gradient(90deg, var(--tint) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 20%, transparent 75%);
+}
+
+.hero__grid {
+  display: grid;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 960px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  }
+}
+
+.hero__copy {
+  display: grid;
+  gap: var(--s-4);
+  justify-items: start;
+}
+
+.hero__title {
+  max-width: 14ch;
+}
+
+.hero__lede {
+  max-width: 32rem;
+  color: var(--text-2);
+  font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  margin-top: var(--s-2);
+}
+
+@media (max-width: 479px) {
+  .hero__actions .btn {
+    width: 100%;
+  }
+}
+
+/* ── Hero visual ─────────────────────────────────────────── */
+
+.hero-visual {
+  position: relative;
+  width: min(100%, 540px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+.hero-visual__glow {
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(128, 101, 255, 0.42), rgba(67, 139, 255, 0.12) 55%, transparent 72%);
+  filter: blur(38px);
+}
+
+.hero-visual__svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hv-spin {
+  transform-box: view-box;
+  transform-origin: 280px 280px;
+}
+
+@keyframes hv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hv-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+.hv-spin--a {
+  animation: hv-spin 110s linear infinite;
+}
+
+.hv-spin--b {
+  animation: hv-spin 85s linear infinite reverse;
+}
+
+.hv-spin--c {
+  animation: hv-spin 140s linear infinite;
+}
+
+.hv-chip,
+.hv-panel {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--card) 82%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 16px 40px -16px var(--shadow);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  animation: hv-float 8s ease-in-out infinite;
+}
+
+.hv-chip {
+  padding: 7px 13px;
+}
+
+.hv-chip i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-text);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+.hv-chip--1 {
+  top: 12%;
+  left: 2%;
+}
+
+.hv-chip--2 {
+  top: 24%;
+  right: -1%;
+  animation-delay: -2.5s;
+}
+
+.hv-chip--3 {
+  bottom: 30%;
+  left: -2%;
+  animation-delay: -4s;
+}
+
+.hv-chip--4 {
+  bottom: 9%;
+  right: 6%;
+  animation-delay: -1.4s;
+}
+
+.hv-panel {
+  bottom: 8%;
+  left: 4%;
+  display: grid;
+  gap: 3px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  color: var(--text-2);
+  animation-delay: -3s;
+}
+
+.hv-panel__title {
+  margin-bottom: 4px;
+  color: var(--accent-text);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.65rem;
+}
+
+.hv-panel b {
+  color: var(--accent-text);
+  font-weight: 500;
+}
+
+@media (max-width: 639px) {
+  .hv-panel,
+  .hv-chip--3 {
+    display: none;
+  }
+  .hv-chip {
+    font-size: 0.66rem;
+    padding: 5px 10px;
+  }
+}
+
+/* ── Capability strip ────────────────────────────────────── */
+
+/* A violet band where the capabilities slide past, bold and uppercase. */
+.marquee {
+  overflow: hidden;
+  background: var(--gradient-panel-deep);
+  color: var(--on-accent);
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+}
+
+.marquee:hover .marquee__track,
+.marquee:focus-within .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee__row {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.marquee__row li {
+  display: flex;
+  align-items: center;
+}
+
+.marquee__item {
+  padding: clamp(18px, 2.2vw, 28px) clamp(20px, 2.6vw, 40px);
+  color: var(--on-accent);
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.6vw, 1.45rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.marquee__item:hover {
+  opacity: 0.8;
+}
+
+.marquee__item:focus-visible {
+  outline: 2px solid var(--on-accent);
+  outline-offset: -6px;
+  border-radius: var(--radius-sm);
+}
+
+.marquee__star {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--peach);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Still for people who ask for less motion: one centred, wrapping row. */
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track {
+    width: auto;
+    justify-content: center;
+    animation: none;
+  }
+
+  .marquee__row {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .marquee__row[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+/* ── Services ────────────────────────────────────────────── */
+
+.services-grid .card {
+  gap: var(--s-4);
+}
+
+.services-grid .mini-list {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-block: var(--s-1);
+}
+
+.section-more {
+  margin-top: var(--s-6);
+}
+
+/* ── Projects ────────────────────────────────────────────── */
+
+.project-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 2px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.project-card:hover,
+.project-card:focus-within {
+  border-color: rgba(128, 101, 255, 0.55);
+  transform: translateY(-3px);
+}
+
+.project-card__media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-bottom: 2px solid var(--border-strong);
+  background: var(--bg-2);
+}
+
+.project-card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.8s var(--ease);
+}
+
+.project-card:hover .project-card__media img {
+  transform: scale(1.035);
+}
+
+.project-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: clamp(20px, 2.4vw, 28px);
+}
+
+.project-card__title {
+  font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+}
+
+.project-card .link-arrow {
+  margin-top: auto;
+  padding-top: var(--s-2);
+}
+
+/* ── Why, technology, glance ─────────────────────────────── */
+
+.why__index {
+  color: var(--accent-text);
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+}
+
+.card--cta {
+  border-style: dashed;
+  border-color: var(--border-strong);
+  background: transparent;
+  box-shadow: none;
+  justify-content: center;
+}
+
+.tech-grid .card {
+  gap: var(--s-4);
+}
+
+/* At a glance: a bento grid of tiles, a wide one for services and a violet one for the work. */
+.glance {
+  display: grid;
+  gap: var(--s-5);
+}
+
+.glance__title {
+  font-size: clamp(1.6rem, 2.6vw, 2.25rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+.glance__grid {
+  display: grid;
+  gap: var(--s-4);
+  margin: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 700px) {
+  .glance__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .glance__tile--wide {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1000px) {
+  .glance__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .glance__tile {
+    grid-column: span 2;
+  }
+
+  .glance__tile--wide {
+    grid-column: span 4;
+  }
+}
+
+.glance__tile {
+  display: grid;
+  gap: var(--s-3);
+  align-content: start;
+  padding: clamp(20px, 2.4vw, 28px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.glance__tile:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
+
+.glance__tile dt {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.glance__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  color: var(--accent-text);
+}
+
+.glance__tile dd {
+  margin: 0;
+  color: var(--text-2);
+  line-height: 1.6;
+}
+
+/* The violet tile */
+.glance__tile--highlight {
+  border-color: transparent;
+  background: var(--gradient-panel-deep);
+}
+
+.glance__tile--highlight dt,
+.glance__tile--highlight dd {
+  color: var(--on-accent);
+}
+
+.glance__tile--highlight dd {
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.glance__tile--highlight .glance__icon {
+  background: color-mix(in srgb, var(--on-accent) 18%, transparent);
+  color: var(--on-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glance__tile {
+    transition: none;
+  }
+}
+
+/* ── Hero: the developer on a violet shape, and the problem box ── */
+
+.hero__media {
+  position: relative;
+  align-self: center;
+}
+
+.hero__photo {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  max-height: min(78vh, 680px);
+  object-fit: contain;
+  height: auto;
+  margin-inline: auto 0;
+  filter: drop-shadow(0 30px 40px var(--shadow));
+}
+
+.hero-ask {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  width: min(100%, 36rem);
+  padding: 6px 6px 6px 22px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--elevated);
+  box-shadow: 0 10px 30px -18px var(--shadow-strong);
+  transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.hero-ask:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent), 0 10px 30px -18px var(--shadow-strong);
+}
+
+.hero-ask__input {
+  flex: 1;
+  min-width: 0;
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  outline: none;
+}
+
+.hero-ask__input::placeholder {
+  color: var(--text-2);
+}
+
+.hero-ask__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
+  flex: none;
+  padding: 5px 5px 5px 20px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--accent) 12%, var(--elevated));
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--dur) var(--ease);
+}
+
+.hero-ask__button:hover {
+  background: color-mix(in srgb, var(--accent) 22%, var(--elevated));
+}
+
+.hero-ask__button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.hero-ask__icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--text);
+  color: var(--bg);
+  transition: transform var(--dur) var(--ease);
+}
+
+.hero-ask__button:hover .hero-ask__icon {
+  transform: rotate(45deg);
+}
+
+/* On a phone the button keeps only its arrow; the words stay for screen readers. */
+@media (max-width: 479.98px) {
+  .hero-ask {
+    padding-left: 18px;
+  }
+
+  .hero-ask__button {
+    padding: 5px;
+  }
+
+  .hero-ask__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ask,
+  .hero-ask__button,
+  .hero-ask__icon {
+    transition: none;
+  }
+}

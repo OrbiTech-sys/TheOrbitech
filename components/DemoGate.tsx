@@ -103,7 +103,7 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
               </p>
             </div>
             <div className="form__submit">
-              <button type="submit" className="btn btn-primary" disabled={checking} aria-busy={checking}>
+              <button type="submit" className="btn btn--primary" disabled={checking} aria-busy={checking}>
                 {checking ? (
                   <>
                     <span className="spinner" aria-hidden="true" />
@@ -153,7 +153,7 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
               </p>
             </div>
             <div className="form__submit">
-              <button type="submit" className="btn btn-primary" disabled={requesting} aria-busy={requesting}>
+              <button type="submit" className="btn btn--primary" disabled={requesting} aria-busy={requesting}>
                 {requesting ? (
                   <>
                     <span className="spinner" aria-hidden="true" />

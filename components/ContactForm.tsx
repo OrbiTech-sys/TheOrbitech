@@ -104,7 +104,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
       <div className="form__row">
         <div className="field">
           <label htmlFor="contact-name" className="field__label">
-            Your name
+            Full name
           </label>
           <input
             id="contact-name"
@@ -123,7 +123,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
         </div>
         <div className="field">
           <label htmlFor="contact-email" className="field__label">
-            Email
+            Business email
           </label>
           <input
             id="contact-email"
@@ -147,7 +147,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
       <div className="form__row">
         <div className="field">
           <label htmlFor="contact-company" className="field__label">
-            Company <span className="field__optional">(optional)</span>
+            Company name <span className="field__optional">(optional)</span>
           </label>
           <input
             id="contact-company"
@@ -190,7 +190,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
       <div className="form__row">
         <div className="field">
           <label htmlFor="contact-budget" className="field__label">
-            Budget <span className="field__optional">(optional)</span>
+            Estimated budget <span className="field__optional">(optional)</span>
           </label>
           <div className="select">
             <select
@@ -213,7 +213,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
         </div>
         <div className="field">
           <label htmlFor="contact-timeline" className="field__label">
-            Timing <span className="field__optional">(optional)</span>
+            Project timeline <span className="field__optional">(optional)</span>
           </label>
           <div className="select">
             <select
@@ -238,7 +238,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
 
       <div className="field">
         <label htmlFor="contact-message" className="field__label">
-          About the project
+          Project description
         </label>
         <textarea
           id="contact-message"
@@ -272,14 +272,14 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
       )}
 
       <div className="form__submit">
-        <button type="submit" className="btn btn-primary" disabled={pending} aria-busy={pending}>
+        <button type="submit" className="btn btn--primary btn--lg" disabled={pending} aria-busy={pending}>
           {pending ? (
             <>
               <span className="spinner" aria-hidden="true" />
               Sending
             </>
           ) : (
-            "Send message"
+            "Send Project Inquiry"
           )}
         </button>
         <p className="form__privacy">

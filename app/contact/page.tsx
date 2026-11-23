@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import ContactBandArt from "@/components/ContactBandArt";
+import ContactInfo from "@/components/ContactInfo";
 import ContactSection from "@/components/ContactSection";
 import JsonLd from "@/components/JsonLd";
-import PageIntro from "@/components/PageIntro";
-import { meta, site } from "@/content/site";
+import { meta } from "@/content/site";
 import { staticPages } from "@/lib/pages";
 import { breadcrumbNode, webPageNode, type Crumb } from "@/lib/schema";
 import { pageMetadata } from "@/lib/seo";
@@ -31,12 +33,33 @@ export default function ContactPage() {
           breadcrumbNode(page.path, crumbs),
         ]}
       />
-      <PageIntro
-        crumbs={crumbs}
-        title={`Contact ${site.name} to start a project`}
-        lede="Tell us what you want to build. A person reads every message and replies by email."
-      />
-      <ContactSection />
+
+      <section className="contact-band" aria-labelledby="contact-title">
+        <span className="contact-band__stripe contact-band__stripe--a" aria-hidden="true" />
+        <span className="contact-band__stripe contact-band__stripe--b" aria-hidden="true" />
+        <div className="wrap contact-band__inner">
+          <Breadcrumbs crumbs={crumbs} />
+          <span className="eyebrow">Contact</span>
+          <h1 id="contact-title" className="contact-band__title">
+            Have an Ambitious Idea? Let’s Engineer It.
+          </h1>
+          <p className="contact-band__lede">
+            Tell us about your goals and challenges. We’ll help you identify the right technical solution.
+          </p>
+        </div>
+        <ContactBandArt />
+      </section>
+
+      <section className="contact-body">
+        <div className="wrap contact-grid">
+          <div className="contact-grid__form" data-theme="dark">
+            <ContactSection />
+          </div>
+          <div className="contact-grid__info">
+            <ContactInfo />
+          </div>
+        </div>
+      </section>
     </>
   );
 }
