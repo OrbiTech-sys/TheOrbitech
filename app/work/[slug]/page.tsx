@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -83,7 +84,7 @@ export default async function CaseStudyPage({ params }: Props) {
   ];
 
   // Facts are listed only when they have a value. Nothing is shown as a blank or a stand-in.
-  const facts: { label: string; value: React.ReactNode }[] = [
+  const facts: { label: string; value: ReactNode }[] = [
     { label: "Status", value: project.kind },
     { label: "Category", value: project.category },
     ...(project.type ? [{ label: "Type", value: project.type }] : []),

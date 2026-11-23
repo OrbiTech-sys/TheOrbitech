@@ -12,6 +12,10 @@ const OPTIONAL = [
   /^site\.legalName$/,
   /^site\.booking\.(url|embed)$/,
   /^testimonials$/,
+  /^projects\[\d+\]\.results$/,
+  /^projects\[\d+\]\.demos$/,
+  /^projects\[\d+\]\.faqs$/,
+  /^privacy\.hosting$/,
   /^team$/,
   /^projects\[\d+\]\.(client|year|role|demoNote|liveUrl|stack|brief|approach|results|demos|faqs)$/,
 ];

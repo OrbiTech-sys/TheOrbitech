@@ -70,6 +70,13 @@ export default function PrivacyPage() {
             to limit abuse.
           </p>
           <p>
+            <strong>Opening a demo.</strong> Some demos open only after you confirm an email address. We use the address
+            to send you a 6-digit code, and we email the OrbiTech team the address and the name of the demo you opened, so
+            we know who looked and can reply if you get in touch. We do not add it to a mailing list or sell it. The code is
+            sent by email through an SMTP mail provider, and a short-lived record of your network address is kept in memory
+            to limit abuse.
+          </p>
+          <p>
             <strong>How the message reaches us.</strong> The form sends your message by email through {privacy.emailProvider}, an
             email delivery service. It is not stored in a database on this website.
           </p>
