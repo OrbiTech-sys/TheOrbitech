@@ -41,7 +41,8 @@ export default function PageIntro({
               width={image.width}
               height={image.height}
               sizes="(min-width: 1000px) 40vw, 100vw"
-              priority
+              preload
+              fetchPriority="high"
             />
           </div>
         )}
