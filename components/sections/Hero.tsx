@@ -4,7 +4,7 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { home } from "@/content/site";
 
 /**
- * The home page hero: label, a bold uppercase headline, a one-line box that carries the
+ * The home page hero: a small "new" badge that links to the demos, a bold uppercase headline, a one-line box that carries the
  * visitor's problem to the contact form, the sentence and two actions; a developer on a
  * violet shape on the right.
  */
@@ -15,7 +15,12 @@ export default function Hero() {
     <section className="hero" aria-labelledby="hero-title">
       <div className="wrap hero__grid">
         <div className="hero__copy">
-          <span className="eyebrow">{home.eyebrow}</span>
+          {/* Points at the demo sites in the portfolio (they open after an email check). */}
+          <Link href="/work" className="hero-badge">
+            <span className="hero-badge__tag">New</span>
+            <span className="hero-badge__text">Try our live demo sites</span>
+            <ArrowRight size={14} strokeWidth={2.25} aria-hidden="true" />
+          </Link>
           <h1 id="hero-title" className="hero__title">
             {words.map((word, index) => (
               <span key={index}>
