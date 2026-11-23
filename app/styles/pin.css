@@ -508,3 +508,16 @@ header.page-hero + .industry-block,
 header.page-hero + .section {
   border-top: 0;
 }
+
+/* ── Very small phones (320px): long words and the email address wrap instead of pushing the page wider ── */
+
+.contact-info__details dd,
+.cta-band__mail,
+.site-footer__about a {
+  overflow-wrap: anywhere;
+}
+
+.cta-band > * {
+  min-width: 0;
+  max-width: 100%;
+}
