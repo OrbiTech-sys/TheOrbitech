@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
-import LogoMark from "@/components/ui/LogoMark";
+import BrandLockup from "@/components/ui/BrandLockup";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 
 interface MenuLink {
@@ -29,15 +29,7 @@ const isCurrent = (pathname: string, href: string) =>
  * Desktop: menus open on hover, click and keyboard, and close on Escape or a click elsewhere.
  * Phone: a full-screen drawer with the same links, which locks the page behind it while open.
  */
-export default function Navbar({
-  items,
-  siteName,
-  shortName,
-}: {
-  items: NavItem[];
-  siteName: string;
-  shortName: string;
-}) {
+export default function Navbar({ items, siteName }: { items: NavItem[]; siteName: string }) {
   const pathname = usePathname();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -84,9 +76,7 @@ export default function Navbar({
       <header className="site-header">
         <div className="wrap site-header__bar" ref={barRef}>
           <Link className="brand" href="/" aria-label={`${siteName} home`} onClick={closeAll}>
-            <LogoMark />
-            <span className="brand__full">{siteName}</span>
-            <span className="brand__short">{shortName}</span>
+            <BrandLockup name={siteName} />
           </Link>
 
           <nav className="primary-nav" aria-label="Primary">
