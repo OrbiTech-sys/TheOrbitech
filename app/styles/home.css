@@ -43,6 +43,57 @@
   justify-items: start;
 }
 
+/* A small "new" badge above the headline: a purple tag and a line, one link to the demos */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  max-width: 100%;
+  padding: 5px 14px 5px 5px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--elevated);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--dur) var(--ease), transform var(--dur) var(--ease);
+}
+
+.hero-badge__tag {
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--accent-solid);
+  color: var(--on-accent);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero-badge svg {
+  flex: none;
+  color: var(--accent-text);
+  transition: transform var(--dur) var(--ease);
+}
+
+.hero-badge:hover {
+  border-color: var(--accent);
+}
+
+.hero-badge:hover svg {
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-badge,
+  .hero-badge svg {
+    transition: none;
+  }
+}
+
 .hero__title {
   max-width: 14ch;
 }
