@@ -76,3 +76,6 @@ next-env.d.ts
 /.openhands/
 /.tinycloud/
 /.vibe/
+
+# Next.js dev build output (alternate dist dir)
+/.next-flow/
