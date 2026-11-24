@@ -398,17 +398,9 @@
   color: var(--on-accent);
 }
 
-.page-hero .page-hero__lede {
-  opacity: 0.95;
-}
-
-.page-hero .page-meta {
-  opacity: 0.85;
-}
-
 .page-hero .page-hero__note {
   border-left-color: var(--peach);
-  background: color-mix(in srgb, var(--on-accent) 14%, transparent);
+  background: color-mix(in srgb, var(--panel-ink) 30%, transparent);
 }
 
 /* On the violet panel: peach badges and primary button, white outline secondary */
@@ -520,4 +512,16 @@ header.page-hero + .section {
 .cta-band > * {
   min-width: 0;
   max-width: 100%;
+}
+
+/* Links inside the violet panels read as white, underlined; the footer brand is not dimmed on violet. */
+.page-hero a.gate__anchor,
+.page-hero a.text-link {
+  color: var(--on-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.site-footer__panel .brand__the {
+  opacity: 1;
 }

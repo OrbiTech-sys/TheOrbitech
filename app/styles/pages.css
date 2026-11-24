@@ -758,16 +758,11 @@
   font-size: clamp(1.02rem, 1.4vw, 1.2rem);
 }
 
-.contact-band .eyebrow,
 .contact-band .crumbs,
 .contact-band .crumbs a,
 .contact-band .crumbs li,
 .contact-band .crumbs span {
   color: var(--on-accent);
-}
-
-.contact-band .eyebrow {
-  background: color-mix(in srgb, var(--on-accent) 18%, transparent);
 }
 
 /* Two slanted bars behind the form: the one decoration on the band. */

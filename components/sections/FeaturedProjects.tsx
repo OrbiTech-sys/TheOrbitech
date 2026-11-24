@@ -37,8 +37,9 @@ export default function FeaturedProjects() {
           </div>
         </div>
         <div className="grid grid--2 projects-grid">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.slug} project={toProjectCard(project)} priority={index < 2} />
+          {/* Far below the first screen: loaded lazily, so they never compete with the hero image. */}
+          {projects.map((project) => (
+            <ProjectCard key={project.slug} project={toProjectCard(project)} />
           ))}
         </div>
         <p className="section-more">

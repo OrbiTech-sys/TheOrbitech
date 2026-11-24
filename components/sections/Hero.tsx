@@ -70,7 +70,9 @@ export default function Hero() {
             width={752}
             height={666}
             sizes="(min-width: 960px) 45vw, 100vw"
-            priority
+            // The largest thing on the first screen: fetch it first, ahead of fonts and other images.
+            preload
+            fetchPriority="high"
             unoptimized
           />
         </div>

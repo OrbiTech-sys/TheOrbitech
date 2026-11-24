@@ -1,6 +1,7 @@
 "use client";
 
 import { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import { useFormik } from "formik";
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { sendEnquiry, type EnquiryState } from "@/app/actions/enquiry";
@@ -17,32 +18,73 @@ export interface ContactPrefill {
 
 const initialState: EnquiryState = { status: "idle", message: "" };
 
-const blank = { name: "", email: "", company: "", projectType: "", budget: "", timeline: "", message: "" };
-type Values = typeof blank;
+type Values = Record<EnquiryField, string>;
 
+const blank: Values = {
+  name: "",
+  email: "",
+  company: "",
+  projectType: "",
+  budget: "",
+  timeline: "",
+  message: "",
+  estimate: "",
+  website: "",
+};
+
+/** The shared zod schema holds the rules, so the browser and the server can never disagree. */
+function validate(values: Values): EnquiryErrors {
+  const result = parseEnquiry(values);
+  return result.ok ? {} : result.errors;
+}
+
+/**
+ * Formik holds the values, checks them as they change and runs the submit. The Server Action
+ * is still what receives the message (and checks it again), so nothing about delivery changes.
+ */
 export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
   const formRef = useRef<HTMLFormElement>(null);
   const [state, formAction, pending] = useActionState(sendEnquiry, initialState);
-  const [values, setValues] = useState<Values>(blank);
-  const [clientErrors, setClientErrors] = useState<EnquiryErrors>({});
-  // Fields edited since the last submit no longer show their old error.
-  const [edited, setEdited] = useState<Partial<Record<EnquiryField, true>>>({});
-  const [appliedKey, setAppliedKey] = useState("");
-  const [estimate, setEstimate] = useState("");
+  // What was last sent, so a server-side error clears as soon as that field is changed.
+  const [sent, setSent] = useState<Values | null>(null);
 
-  // Take new pre-fill (from the estimator) while rendering, not in an effect.
-  if (prefill && prefill.key !== appliedKey) {
-    setAppliedKey(prefill.key);
-    setEstimate(prefill.estimate ?? "");
+  const formik = useFormik<Values>({
+    initialValues: blank,
+    validate,
+    validateOnBlur: false,
+    onSubmit: (submitted, helpers) => {
+      const data = new FormData();
+      for (const field of ENQUIRY_FIELDS) data.set(field, submitted[field]);
+      // The hidden trap field is read from the page itself, not from Formik, so a bot that fills it
+      // without typing is still caught.
+      if (formRef.current) data.set("website", String(new FormData(formRef.current).get("website") ?? ""));
+      setSent(submitted);
+      startTransition(() => formAction(data));
+      helpers.setSubmitting(false);
+    },
+  });
+  const { values, setValues, validateForm, submitForm } = formik;
+
+  // Take new pre-fill (from the estimator or the home page box) when it arrives.
+  const appliedKey = useRef("");
+  useEffect(() => {
+    if (!prefill || prefill.key === appliedKey.current) return;
+    appliedKey.current = prefill.key;
     setValues((prev) => ({
       ...prev,
+      estimate: prefill.estimate ?? "",
       projectType: prefill.projectType ?? prev.projectType,
       message: prefill.message ?? prev.message,
     }));
-  }
+  }, [prefill, setValues]);
 
-  const errors: EnquiryErrors = { ...state.fieldErrors, ...clientErrors };
-  const errorFor = (field: EnquiryField) => (edited[field] ? undefined : errors[field]);
+  // Browser-side problems show after the first send attempt and update as the visitor types.
+  // Server-side problems show until that field is changed.
+  const errorFor = (field: EnquiryField): string | undefined => {
+    if (formik.submitCount > 0 && formik.errors[field]) return formik.errors[field];
+    const fromServer = state.fieldErrors?.[field];
+    return fromServer && sent && sent[field] === values[field] ? fromServer : undefined;
+  };
 
   // After the server reports problems, move focus to the first one.
   useEffect(() => {
@@ -52,26 +94,12 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
     }
   }, [state]);
 
-  const onChange =
-    (field: keyof Values) =>
-    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-      setValues((prev) => ({ ...prev, [field]: event.target.value }));
-      setEdited((prev) => ({ ...prev, [field]: true }));
-    };
-
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const result = parseEnquiry(data);
-    setEdited({});
-    if (!result.ok) {
-      setClientErrors(result.errors);
-      const first = ENQUIRY_FIELDS.find((f) => result.errors[f]);
-      if (first) (event.currentTarget.elements.namedItem(first) as HTMLElement | null)?.focus();
-      return;
-    }
-    setClientErrors({});
-    startTransition(() => formAction(data));
+    const errors = await validateForm();
+    const first = ENQUIRY_FIELDS.find((f) => errors[f]);
+    await submitForm();
+    if (first) (formRef.current?.elements.namedItem(first) as HTMLElement | null)?.focus();
   };
 
   const message = (field: EnquiryField, hint?: string) => {
@@ -88,16 +116,22 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
   const showNotice = state.status !== "idle" && state.status !== "invalid";
 
   return (
-    <form ref={formRef} className="form" action={formAction} onSubmit={onSubmit} noValidate>
+    <form ref={formRef} className="form" action={formAction} onSubmit={handleSubmit} noValidate>
       <div className="honeypot" aria-hidden="true">
         <label htmlFor="contact-website">Leave this field empty</label>
-        <input id="contact-website" type="text" name="website" tabIndex={-1} autoComplete="off" />
+        <input
+          id="contact-website"
+          type="text"
+          name="website"
+          tabIndex={-1}
+          autoComplete="off"
+        />
       </div>
-      <input type="hidden" name="estimate" value={estimate} />
+      <input type="hidden" name="estimate" value={values.estimate} />
 
-      {estimate && (
+      {values.estimate && (
         <p className="form__attached">
-          Attached estimate: <strong>{estimate}</strong>
+          Attached estimate: <strong>{values.estimate}</strong>
         </p>
       )}
 
@@ -115,7 +149,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
             aria-required="true"
             maxLength={MAX.name}
             value={values.name}
-            onChange={onChange("name")}
+            onChange={formik.handleChange}
             aria-invalid={invalid("name")}
             aria-describedby="contact-name-msg"
           />
@@ -136,7 +170,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
             aria-required="true"
             maxLength={MAX.email}
             value={values.email}
-            onChange={onChange("email")}
+            onChange={formik.handleChange}
             aria-invalid={invalid("email")}
             aria-describedby="contact-email-msg"
           />
@@ -156,7 +190,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
             autoComplete="organization"
             maxLength={MAX.company}
             value={values.company}
-            onChange={onChange("company")}
+            onChange={formik.handleChange}
             aria-describedby="contact-company-msg"
           />
           {message("company")}
@@ -171,7 +205,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
               name="projectType"
               className="input"
               value={values.projectType}
-              onChange={onChange("projectType")}
+              onChange={formik.handleChange}
               aria-invalid={invalid("projectType")}
               aria-describedby="contact-projectType-msg"
             >
@@ -198,7 +232,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
               name="budget"
               className="input"
               value={values.budget}
-              onChange={onChange("budget")}
+              onChange={formik.handleChange}
               aria-describedby="contact-budget-msg"
             >
               <option value="">Choose a range</option>
@@ -221,7 +255,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
               name="timeline"
               className="input"
               value={values.timeline}
-              onChange={onChange("timeline")}
+              onChange={formik.handleChange}
               aria-describedby="contact-timeline-msg"
             >
               <option value="">Choose one</option>
@@ -249,7 +283,7 @@ export default function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
           aria-required="true"
           maxLength={MAX.message}
           value={values.message}
-          onChange={onChange("message")}
+          onChange={formik.handleChange}
           aria-invalid={invalid("message")}
           aria-describedby="contact-message-msg"
         />

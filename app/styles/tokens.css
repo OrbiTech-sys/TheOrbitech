@@ -38,7 +38,7 @@
   --on-accent: #ffffff; /* text and marks on the solid purple */
   --peach: #f5dcc6; /* the cream pill behind section labels */
   --on-peach: #3b2a1e;
-  --gradient-panel: linear-gradient(115deg, #7c4dff 0%, #a77cf3 52%, #efcdbf 100%); /* the violet-to-peach tab panels */
+  --gradient-panel: radial-gradient(ellipse 34% 46% at 100% 100%, #efcdbf 0%, rgba(239, 205, 191, 0) 100%), linear-gradient(115deg, #6a3df0 0%, #7c4dfa 55%, #8352f4 100%); /* the violet tab panels: peach only in the bottom-right corner, so white text keeps 4.5:1 everywhere else */
   --gradient-panel-deep: linear-gradient(115deg, #6a3df0 0%, #7046ef 55%, #7549ef 100%); /* a panel that carries small white text */
   --panel-ink: #17181f; /* the dark cards that sit on a panel */
   color-scheme: light;
@@ -46,7 +46,7 @@
   /* Status */
   --danger: #c62828;
   --success: #1b7f4b;
-  --warn: #9a5b00;
+  --warn: #8f5300;
 
   /* Type */
   --font-display: var(--font-montserrat), "Segoe UI", system-ui, sans-serif;

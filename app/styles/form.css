@@ -145,6 +145,13 @@ select.input {
   cursor: pointer;
 }
 
+/* The open list of a native select takes the field's colours, so its options stay readable
+ * on the dark form card as well as on a light page. */
+select.input option {
+  background-color: var(--elevated);
+  color: var(--text);
+}
+
 .select {
   position: relative;
 }
@@ -174,6 +181,16 @@ select.input {
   font-size: 1.4rem;
   letter-spacing: 0.3em;
   font-variant-numeric: tabular-nums;
+}
+
+/* Browser autofill paints a pale box over the field; keep the underline look instead. */
+.input:-webkit-autofill,
+.input:-webkit-autofill:hover,
+.input:-webkit-autofill:focus,
+.input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--text);
+  caret-color: var(--text);
+  transition: background-color 600000s 0s, color 600000s 0s;
 }
 
 /* ── Submit ───────────────────────────────────────────────── */
