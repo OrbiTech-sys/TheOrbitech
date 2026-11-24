@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import { useFormik } from "formik";
 import { AlertCircle, CheckCircle2, Mail, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import {
@@ -15,6 +16,12 @@ import type { Demo } from "@/content/site";
 const idleRequest: CodeRequestState = { status: "idle", message: "" };
 const idleCheck: CodeCheckState = { status: "idle", message: "" };
 
+// The same rules the server applies, so a visitor hears about a typo before anything is sent.
+// (The server checks everything again; these only save a round trip.)
+const EMAIL_RE = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]{2,}$/;
+const EMAIL_MESSAGE = "Enter an email address like name@company.com.";
+const CODE_MESSAGE = "Enter the 6-digit code from the email.";
+
 /**
  * Two steps: give an email address, then type the 6-digit code that was sent to it.
  * Once the code is right the visitor is sent on to the demo.
@@ -23,6 +30,39 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
   const [request, requestAction, requesting] = useActionState(requestDemoCode, idleRequest);
   const [check, checkAction, checking] = useActionState(verifyDemoCode, idleCheck);
   const codeRef = useRef<HTMLInputElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const requestFormRef = useRef<HTMLFormElement>(null);
+
+  // Formik holds each step's fields and their checks; the Server Actions still do the real work.
+  const requestForm = useFormik({
+    initialValues: { email: "", website: "" },
+    validate: (values) => {
+      const email = values.email.trim();
+      return email.length <= 254 && EMAIL_RE.test(email) ? {} : { email: EMAIL_MESSAGE };
+    },
+    validateOnBlur: false,
+    onSubmit: (values, helpers) => {
+      const data = new FormData();
+      data.set("demo", demo.id);
+      // The hidden trap field is read from the page itself, so a bot that fills it without typing is caught.
+      data.set("website", String(new FormData(requestFormRef.current ?? undefined).get("website") ?? values.website));
+      data.set("email", values.email);
+      startTransition(() => requestAction(data));
+      helpers.setSubmitting(false);
+    },
+  });
+  const codeForm = useFormik({
+    initialValues: { code: "" },
+    validate: (values) => (/^\d{6}$/.test(values.code.replace(/[\s-]/g, "")) ? {} : { code: CODE_MESSAGE }),
+    validateOnBlur: false,
+    onSubmit: (values, helpers) => {
+      const data = new FormData();
+      data.set("demo", demo.id);
+      data.set("code", values.code);
+      startTransition(() => checkAction(data));
+      helpers.setSubmitting(false);
+    },
+  });
 
   // Remember where the code went, taking each new result while rendering rather than in an effect.
   const [seen, setSeen] = useState<CodeRequestState | null>(null);
@@ -43,8 +83,26 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
     if (verified) window.location.replace(openHref);
   }, [verified, openHref]);
 
-  const requestError = request.status !== "idle" && request.status !== "sent" ? request.message : "";
-  const checkError = check.status !== "idle" && check.status !== "verified" ? check.message : "";
+  // A typo shows first (and clears as it is fixed); otherwise whatever the server answered.
+  const requestError =
+    (requestForm.submitCount > 0 && requestForm.errors.email) ||
+    (request.status !== "idle" && request.status !== "sent" ? request.message : "");
+  const checkError =
+    (codeForm.submitCount > 0 && codeForm.errors.code) ||
+    (check.status !== "idle" && check.status !== "verified" ? check.message : "");
+
+  const submitRequest = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const errors = await requestForm.validateForm();
+    await requestForm.submitForm();
+    if (errors.email) emailRef.current?.focus();
+  };
+  const submitCode = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const errors = await codeForm.validateForm();
+    await codeForm.submitForm();
+    if (errors.code) codeRef.current?.focus();
+  };
 
   return (
     <div className="gate">
@@ -69,7 +127,7 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
             </p>
           </div>
         ) : codeStep ? (
-          <form action={checkAction} className="form" noValidate>
+          <form action={checkAction} className="form" onSubmit={submitCode} noValidate>
             <h2 id="gate-title" className="gate__title">
               Enter your 6-digit code
             </h2>
@@ -86,6 +144,8 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
                 ref={codeRef}
                 id="gate-code"
                 name="code"
+                value={codeForm.values.code}
+                onChange={codeForm.handleChange}
                 className="input input--code"
                 inputMode="numeric"
                 autoComplete="one-time-code"
@@ -116,7 +176,7 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
             </div>
           </form>
         ) : (
-          <form action={requestAction} className="form" noValidate>
+          <form ref={requestFormRef} action={requestAction} className="form" onSubmit={submitRequest} noValidate>
             <h2 id="gate-title" className="gate__title">
               Confirm your email to open the demo
             </h2>
@@ -127,7 +187,13 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
             <input type="hidden" name="demo" value={demo.id} />
             <div className="honeypot" aria-hidden="true">
               <label htmlFor="gate-website">Leave this field empty</label>
-              <input id="gate-website" type="text" name="website" tabIndex={-1} autoComplete="off" />
+              <input
+                id="gate-website"
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+              />
             </div>
             <div className="field">
               <label htmlFor="gate-email" className="field__label">
@@ -136,6 +202,9 @@ export default function DemoGate({ demo, openHref }: { demo: Demo; openHref: str
               <input
                 id="gate-email"
                 name="email"
+                ref={emailRef}
+                value={requestForm.values.email}
+                onChange={requestForm.handleChange}
                 type="email"
                 inputMode="email"
                 className="input"
